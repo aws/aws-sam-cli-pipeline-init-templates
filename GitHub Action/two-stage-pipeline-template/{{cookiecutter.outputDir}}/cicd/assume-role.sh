@@ -14,6 +14,6 @@ cred=$(aws sts assume-role \
            --role-session-name $SESSION_NAME \
            --query '[Credentials.AccessKeyId,Credentials.SecretAccessKey,Credentials.SessionToken]' \
            --output text)
-export AWS_ACCESS_KEY_ID=$(echo $cred | awk '{split($0, tokens, " "); print tokens[1]}')
-export AWS_SECRET_ACCESS_KEY=$(echo $cred | awk '{split($0, tokens, " "); print tokens[2]}')
-export AWS_SESSION_TOKEN=$(echo $cred | awk '{split($0, tokens, " "); print tokens[3]}')
+export AWS_ACCESS_KEY_ID=$(echo $cred | awk '{ print $1 }')
+export AWS_SECRET_ACCESS_KEY=$(echo $cred | awk '{ print $2 }')
+export AWS_SESSION_TOKEN=$(echo $cred | awk '{ print $3 }')
