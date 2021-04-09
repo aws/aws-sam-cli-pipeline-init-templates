@@ -1,3 +1,5 @@
+#!/bin/sh
+
 REGION=$1
 ROLE=$2
 SESSION_NAME=$3
