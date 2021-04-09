@@ -1,4 +1,9 @@
 #!/bin/sh
+# assume-role.sh will use the current credential to assume the role ($1) with a session name ($2),
+# and it will set the following env variables:
+# - AWS_ACCESS_KEY_ID
+# - AWS_SECRET_ACCESS_KEY
+# - AWS_SESSION_TOKEN
 
 ROLE=$1
 SESSION_NAME=$2
