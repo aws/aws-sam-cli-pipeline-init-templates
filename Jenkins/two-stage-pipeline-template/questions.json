@@ -1,0 +1,63 @@
+{
+  "questions": [{
+    "key": "deployer_aws_access_key_jenkins_credential_id",
+    "question": "What is the Jenkins credential ID (via Pipeline: AWS Steps plugin) for deployer account access key?",
+    "isRequired": true
+  }, {
+    "key": "main_git_branch",
+    "question": "What is the git branch used for production deployment?",
+    "default": "main"
+  }, {
+    "key": "sam_template",
+    "question": "What is the sam_template?",
+    "default": "template.yaml"
+  }, {
+    "key": "testing_stack_name",
+    "question": "What is the testing stack name?",
+    "isRequired": true
+  }, {
+    "key": "testing_deployer_role",
+    "question": "What is the testing deployer role ARN?",
+    "isRequired": true
+  }, {
+    "key": "testing_cfn_deployment_role",
+    "question": "What is the testing CloudFormation deployment role ARN?",
+    "isRequired": true
+  }, {
+    "key": "testing_artifacts_bucket",
+    "question": "What is the testing S3 bucket name for artifacts?",
+    "isRequired": true
+  }, {
+    "key": "testing_ecr_repo",
+    "question": "What is the testing ECR repo URI?",
+    "isRequired": true
+  }, {
+    "key": "testing_region",
+    "question": "What is the testing AWS region?",
+    "default": "us-east-2"
+  }, {
+    "key": "prod_stack_name",
+    "question": "What is the prod_stack_name?",
+    "isRequired": true
+  }, {
+    "key": "prod_deployer_role",
+    "question": "What is the prod_deployer_role?",
+    "isRequired": true
+  }, {
+    "key": "prod_cfn_deployment_role",
+    "question": "What is the prod CloudFormation deployment role ARN?",
+    "isRequired": true
+  }, {
+    "key": "prod_artifacts_bucket",
+    "question": "What is the prod S3 bucket name for artifacts?",
+    "isRequired": true
+  }, {
+    "key": "prod_ecr_repo",
+    "question": "What is the prod ECR repo URI?",
+    "isRequired": true
+  }, {
+    "key": "prod_region",
+    "question": "What is the prod AWS region?",
+    "default": "us-east-2"
+  }]
+}

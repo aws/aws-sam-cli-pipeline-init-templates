@@ -1,0 +1,115 @@
+pipeline {
+  agent {
+    docker { 
+      image 'amazon/aws-sam-cli-build-image-python3.8'
+    }
+  }
+  environment {
+    _ = credentials('{{cookiecutter.deployer_aws_access_key_jenkins_credential_id}}') // Use Jenkins plugin: AWS Steps to configure the credential
+    aws_access_key_id_ = "${env.AWS_ACCESS_KEY_ID}"
+    aws_secret_access_key_ = "${env.AWS_SECRET_ACCESS_KEY}"
+    sam_template = "{{cookiecutter.sam_template}}"
+    testing_stack_name = "{{cookiecutter.testing_stack_name}}"
+    testing_deployer_role = "{{cookiecutter.testing_deployer_role}}"
+    testing_cfn_deployment_role = "{{cookiecutter.testing_cfn_deployment_role}}"
+    testing_artifacts_bucket = "{{cookiecutter.testing_artifacts_bucket}}"
+    testing_ecr_repo = "{{cookiecutter.testing_ecr_repo}}"
+    testing_region = "{{cookiecutter.testing_region}}"
+    prod_stack_name = "{{cookiecutter.prod_stack_name}}"
+    prod_deployer_role = "{{cookiecutter.prod_deployer_role}}"
+    prod_cfn_deployment_role = "{{cookiecutter.prod_cfn_deployment_role}}"
+    prod_artifacts_bucket = "{{cookiecutter.prod_artifacts_bucket}}"
+    prod_ecr_repo = "{{cookiecutter.prod_ecr_repo}}"
+    prod_region = "{{cookiecutter.prod_region}}"
+  }
+  stages {
+    // uncomment and modify the following step for running the unit-tests
+    // stage('test') {
+    //   steps {
+    //     // Assuming python runtime
+    //     sh 'pip install pytest'
+    //     sh 'pip install -r /path/to/requirements.txt'
+    //     sh 'python -m pytest /path/to/unit-tests'
+    //   }
+    // }
+
+    stage('build-and-deploy-test') {
+      when {
+        branch 'feature*'
+      }
+      steps {
+        sh '''
+          . .cicd/assume-role.sh ${testing_region} ${testing_deployer_role} testing-packaging 
+          sam build --template ${sam_template}
+          sam deploy --stack-name features-${CI_COMMIT_REF_NAME}-cfn-stack \
+            --capabilities CAPABILITY_IAM \
+            --region ${testing_region} \
+            --s3-bucket ${testing_artifacts_bucket} \
+            --image-repository ${testing_ecr_repo} \
+            --no-fail-on-empty-changeset \
+            --role-arn ${testing_cfn_deployment_role}
+        '''
+      }
+    }
+
+    stage('build') {
+      when {
+        branch 'main'
+      }
+      steps {
+        sh 'sam build --template ${sam_template}'
+        sh '''
+          . .cicd/assume-role.sh ${testing_region} ${testing_deployer_role} testing-packaging 
+          sam package \
+            --s3-bucket ${testing_artifacts_bucket} \
+            --image-repository ${testing_ecr_repo} \
+            --region ${testing_region} \
+            --output-template-file packaged-testing.yaml
+        '''
+
+        sh '''
+          . .cicd/assume-role.sh ${prod_region} ${prod_deployer_role} prod-packaging 
+          sam package \
+            --s3-bucket ${prod_artifacts_bucket} \
+            --image-repository ${prod_ecr_repo} \
+            --region ${prod_region} \
+            --output-template-file packaged-prod.yaml
+        '''
+
+        archiveArtifacts artifacts: 'packaged-testing.yaml'
+        archiveArtifacts artifacts: 'packaged-prod.yaml'
+      }
+    }
+
+    stage('integration-test') {
+      when {
+        branch 'main'
+      }
+      steps {
+        sh '''
+          
+          # trigger the integration tests here
+        '''
+      }
+    }
+
+    stage('deploy-prod') {
+      when {
+        branch 'main'
+      }
+      steps {
+        sh '''
+          . .cicd/assume-role.sh ${prod_region} ${prod_deployer_role} prod-deployment 
+          sam deploy --stack-name ${prod_stack_name} \
+            --template packaged-prod.yaml \
+            --capabilities CAPABILITY_IAM \
+            --region ${prod_region} \
+            --s3-bucket ${prod_artifacts_bucket} \
+            --image-repository ${prod_ecr_repo} \
+            --no-fail-on-empty-changeset \
+            --role-arn ${prod_cfn_deployment_role}
+        '''
+      }
+    }
+  }
+}
