@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker { 
-      image 'amazon/aws-sam-cli-build-image-python3.8'
+      image 'public.ecr.aws/sam/build-python3.8'
     }
   }
   environment {
