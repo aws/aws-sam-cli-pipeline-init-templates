@@ -38,9 +38,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          . .github/workflows/assume-role.sh ${testing_region}\
-                                             ${testing_deployer_role}\
-                                             feature-deployment
+          . cicd/assume-role.sh ${testing_region}\
+                                ${testing_deployer_role}\
+                                feature-deployment
           sam build --template ${sam_template} --use-container
           sam deploy --stack-name features-${GITHUB_REF##*/}-cfn-stack \
             --capabilities CAPABILITY_IAM \
@@ -60,9 +60,9 @@ jobs:
         run: sam build --template ${sam_template} --use-container
       - name: Upload artifacts to testing artifact buckets
         run: |
-          . .github/workflows/assume-role.sh ${testing_region} \
-                                             ${testing_deployer_role} \
-                                             prod-stage-packaging
+          . cicd/assume-role.sh ${testing_region} \
+                                ${testing_deployer_role} \
+                                prod-stage-packaging
           sam package \
             --s3-bucket ${testing_artifacts_bucket} \
             --image-repository ${testing_ecr_repo} \
@@ -70,9 +70,9 @@ jobs:
             --output-template-file packaged-testing.yaml
       - name: Upload artifacts to production artifact buckets
         run: |
-          . .github/workflows/assume-role.sh ${prod_region} \
-                                             ${prod_deployer_role} \
-                                             prod-stage-packaging
+          . cicd/assume-role.sh ${prod_region} \
+                                ${prod_deployer_role} \
+                                prod-stage-packaging
           sam package \
             --s3-bucket ${prod_artifacts_bucket} \
             --region ${prod_region} \
@@ -101,9 +101,9 @@ jobs:
           name: packaged-testing.yaml
       - name: Deploy to testing account
         run: |
-          . .github/workflows/assume-role.sh ${testing_region} \
-                                             ${testing_deployer_role} \
-                                             testing-deployment
+          . cicd/assume-role.sh ${testing_region} \
+                                ${testing_deployer_role} \
+                                testing-deployment
           sam deploy --stack-name ${testing_stack_name} \
             --template packaged-testing.yaml \
             --capabilities CAPABILITY_IAM \
@@ -133,9 +133,9 @@ jobs:
           name: packaged-prod.yaml
       - name: Deploy to production account
         run: |
-          . .github/workflows/assume-role.sh ${prod_region} \
-                                             ${prod_deployer_role} \
-                                             prod-deployment
+          . cicd/assume-role.sh ${prod_region} \
+                                ${prod_deployer_role} \
+                                prod-deployment
           sam deploy --stack-name ${prod_stack_name} \
             --template packaged-prod.yaml \
             --capabilities CAPABILITY_IAM \
