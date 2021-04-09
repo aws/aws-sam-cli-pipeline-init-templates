@@ -16,12 +16,12 @@
     "question": "What is the testing stack name?",
     "isRequired": true
   }, {
-    "key": "testing_deployer_role",
-    "question": "What is the testing deployer role ARN?",
+    "key": "testing_pipeline_execution_role",
+    "question": "What is the testing pipeline execution role ARN?",
     "isRequired": true
   }, {
-    "key": "testing_cfn_deployment_role",
-    "question": "What is the testing CloudFormation deployment role ARN?",
+    "key": "testing_cloudformation_execution_role",
+    "question": "What is the testing CloudFormation execution role ARN?",
     "isRequired": true
   }, {
     "key": "testing_artifacts_bucket",
@@ -37,27 +37,27 @@
     "default": "us-east-2"
   }, {
     "key": "prod_stack_name",
-    "question": "What is the prod_stack_name?",
+    "question": "What is the production stack name?",
     "isRequired": true
   }, {
-    "key": "prod_deployer_role",
-    "question": "What is the prod_deployer_role?",
+    "key": "prod_pipeline_execution_role",
+    "question": "What is the production pipeline execution role ARN?",
     "isRequired": true
   }, {
-    "key": "prod_cfn_deployment_role",
-    "question": "What is the prod CloudFormation deployment role ARN?",
+    "key": "prod_cloudformation_execution_role",
+    "question": "What is the production CloudFormation execution role ARN?",
     "isRequired": true
   }, {
     "key": "prod_artifacts_bucket",
-    "question": "What is the prod S3 bucket name for artifacts?",
+    "question": "What is the production S3 bucket name for artifacts?",
     "isRequired": true
   }, {
     "key": "prod_ecr_repo",
-    "question": "What is the prod ECR repo URI?",
+    "question": "What is the production ECR repo URI?",
     "isRequired": true
   }, {
     "key": "prod_region",
-    "question": "What is the prod AWS region?",
+    "question": "What is the production AWS region?",
     "default": "us-east-2"
   }]
 }
