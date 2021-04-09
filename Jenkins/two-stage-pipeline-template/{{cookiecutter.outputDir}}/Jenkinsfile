@@ -39,7 +39,7 @@ pipeline {
       }
       steps {
         sh '''
-          . .cicd/assume-role.sh ${testing_region} ${testing_deployer_role} testing-packaging 
+          . cicd/assume-role.sh ${testing_region} ${testing_deployer_role} testing-packaging 
           sam build --template ${sam_template}
           sam deploy --stack-name features-${CI_COMMIT_REF_NAME}-cfn-stack \
             --capabilities CAPABILITY_IAM \
@@ -59,7 +59,7 @@ pipeline {
       steps {
         sh 'sam build --template ${sam_template}'
         sh '''
-          . .cicd/assume-role.sh ${testing_region} ${testing_deployer_role} testing-packaging 
+          . cicd/assume-role.sh ${testing_region} ${testing_deployer_role} testing-packaging 
           sam package \
             --s3-bucket ${testing_artifacts_bucket} \
             --image-repository ${testing_ecr_repo} \
@@ -68,7 +68,7 @@ pipeline {
         '''
 
         sh '''
-          . .cicd/assume-role.sh ${prod_region} ${prod_deployer_role} prod-packaging 
+          . cicd/assume-role.sh ${prod_region} ${prod_deployer_role} prod-packaging 
           sam package \
             --s3-bucket ${prod_artifacts_bucket} \
             --image-repository ${prod_ecr_repo} \
@@ -99,7 +99,7 @@ pipeline {
       }
       steps {
         sh '''
-          . .cicd/assume-role.sh ${prod_region} ${prod_deployer_role} prod-deployment 
+          . cicd/assume-role.sh ${prod_region} ${prod_deployer_role} prod-deployment 
           sam deploy --stack-name ${prod_stack_name} \
             --template packaged-prod.yaml \
             --capabilities CAPABILITY_IAM \
