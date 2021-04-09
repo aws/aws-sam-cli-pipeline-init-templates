@@ -1,0 +1,19 @@
+{
+  "outputDir": ".",
+  "deployer_aws_access_key_id_variable_name": "False",
+  "deployer_aws_secret_access_key_variable_name": "False",
+  "main_git_branch": "",
+  "sam_template": "template.yaml",
+  "testing_stack_name": "",
+  "testing_deployer_role": "",
+  "testing_cfn_deployment_role": "",
+  "testing_artifacts_bucket": "",
+  "testing_ecr_repo": "",
+  "testing_region": "",
+  "prod_stack_name": "",
+  "prod_deployer_role": "",
+  "prod_cfn_deployment_role": "",
+  "prod_artifacts_bucket": "",
+  "prod_ecr_repo": "",
+  "prod_region": ""
+}
