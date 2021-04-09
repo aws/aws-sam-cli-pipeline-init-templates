@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker { 
       image 'public.ecr.aws/sam/build-python3.8'
-      args '--user 0:0'
+      args '--user 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
   environment {
@@ -39,7 +39,7 @@ pipeline {
         withAWS(credentials: '{{cookiecutter.deployer_aws_access_key_jenkins_credential_id}}', region: '{{cookiecutter.testing_region}}') {
           sh '''
             . pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-packaging
-            sam build --template ${SAM_TEMPLATE}
+            sam build --template ${SAM_TEMPLATE} --use-container
             sam deploy --stack-name features-${env.BRANCH_NAME}-cfn-stack \
               --capabilities CAPABILITY_IAM \
               --region ${TESTING_REGION} \
@@ -57,7 +57,7 @@ pipeline {
         branch '{{cookiecutter.main_git_branch}}'
       }
       steps {
-        sh 'sam build --template ${SAM_TEMPLATE}'
+        sh 'sam build --template ${SAM_TEMPLATE} --use-container'
         withAWS(credentials: '{{cookiecutter.deployer_aws_access_key_jenkins_credential_id}}', region: '{{cookiecutter.testing_region}}') {
           sh '''
             . pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-packaging
