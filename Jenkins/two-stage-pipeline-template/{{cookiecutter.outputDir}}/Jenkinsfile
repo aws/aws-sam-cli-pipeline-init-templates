@@ -1,6 +1,8 @@
 pipeline {
   agent {
     docker {
+      // public.ecr.aws/sam/build-provided cannot build functions with runtime Go1.x or .netcore
+      // For Go1.x or .netcore functions, please use its corresponding build images and remove `--use-container` from `sam build` commands.
       image 'public.ecr.aws/sam/build-provided'
       args '--user 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
     }
@@ -38,12 +40,12 @@ pipeline {
         branch 'feature*'
       }
       steps {
+        sh 'sam build --template ${SAM_TEMPLATE} --use-container'
         withAWS(
             credentials: env.DEPLOYER_CREDENTIAL_ID,
             region: env.TESTING_REGION,
             role: env.TESTING_PIPELINE_EXECUTION_ROLE,
-            roleSessionName: 'testing-packaging') {
-          sh 'sam build --template ${SAM_TEMPLATE} --use-container'
+            roleSessionName: 'deploying-feature') {
           sh '''
             sam deploy --stack-name features-${BRANCH_NAME}-cfn-stack \
               --capabilities CAPABILITY_IAM \
