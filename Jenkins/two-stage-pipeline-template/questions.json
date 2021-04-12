@@ -9,7 +9,7 @@
     "default": "main"
   }, {
     "key": "sam_template",
-    "question": "What is the sam_template?",
+    "question": "What is the the template file path?",
     "default": "template.yaml"
   }, {
     "key": "testing_stack_name",
