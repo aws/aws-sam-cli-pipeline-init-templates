@@ -1,5 +1,5 @@
 {
-  "outputDir": ".",
+  "outputDir": "aws-sam-pipeline",
   "deployer_aws_access_key_jenkins_credential_id": "",
   "main_git_branch": "",
   "sam_template": "",
