@@ -1,10 +1,4 @@
 pipeline {
-  agent {
-    docker {
-      image 'public.ecr.aws/sam/build-provided'
-      args '--user 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
-    }
-  }
   environment {
     PIPELINE_USER_CREDENTIAL_ID = '{{cookiecutter.pipeline_user_jenkins_credential_id}}'
     SAM_TEMPLATE = '{{cookiecutter.sam_template}}'
@@ -26,10 +20,9 @@ pipeline {
     // uncomment and modify the following step for running the unit-tests
     // stage('test') {
     //   steps {
-    //     // Assuming python runtime
-    //     sh 'pip install pytest'
-    //     sh 'pip install -r /path/to/requirements.txt'
-    //     sh 'python -m pytest /path/to/unit-tests'
+    //     sh '''
+    //       # trigger the tests here
+    //     '''
     //   }
     // }
 
@@ -38,6 +31,12 @@ pipeline {
       // which will build the stack and deploy to a stack named with branch name.
       when {
         branch 'feature*'
+      }
+      agent {
+        docker {
+          image 'public.ecr.aws/sam/build-provided'
+          args '--user 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
+        }
       }
       steps {
         sh 'sam build --template ${SAM_TEMPLATE} --use-container'
@@ -62,6 +61,12 @@ pipeline {
     stage('build') {
       when {
         branch env.MAIN_BRANCH
+      }
+      agent {
+        docker {
+          image 'public.ecr.aws/sam/build-provided'
+          args '--user 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
+        }
       }
       steps {
         sh 'sam build --template ${SAM_TEMPLATE} --use-container'
@@ -102,6 +107,12 @@ pipeline {
       when {
         branch env.MAIN_BRANCH
       }
+      agent {
+        docker {
+          image 'public.ecr.aws/sam/build-provided'
+          args '--user 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+      }
       steps {
         withAWS(
             credentials: env.PIPELINE_USER_CREDENTIAL_ID, 
@@ -129,7 +140,6 @@ pipeline {
     //   }
     //   steps {
     //     sh '''
-
     //       # trigger the integration tests here
     //     '''
     //   }
@@ -138,6 +148,12 @@ pipeline {
     stage('deploy-prod') {
       when {
         branch env.MAIN_BRANCH
+      }
+      agent {
+        docker {
+          image 'public.ecr.aws/sam/build-provided'
+          args '--user 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
+        }
       }
       steps {
         withAWS(
