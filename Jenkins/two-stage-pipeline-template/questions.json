@@ -29,7 +29,7 @@
     "isRequired": true
   }, {
     "key": "testing_ecr_repo",
-    "question": "What is the testing ECR repo URI?",
+    "question": "What is the testing ECR repository URI?",
     "isRequired": true
   }, {
     "key": "testing_region",
@@ -53,7 +53,7 @@
     "isRequired": true
   }, {
     "key": "prod_ecr_repo",
-    "question": "What is the production ECR repo URI?",
+    "question": "What is the production ECR repository URI?",
     "isRequired": true
   }, {
     "key": "prod_region",
