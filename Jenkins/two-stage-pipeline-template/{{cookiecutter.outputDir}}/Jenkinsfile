@@ -11,7 +11,9 @@ pipeline {
     {%- if cookiecutter.testing_ecr_repo %}
     TESTING_ECR_REPO = '{{cookiecutter.testing_ecr_repo}}'
     {% else %}
-    // Uncomment the line below if there are functions with "Image" PackageType in your template
+    // If there are functions with "Image" PackageType in your template,
+    // uncomment the line below and add "--image-repository ${TESTING_ECR_REPO}" to
+    // "sam package" and "sam deploy" commends.
     // TESTING_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     TESTING_REGION = '{{cookiecutter.testing_region}}'
@@ -22,7 +24,9 @@ pipeline {
     {%- if cookiecutter.prod_ecr_repo %}
     PROD_ECR_REPO = '{{cookiecutter.prod_ecr_repo}}'
     {% else %}
-    // Uncomment the line below if there are functions with "Image" PackageType in your template
+    // If there are functions with "Image" PackageType in your template,
+    // uncomment the line below and add "--image-repository ${PROD_ECR_REPO}" to
+    // "sam package" and "sam deploy" commends.
     // PROD_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     PROD_REGION = '{{cookiecutter.prod_region}}'
@@ -63,9 +67,6 @@ pipeline {
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
-              {% else %}
-              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
-              `# --image-repository ${TESTING_ECR_REPO}` \
               {% endif -%}
               --no-fail-on-empty-changeset \
               --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
@@ -96,9 +97,6 @@ pipeline {
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
-              {% else %}
-              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
-              `# --image-repository ${TESTING_ECR_REPO}` \
               {% endif -%}
               --region ${TESTING_REGION} \
               --output-template-file packaged-testing.yaml
@@ -115,9 +113,6 @@ pipeline {
               --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.prod_ecr_repo %}
               --image-repository ${PROD_ECR_REPO} \
-              {% else %}
-              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
-              `# --image-repository ${PROD_ECR_REPO}` \
               {% endif -%}
               --region ${PROD_REGION} \
               --output-template-file packaged-prod.yaml
@@ -152,9 +147,6 @@ pipeline {
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
-              {% else %}
-              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
-              `# --image-repository ${TESTING_ECR_REPO}` \
               {% endif -%}
               --no-fail-on-empty-changeset \
               --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
@@ -198,9 +190,6 @@ pipeline {
               --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.prod_ecr_repo %}
               --image-repository ${PROD_ECR_REPO} \
-              {% else %}
-              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
-              `# --image-repository ${PROD_ECR_REPO}` \
               {% endif -%}
               --no-fail-on-empty-changeset \
               --role-arn ${PROD_CLOUDFORMATION_EXECUTION_ROLE}
