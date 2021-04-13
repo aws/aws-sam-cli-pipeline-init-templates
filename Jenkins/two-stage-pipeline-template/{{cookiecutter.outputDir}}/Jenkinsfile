@@ -45,7 +45,7 @@ pipeline {
             role: env.TESTING_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'deploying-feature') {
           sh '''
-            sam deploy --stack-name features-${BRANCH_NAME}-cfn-stack \
+            sam deploy --stack-name $(echo $BRANCH_NAME | tr -cd '[a-zA-Z0-9-]')-cfn-stack \
               --capabilities CAPABILITY_IAM \
               --region ${TESTING_REGION} \
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
