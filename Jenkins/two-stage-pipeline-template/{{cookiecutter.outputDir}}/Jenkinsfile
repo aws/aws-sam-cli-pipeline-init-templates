@@ -67,7 +67,7 @@ pipeline {
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
-              {% endif -%}
+              {%- endif %}
               --no-fail-on-empty-changeset \
               --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
           '''
@@ -97,7 +97,7 @@ pipeline {
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
-              {% endif -%}
+              {%- endif %}
               --region ${TESTING_REGION} \
               --output-template-file packaged-testing.yaml
           '''
@@ -113,7 +113,7 @@ pipeline {
               --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.prod_ecr_repo %}
               --image-repository ${PROD_ECR_REPO} \
-              {% endif -%}
+              {%- endif %}
               --region ${PROD_REGION} \
               --output-template-file packaged-prod.yaml
           '''
@@ -147,7 +147,7 @@ pipeline {
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
-              {% endif -%}
+              {%- endif %}
               --no-fail-on-empty-changeset \
               --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
           '''
@@ -190,7 +190,7 @@ pipeline {
               --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
               {%- if cookiecutter.prod_ecr_repo %}
               --image-repository ${PROD_ECR_REPO} \
-              {% endif -%}
+              {%- endif %}
               --no-fail-on-empty-changeset \
               --role-arn ${PROD_CLOUDFORMATION_EXECUTION_ROLE}
           '''
