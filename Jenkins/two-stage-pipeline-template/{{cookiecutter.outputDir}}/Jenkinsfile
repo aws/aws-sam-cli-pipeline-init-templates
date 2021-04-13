@@ -12,7 +12,7 @@ pipeline {
     TESTING_ECR_REPO = '{{cookiecutter.testing_ecr_repo}}'
     {% else %}
     // Uncomment the line below if there are functions with PackageType=Image in your template
-    // TESTING_ECR_REPO = '{{cookiecutter.testing_ecr_repo}}'
+    // TESTING_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     TESTING_REGION = '{{cookiecutter.testing_region}}'
     PROD_STACK_NAME = '{{cookiecutter.prod_stack_name}}'
@@ -23,7 +23,7 @@ pipeline {
     PROD_ECR_REPO = '{{cookiecutter.prod_ecr_repo}}'
     {% else %}
     // Uncomment the line below if there are functions with PackageType=Image in your template
-    // PROD_ECR_REPO = '{{cookiecutter.prod_ecr_repo}}'
+    // PROD_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     PROD_REGION = '{{cookiecutter.prod_region}}'
   }
