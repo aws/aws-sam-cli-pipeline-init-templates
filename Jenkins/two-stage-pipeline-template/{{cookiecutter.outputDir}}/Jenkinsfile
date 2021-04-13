@@ -6,7 +6,7 @@ pipeline {
     }
   }
   environment {
-    DEPLOYER_CREDENTIAL_ID = '{{cookiecutter.deployer_aws_access_key_jenkins_credential_id}}'
+    PIPELINE_USER_CREDENTIAL_ID = '{{cookiecutter.pipeline_user_jenkins_credential_id}}'
     SAM_TEMPLATE = '{{cookiecutter.sam_template}}'
     MAIN_BRANCH = '{{cookiecutter.main_git_branch}}'
     TESTING_STACK_NAME = '{{cookiecutter.testing_stack_name}}'
@@ -40,7 +40,7 @@ pipeline {
       steps {
         sh 'sam build --template ${SAM_TEMPLATE} --use-container'
         withAWS(
-            credentials: env.DEPLOYER_CREDENTIAL_ID,
+            credentials: env.PIPELINE_USER_CREDENTIAL_ID,
             region: env.TESTING_REGION,
             role: env.TESTING_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'deploying-feature') {
@@ -64,7 +64,7 @@ pipeline {
       steps {
         sh 'sam build --template ${SAM_TEMPLATE} --use-container'
         withAWS(
-            credentials: env.DEPLOYER_CREDENTIAL_ID,
+            credentials: env.PIPELINE_USER_CREDENTIAL_ID,
             region: env.TESTING_REGION,
             role: env.TESTING_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'testing-packaging') {
@@ -78,7 +78,7 @@ pipeline {
         }
 
         withAWS(
-            credentials: env.DEPLOYER_CREDENTIAL_ID,
+            credentials: env.PIPELINE_USER_CREDENTIAL_ID,
             region: env.PROD_REGION,
             role: env.PROD_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'prod-packaging') {
@@ -102,7 +102,7 @@ pipeline {
       }
       steps {
         withAWS(
-            credentials: env.DEPLOYER_CREDENTIAL_ID, 
+            credentials: env.PIPELINE_USER_CREDENTIAL_ID, 
             region: env.TESTING_REGION,
             role: env.TESTING_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'testing-deployment') {
@@ -139,7 +139,7 @@ pipeline {
       }
       steps {
         withAWS(
-            credentials: env.DEPLOYER_CREDENTIAL_ID, 
+            credentials: env.PIPELINE_USER_CREDENTIAL_ID, 
             region: env.PROD_REGION,
             role: env.PROD_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'prod-deployment') {

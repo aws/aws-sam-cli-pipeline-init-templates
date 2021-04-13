@@ -1,7 +1,7 @@
 {
   "questions": [{
-    "key": "deployer_aws_access_key_jenkins_credential_id",
-    "question": "What is the Jenkins credential ID (via Pipeline: AWS Steps plugin) for deployer account access key?",
+    "key": "pipeline_user_jenkins_credential_id",
+    "question": "What is the Jenkins credential ID (via Pipeline: AWS Steps plugin) for pipeline user access key?",
     "isRequired": true
   }, {
     "key": "main_git_branch",
