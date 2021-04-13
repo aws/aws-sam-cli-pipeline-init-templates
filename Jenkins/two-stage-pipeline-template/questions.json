@@ -1,7 +1,7 @@
 {
   "questions": [{
     "key": "pipeline_user_jenkins_credential_id",
-    "question": "What is the Jenkins credential ID (via Pipeline: AWS Steps plugin) for pipeline user access key?",
+    "question": "What is the Jenkins credential ID (via Jenkins plugin \"aws-credentials\") for pipeline user access key?",
     "isRequired": true
   }, {
     "key": "main_git_branch",
