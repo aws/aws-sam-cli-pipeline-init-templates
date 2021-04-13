@@ -11,7 +11,7 @@ pipeline {
     {%- if cookiecutter.testing_ecr_repo %}
     TESTING_ECR_REPO = '{{cookiecutter.testing_ecr_repo}}'
     {% else %}
-    // Uncomment the line below if there are functions with PackageType=Image in your template
+    // Uncomment the line below if there are functions with "Image" PackageType in your template
     // TESTING_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     TESTING_REGION = '{{cookiecutter.testing_region}}'
@@ -22,7 +22,7 @@ pipeline {
     {%- if cookiecutter.prod_ecr_repo %}
     PROD_ECR_REPO = '{{cookiecutter.prod_ecr_repo}}'
     {% else %}
-    // Uncomment the line below if there are functions with PackageType=Image in your template
+    // Uncomment the line below if there are functions with "Image" PackageType in your template
     // PROD_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     PROD_REGION = '{{cookiecutter.prod_region}}'
@@ -64,7 +64,7 @@ pipeline {
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
               {% else %}
-              `# Uncomment the line below if there are functions with PackageType=Image in your template` \
+              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
               `# --image-repository ${TESTING_ECR_REPO}` \
               {% endif -%}
               --no-fail-on-empty-changeset \
@@ -97,7 +97,7 @@ pipeline {
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
               {% else %}
-              `# Uncomment the line below if there are functions with PackageType=Image in your template` \
+              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
               `# --image-repository ${TESTING_ECR_REPO}` \
               {% endif -%}
               --region ${TESTING_REGION} \
@@ -116,7 +116,7 @@ pipeline {
               {%- if cookiecutter.prod_ecr_repo %}
               --image-repository ${PROD_ECR_REPO} \
               {% else %}
-              `# Uncomment the line below if there are functions with PackageType=Image in your template` \
+              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
               `# --image-repository ${PROD_ECR_REPO}` \
               {% endif -%}
               --region ${PROD_REGION} \
@@ -153,7 +153,7 @@ pipeline {
               {%- if cookiecutter.testing_ecr_repo %}
               --image-repository ${TESTING_ECR_REPO} \
               {% else %}
-              `# Uncomment the line below if there are functions with PackageType=Image in your template` \
+              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
               `# --image-repository ${TESTING_ECR_REPO}` \
               {% endif -%}
               --no-fail-on-empty-changeset \
@@ -199,7 +199,7 @@ pipeline {
               {%- if cookiecutter.prod_ecr_repo %}
               --image-repository ${PROD_ECR_REPO} \
               {% else %}
-              `# Uncomment the line below if there are functions with PackageType=Image in your template` \
+              `# Uncomment the line below if there are functions with "Image" PackageType in your template` \
               `# --image-repository ${PROD_ECR_REPO}` \
               {% endif -%}
               --no-fail-on-empty-changeset \
