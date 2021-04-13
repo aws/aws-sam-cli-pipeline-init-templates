@@ -5,7 +5,7 @@
     "isRequired": true
   }, {
     "key": "main_git_branch",
-    "question": "What is the git branch used for production deployment?",
+    "question": "What is the git branch used for production deployments?",
     "default": "main"
   }, {
     "key": "sam_template",
