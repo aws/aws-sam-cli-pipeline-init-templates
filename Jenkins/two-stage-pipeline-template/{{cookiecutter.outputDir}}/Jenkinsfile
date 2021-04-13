@@ -13,7 +13,7 @@ pipeline {
     {% else %}
     // If there are functions with "Image" PackageType in your template,
     // uncomment the line below and add "--image-repository ${TESTING_ECR_REPO}" to
-    // "sam package" and "sam deploy" commands.
+    // testing "sam package" and "sam deploy" commands.
     // TESTING_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     TESTING_REGION = '{{cookiecutter.testing_region}}'
@@ -26,7 +26,7 @@ pipeline {
     {% else %}
     // If there are functions with "Image" PackageType in your template,
     // uncomment the line below and add "--image-repository ${PROD_ECR_REPO}" to
-    // "sam package" and "sam deploy" commands.
+    // prod "sam package" and "sam deploy" commands.
     // PROD_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
     {% endif -%}
     PROD_REGION = '{{cookiecutter.prod_region}}'
