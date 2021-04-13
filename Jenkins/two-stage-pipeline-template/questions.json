@@ -30,7 +30,6 @@
   }, {
     "key": "testing_ecr_repo",
     "question": "What is the testing ECR repository URI?",
-    "isRequired": true
   }, {
     "key": "testing_region",
     "question": "What is the testing AWS region?",
@@ -54,7 +53,6 @@
   }, {
     "key": "prod_ecr_repo",
     "question": "What is the production ECR repository URI?",
-    "isRequired": true
   }, {
     "key": "prod_region",
     "question": "What is the production AWS region?",

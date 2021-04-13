@@ -1,4 +1,5 @@
 pipeline {
+  agent any
   environment {
     PIPELINE_USER_CREDENTIAL_ID = '{{cookiecutter.pipeline_user_jenkins_credential_id}}'
     SAM_TEMPLATE = '{{cookiecutter.sam_template}}'
@@ -50,7 +51,7 @@ pipeline {
               --capabilities CAPABILITY_IAM \
               --region ${TESTING_REGION} \
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
-              --image-repository ${TESTING_ECR_REPO} \
+              $([ -z "${TESTING_ECR_REPO}" ] || echo "--image-repository ${TESTING_ECR_REPO}") \
               --no-fail-on-empty-changeset \
               --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
           '''
@@ -78,7 +79,7 @@ pipeline {
           sh '''
             sam package \
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
-              --image-repository ${TESTING_ECR_REPO} \
+              $([ -z "${TESTING_ECR_REPO}" ] || echo "--image-repository ${TESTING_ECR_REPO}") \
               --region ${TESTING_REGION} \
               --output-template-file packaged-testing.yaml
           '''
@@ -92,7 +93,7 @@ pipeline {
           sh '''
             sam package \
               --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
-              --image-repository ${PROD_ECR_REPO} \
+              $([ -z "${PROD_ECR_REPO}" ] || echo "--image-repository ${PROD_ECR_REPO}") \
               --region ${PROD_REGION} \
               --output-template-file packaged-prod.yaml
           '''
@@ -125,7 +126,7 @@ pipeline {
               --capabilities CAPABILITY_IAM \
               --region ${TESTING_REGION} \
               --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
-              --image-repository ${TESTING_ECR_REPO} \
+              $([ -z "${TESTING_ECR_REPO}" ] || echo "--image-repository ${TESTING_ECR_REPO}") \
               --no-fail-on-empty-changeset \
               --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
           '''
@@ -167,7 +168,7 @@ pipeline {
               --capabilities CAPABILITY_IAM \
               --region ${PROD_REGION} \
               --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
-              --image-repository ${PROD_ECR_REPO} \
+              $([ -z "${PROD_ECR_REPO}" ] || echo "--image-repository ${PROD_ECR_REPO}") \
               --no-fail-on-empty-changeset \
               --role-arn ${PROD_CLOUDFORMATION_EXECUTION_ROLE}
           '''
