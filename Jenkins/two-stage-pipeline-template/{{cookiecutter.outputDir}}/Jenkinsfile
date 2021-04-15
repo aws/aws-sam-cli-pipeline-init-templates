@@ -75,7 +75,7 @@ pipeline {
       }
     }
 
-    stage('build') {
+    stage('build-and-package') {
       when {
         branch env.MAIN_BRANCH
       }
