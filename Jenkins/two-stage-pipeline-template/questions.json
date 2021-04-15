@@ -1,0 +1,61 @@
+{
+  "questions": [{
+    "key": "pipeline_user_jenkins_credential_id",
+    "question": "What is the Jenkins credential ID (via Jenkins plugin \"aws-credentials\") for pipeline user access key?",
+    "isRequired": true
+  }, {
+    "key": "main_git_branch",
+    "question": "What is the git branch used for production deployments?",
+    "default": "main"
+  }, {
+    "key": "sam_template",
+    "question": "What is the template file path?",
+    "default": "template.yaml"
+  }, {
+    "key": "testing_stack_name",
+    "question": "What is the testing stack name?",
+    "isRequired": true
+  }, {
+    "key": "testing_pipeline_execution_role",
+    "question": "What is the testing pipeline execution role ARN?",
+    "isRequired": true
+  }, {
+    "key": "testing_cloudformation_execution_role",
+    "question": "What is the testing CloudFormation execution role ARN?",
+    "isRequired": true
+  }, {
+    "key": "testing_artifacts_bucket",
+    "question": "What is the testing S3 bucket name for artifacts?",
+    "isRequired": true
+  }, {
+    "key": "testing_ecr_repo",
+    "question": "What is the testing ECR repository URI?",
+  }, {
+    "key": "testing_region",
+    "question": "What is the testing AWS region?",
+    "default": "us-east-2"
+  }, {
+    "key": "prod_stack_name",
+    "question": "What is the production stack name?",
+    "isRequired": true
+  }, {
+    "key": "prod_pipeline_execution_role",
+    "question": "What is the production pipeline execution role ARN?",
+    "isRequired": true
+  }, {
+    "key": "prod_cloudformation_execution_role",
+    "question": "What is the production CloudFormation execution role ARN?",
+    "isRequired": true
+  }, {
+    "key": "prod_artifacts_bucket",
+    "question": "What is the production S3 bucket name for artifacts?",
+    "isRequired": true
+  }, {
+    "key": "prod_ecr_repo",
+    "question": "What is the production ECR repository URI?",
+  }, {
+    "key": "prod_region",
+    "question": "What is the production AWS region?",
+    "default": "us-east-2"
+  }]
+}
