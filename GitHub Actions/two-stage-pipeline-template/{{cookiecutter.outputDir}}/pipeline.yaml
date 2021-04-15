@@ -69,6 +69,7 @@ jobs:
           role-skip-session-tagging: true
 
       - name: Deploy to feature stack in the testing account
+        shell: bash
         run: |
           sam deploy --stack-name $(echo ${GITHUB_REF##*/} | tr -cd '[a-zA-Z0-9-]') \
             --capabilities CAPABILITY_IAM \
