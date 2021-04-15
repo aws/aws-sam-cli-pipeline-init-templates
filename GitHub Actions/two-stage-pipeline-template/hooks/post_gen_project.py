@@ -4,7 +4,7 @@ from pathlib import Path
 output_dir = "{{ cookiecutter.outputDir }}"
 project_root_dir = os.path.relpath(".", output_dir)
 workflow_dir = os.path.join(project_root_dir, '.github', 'workflows')
-workflow_file_name = "two-stage-pipeline.yaml"
+workflow_file_name = "pipeline.yaml"
 
 # make sure workflow directory exists
 Path(workflow_dir).mkdir(parents=True, exist_ok=True)
