@@ -1,13 +1,12 @@
 providers:
   - displayName: Jenkins
     id: jenkins
-  - displayName: Github Actions
+  - displayName: GitHub Actions
     id: github-actions
 templates:
-  - displayName: Two Stages pipeline
+  - displayName: Two-stage pipeline
     provider: jenkins
     location: Jenkins/two-stage-pipeline-template
-  - displayName: Two Stages pipeline
+  - displayName: Two-stage pipeline
     provider: github-actions
     location: GitHub-Actions/two-stage-pipeline-template
-
