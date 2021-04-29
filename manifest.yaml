@@ -1,0 +1,12 @@
+providers:
+  - displayName: Jenkins
+    id: jenkins
+  - displayName: GitHub Actions
+    id: github-actions
+templates:
+  - displayName: Two-stage pipeline
+    provider: jenkins
+    location: Jenkins/two-stage-pipeline-template
+  - displayName: Two-stage pipeline
+    provider: github-actions
+    location: GitHub-Actions/two-stage-pipeline-template
