@@ -1,0 +1,149 @@
+variables:
+  SAM_TEMPLATE: {{cookiecutter.sam_template}}
+  AWS_ACCESS_KEY_ID_: ${AWS_ACCESS_KEY_ID}
+  AWS_SECRET_ACCESS_KEY_: ${AWS_SECRET_ACCESS_KEY}
+  TESTING_STACK_NAME: {{cookiecutter.testing_stack_name}}
+  TESTING_REGION: {{cookiecutter.testing_region}}
+  TESTING_PIPELINE_EXECUTION_ROLE: {{cookiecutter.testing_pipeline_execution_role}}
+  TESTING_CLOUDFORMATION_EXECUTION_ROLE: {{cookiecutter.testing_cloudformation_execution_role}}
+  TESTING_ARTIFACTS_BUCKET: {{cookiecutter.testing_artifacts_bucket}}
+  TESTING_ECR_REPO: {{cookiecutter.testing_ecr_repo}}
+  PROD_STACK_NAME: {{cookiecutter.prod_stack_name}}
+  PROD_REGION: {{cookiecutter.prod_region}}
+  PROD_PIPELINE_EXECUTION_ROLE: {{cookiecutter.prod_pipeline_execution_role}}
+  PROD_CLOUDFORMATION_EXECUTION_ROLE: {{cookiecutter.prod_cloudformation_execution_role}}
+  PROD_ARTIFACTS_BUCKET: {{cookiecutter.prod_artifacts_bucket}}
+  PROD_ECR_REPO: {{cookiecutter.prod_ecr_repo}}
+  DOCKER_DRIVER: overlay2
+  # Create the certificates inside this directory for both the server
+  # and client. The certificates used by the client will be created in
+  # /certs/client so we only need to share this directory with the
+  # volume mount in `config.toml`.
+  DOCKER_TLS_CERTDIR: "/certs"
+
+image: docker:19.03.15
+
+services:
+    - docker:19.03.15-dind
+
+before_script:
+  - apk update
+  - apk upgrade
+  - apk add --update --no-cache python3
+  - apk add --update py-pip
+  - apk add python3-dev
+  - apk add build-base
+  - pip install awscli
+  - pip install aws-sam-cli
+
+stages:
+  - unit-test
+  - build
+  - testing
+  - prod
+
+# uncomment and modify the following step for running the unit-tests
+#
+#unit-test:
+#  stage: test
+#  only:
+#    - {{cookiecutter.main_git_branch}}
+#    - /^feature-.*$/
+#  script: |
+#    - Assuming python runtime
+#    - pip install pytest
+#    - pip install -r /path/to/requirements.txt
+#    - python -m pytest /path/to/unit-tests
+
+build-and-deploy-feature:
+  stage: build
+  only:
+    - /^feature-.*$/
+  script:
+    - . {{cookiecutter.outputDir}}/assume-role.sh ${TESTING_REGION}
+                                                  ${TESTING_PIPELINE_EXECUTION_ROLE}
+                                                  feature-deployment
+    - sam build --template ${SAM_TEMPLATE} --use-container
+    - sam deploy --stack-name features-${CI_COMMIT_REF_NAME}-cfn-stack
+                 --capabilities CAPABILITY_IAM
+                 --region ${TESTING_REGION}
+                 --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
+                 {%- if cookiecutter.testing_ecr_repo %}
+                 --image-repository ${TESTING_ECR_REPO}
+                 {%- endif %}
+                 --no-fail-on-empty-changeset
+                 --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+
+build-and-package:
+  stage: build
+  only:
+    - {{cookiecutter.main_git_branch}}
+  script:
+    - sam build --template ${SAM_TEMPLATE} --use-container
+
+    - . {{cookiecutter.outputDir}}/assume-role.sh ${TESTING_REGION}
+                                                  ${TESTING_PIPELINE_EXECUTION_ROLE}
+                                                  testing-stage-packaging
+
+    - sam package --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
+                   {%- if cookiecutter.testing_ecr_repo %}
+                   --image-repository ${TESTING_ECR_REPO}
+                   {%- endif %}
+                   --region ${TESTING_REGION}
+                   --output-template-file packaged-testing.yaml
+
+    - . {{cookiecutter.outputDir}}/assume-role.sh ${PROD_REGION}
+                                                  ${PROD_PIPELINE_EXECUTION_ROLE}
+                                                  prod-stage-packaging
+
+    - sam package --s3-bucket ${PROD_ARTIFACTS_BUCKET}
+                  {%- if cookiecutter.prod_ecr_repo %}
+                  --image-repository ${PROD_ECR_REPO}
+                  {%- endif %}
+                  --region ${PROD_REGION}
+                  --output-template-file packaged-prod.yaml
+
+  artifacts:
+    paths:
+      - packaged-testing.yaml
+      - packaged-prod.yaml
+
+deploy-testing:
+  stage: testing
+  only:
+    - {{cookiecutter.main_git_branch}}
+  script:
+    - . {{cookiecutter.outputDir}}/assume-role.sh ${TESTING_REGION}
+                                                  ${TESTING_PIPELINE_EXECUTION_ROLE}
+                                                  testing-deployment
+    - sam deploy --stack-name ${TESTING_STACK_NAME}
+                 --template packaged-testing.yaml
+                 --capabilities CAPABILITY_IAM
+                 --region ${TESTING_REGION}
+                 --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
+                 {%- if cookiecutter.testing_ecr_repo %}
+                 --image-repository ${TESTING_ECR_REPO}
+                 {%- endif %}
+                 --no-fail-on-empty-changeset
+                 --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+
+deploy-prod:
+  stage: prod
+  # uncomment this to have a manual approval step before deployment to production
+  # when: manual
+  only:
+    - {{cookiecutter.main_git_branch}}
+  script:
+    - . {{cookiecutter.outputDir}}/assume-role.sh ${PROD_REGION}
+                                                  ${PROD_PIPELINE_EXECUTION_ROLE}
+                                                  prod-deployment
+    - sam deploy --stack-name ${PROD_STACK_NAME}
+                 --template packaged-prod.yaml
+                 --capabilities CAPABILITY_IAM
+                 --region ${PROD_REGION}
+                 --s3-bucket ${PROD_ARTIFACTS_BUCKET}
+                 {%- if cookiecutter.prod_ecr_repo %}
+                 --image-repository ${PROD_ECR_REPO}
+                 {%- endif %}
+                 --no-fail-on-empty-changeset
+                 --role-arn ${PROD_CLOUDFORMATION_EXECUTION_ROLE}

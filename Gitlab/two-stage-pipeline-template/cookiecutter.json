@@ -1,0 +1,17 @@
+{
+  "outputDir": "aws-sam-pipeline",
+  "main_git_branch": "",
+  "sam_template": "",
+  "testing_stack_name": "",
+  "testing_pipeline_execution_role": "",
+  "testing_cloudformation_execution_role": "",
+  "testing_artifacts_bucket": "",
+  "testing_ecr_repo": "",
+  "testing_region": "",
+  "prod_stack_name": "",
+  "prod_pipeline_execution_role": "",
+  "prod_cloudformation_execution_role": "",
+  "prod_artifacts_bucket":  "",
+  "prod_ecr_repo":  "",
+  "prod_region": ""
+}
