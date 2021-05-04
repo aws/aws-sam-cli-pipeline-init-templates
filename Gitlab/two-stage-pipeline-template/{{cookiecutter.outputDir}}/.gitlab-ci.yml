@@ -1,19 +1,37 @@
 variables:
   SAM_TEMPLATE: {{cookiecutter.sam_template}}
-  AWS_ACCESS_KEY_ID_: ${AWS_ACCESS_KEY_ID}
-  AWS_SECRET_ACCESS_KEY_: ${AWS_SECRET_ACCESS_KEY}
+  PIPELINE_USER_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+  PIPELINE_USER_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
   TESTING_STACK_NAME: {{cookiecutter.testing_stack_name}}
   TESTING_REGION: {{cookiecutter.testing_region}}
   TESTING_PIPELINE_EXECUTION_ROLE: {{cookiecutter.testing_pipeline_execution_role}}
   TESTING_CLOUDFORMATION_EXECUTION_ROLE: {{cookiecutter.testing_cloudformation_execution_role}}
   TESTING_ARTIFACTS_BUCKET: {{cookiecutter.testing_artifacts_bucket}}
+  {%- if cookiecutter.testing_ecr_repo %}
   TESTING_ECR_REPO: {{cookiecutter.testing_ecr_repo}}
+  {% else %}
+  # If there are functions with "Image" PackageType in your template,
+  # uncomment the line below and add "--image-repository ${TESTING_ECR_REPO}" to
+  # testing "sam package" and "sam deploy" commands.'
+  # TESTING_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
+  {% endif -%}
   PROD_STACK_NAME: {{cookiecutter.prod_stack_name}}
   PROD_REGION: {{cookiecutter.prod_region}}
   PROD_PIPELINE_EXECUTION_ROLE: {{cookiecutter.prod_pipeline_execution_role}}
   PROD_CLOUDFORMATION_EXECUTION_ROLE: {{cookiecutter.prod_cloudformation_execution_role}}
   PROD_ARTIFACTS_BUCKET: {{cookiecutter.prod_artifacts_bucket}}
+  {%- if cookiecutter.prod_ecr_repo %}
   PROD_ECR_REPO: {{cookiecutter.prod_ecr_repo}}
+  {% else %}
+  # If there are functions with "Image" PackageType in your template,
+  # uncomment the line below and add "--image-repository ${PROD_ECR_REPO}" to
+  # prod "sam package" and "sam deploy" commands.'
+  # PROD_ECR_REPO = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
+  {% endif -%}
+  # By default, when using docker:dind, Docker uses the vfs storage
+  # driver which copies the file system on every run.
+  # This is a disk-intensive operation which can be avoided if a different driver is used.
+  # For example overlay2
   DOCKER_DRIVER: overlay2
   # Create the certificates inside this directory for both the server
   # and client. The certificates used by the client will be created in
@@ -21,20 +39,16 @@ variables:
   # volume mount in `config.toml`.
   DOCKER_TLS_CERTDIR: "/certs"
 
+# Should always specify a specific version of the image. If using a tag like docker:stable,
+# there will be no control over which version is used. Unpredictable behavior can result.
 image: docker:19.03.15
 
 services:
     - docker:19.03.15-dind
 
 before_script:
-  - apk update
-  - apk upgrade
-  - apk add --update --no-cache python3
-  - apk add --update py-pip
-  - apk add python3-dev
-  - apk add build-base
-  - pip install awscli
-  - pip install aws-sam-cli
+  - apk add --update python3 py-pip python3-dev build-base
+  - pip install awscli aws-sam-cli
 
 stages:
   - unit-test
@@ -45,16 +59,14 @@ stages:
 # uncomment and modify the following step for running the unit-tests
 #
 #unit-test:
-#  stage: test
+#  stage: unit-test
 #  only:
 #    - {{cookiecutter.main_git_branch}}
 #    - /^feature-.*$/
 #  script: |
-#    - Assuming python runtime
-#    - pip install pytest
-#    - pip install -r /path/to/requirements.txt
-#    - python -m pytest /path/to/unit-tests
 
+# This stage is triggered only for feature branches (feature*),
+# which will build the stack and deploy to a stack named with branch name.
 build-and-deploy-feature:
   stage: build
   only:
@@ -74,6 +86,9 @@ build-and-deploy-feature:
                  --no-fail-on-empty-changeset
                  --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
 
+# This stage is triggered for main branch you set in the question,
+# which will build the stack, package the application, upload the
+# applications artifacts to Amazon S3 and output the SAM template file.
 build-and-package:
   stage: build
   only:
@@ -108,6 +123,9 @@ build-and-package:
       - packaged-testing.yaml
       - packaged-prod.yaml
 
+# This stage is triggered for main branch you set in the question,
+# which will deploy the SAM application to testing environment using
+# the templated file generated.
 deploy-testing:
   stage: testing
   only:
@@ -127,6 +145,9 @@ deploy-testing:
                  --no-fail-on-empty-changeset
                  --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
 
+# This stage is triggered for main branch you set in the question,
+# which will deploy the SAM application to prod environment using
+# the templated file generated.
 deploy-prod:
   stage: prod
   # uncomment this to have a manual approval step before deployment to production
