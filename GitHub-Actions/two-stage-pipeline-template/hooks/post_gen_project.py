@@ -1,4 +1,5 @@
 import os
+import shutil
 from pathlib import Path
 
 output_dir = "{{ cookiecutter.outputDir }}"
@@ -19,4 +20,4 @@ if destination_file.exists():
 os.rename(workflow_file_name, destination_file)
 
 # There is only one file in output_dir, remove it
-os.rmdir(Path.cwd().resolve())
+shutil.rmtree(Path.cwd().resolve())
