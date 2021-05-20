@@ -33,55 +33,49 @@
     "key": "testing_pipeline_execution_role",
     "question": "What is the testing pipeline execution role ARN?",
     "isRequired": true,
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "testing_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "pipeline_execution_role"
+    "default": {
+      "keyPath": [
+          { "valueof": "testing_stage_name"},
+          "pipeline_execution_role"
+      ]
     }
   }, {
     "key": "testing_cloudformation_execution_role",
     "question": "What is the testing CloudFormation execution role ARN?",
     "isRequired": true,
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "testing_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "cloudformation_execution_role"
+    "default": {
+      "keyPath": [
+          { "valueof": "testing_stage_name"},
+          "cloudformation_execution_role"
+      ]
     }
   }, {
     "key": "testing_artifacts_bucket",
     "question": "What is the testing S3 bucket name for artifacts?",
     "isRequired": true,
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "testing_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "artifacts_bucket"
+    "default": {
+      "keyPath": [
+          { "valueof": "testing_stage_name"},
+          "artifacts_bucket"
+      ]
     }
   }, {
     "key": "testing_ecr_repo",
     "question": "What is the testing ECR repository URI?",
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "testing_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "ecr_repo"
+    "default": {
+      "keyPath": [
+          { "valueof": "testing_stage_name"},
+          "ecr_repo"
+      ]
     }
   }, {
     "key": "testing_region",
     "question": "What is the testing AWS region?",
-    "default": "us-east-2",
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "testing_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "region"
+    "default": {
+      "keyPath": [
+          { "valueof": "testing_stage_name"},
+          "region"
+      ]
     }
   }, {
     "key": "prod_stage_name",
@@ -95,55 +89,49 @@
     "key": "prod_pipeline_execution_role",
     "question": "What is the production pipeline execution role ARN?",
     "isRequired": true,
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "prod_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "pipeline_execution_role"
+    "default": {
+      "keyPath": [
+          { "valueof": "prod_stage_name"},
+          "pipeline_execution_role"
+      ]
     }
   }, {
     "key": "prod_cloudformation_execution_role",
     "question": "What is the production CloudFormation execution role ARN?",
     "isRequired": true,
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "prod_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "cloudformation_execution_role"
+    "default": {
+      "keyPath": [
+          { "valueof": "prod_stage_name"},
+          "cloudformation_execution_role"
+      ]
     }
   }, {
     "key": "prod_artifacts_bucket",
     "question": "What is the production S3 bucket name for artifacts?",
     "isRequired": true,
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "prod_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "artifacts_bucket"
+    "default": {
+      "keyPath": [
+          { "valueof": "prod_stage_name"},
+          "artifacts_bucket"
+      ]
     }
   }, {
     "key": "prod_ecr_repo",
     "question": "What is the production ECR repository URI?",
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "prod_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "ecr_repo"
+    "default": {
+      "keyPath": [
+          { "valueof": "prod_stage_name"},
+          "ecr_repo"
+      ]
     }
   }, {
     "key": "prod_region",
     "question": "What is the production AWS region?",
-    "default": "us-east-2",
-    "default_from_toml": {
-      "toml_file": ".aws-sam/pipeline/pipelineconfig.toml",
-      "env": { "valueof": "prod_stage_name"},
-      "cmd_names": "pipeline_bootstrap",
-      "section": "parameters",
-      "key": "region"
+    "default": {
+      "keyPath": [
+          { "valueof": "prod_stage_name"},
+          "region"
+      ]
     }
   }]
 }
