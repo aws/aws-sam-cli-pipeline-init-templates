@@ -22,8 +22,7 @@
   }, {
     "key": "testing_stage_name",
     "question": "What is the testing stage name (as provided during the bootstrapping) ?",
-    "isRequired": true,
-    "default": "testing"
+    "isRequired": true
   }, {
     "key": "testing_stack_name",
     "question": "What is the testing stack name?",
