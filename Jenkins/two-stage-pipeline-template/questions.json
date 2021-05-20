@@ -29,7 +29,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueof": "testing_stage_name"},
+          { "valueOf": "testing_stage_name"},
           "pipeline_execution_role"
       ]
     }
@@ -39,7 +39,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueof": "testing_stage_name"},
+          { "valueOf": "testing_stage_name"},
           "cloudformation_execution_role"
       ]
     }
@@ -49,7 +49,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueof": "testing_stage_name"},
+          { "valueOf": "testing_stage_name"},
           "artifacts_bucket"
       ]
     }
@@ -58,7 +58,7 @@
     "question": "What is the testing ECR repository URI?",
     "default": {
       "keyPath": [
-          { "valueof": "testing_stage_name"},
+          { "valueOf": "testing_stage_name"},
           "ecr_repo"
       ]
     }
@@ -67,7 +67,7 @@
     "question": "What is the testing AWS region?",
     "default": {
       "keyPath": [
-          { "valueof": "testing_stage_name"},
+          { "valueOf": "testing_stage_name"},
           "region"
       ]
     }
@@ -85,7 +85,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueof": "prod_stage_name"},
+          { "valueOf": "prod_stage_name"},
           "pipeline_execution_role"
       ]
     }
@@ -95,7 +95,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueof": "prod_stage_name"},
+          { "valueOf": "prod_stage_name"},
           "cloudformation_execution_role"
       ]
     }
@@ -105,7 +105,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueof": "prod_stage_name"},
+          { "valueOf": "prod_stage_name"},
           "artifacts_bucket"
       ]
     }
@@ -114,7 +114,7 @@
     "question": "What is the production ECR repository URI?",
     "default": {
       "keyPath": [
-          { "valueof": "prod_stage_name"},
+          { "valueOf": "prod_stage_name"},
           "ecr_repo"
       ]
     }
@@ -123,7 +123,7 @@
     "question": "What is the production AWS region?",
     "default": {
       "keyPath": [
-          { "valueof": "prod_stage_name"},
+          { "valueOf": "prod_stage_name"},
           "region"
       ]
     }
