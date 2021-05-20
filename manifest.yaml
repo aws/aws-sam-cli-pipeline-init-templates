@@ -1,7 +1,7 @@
 providers:
   - displayName: Jenkins
     id: jenkins
-  - displayName: Gitlab
+  - displayName: GitLab CI/CD
     id: gitlab
   - displayName: GitHub Actions
     id: github-actions
