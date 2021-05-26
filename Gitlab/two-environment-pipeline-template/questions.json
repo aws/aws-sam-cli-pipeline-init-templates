@@ -1,13 +1,5 @@
 {
   "questions": [{
-    "key": "pipeline_user_aws_access_key_id_variable_name",
-    "question": "What is the GitHub Secret name for pipeline user account access key id?",
-    "default": "AWS_ACCESS_KEY_ID"
-  }, {
-    "key": "pipeline_user_aws_secret_access_key_variable_name",
-    "question": "What is the GitHub Secret name for pipeline user account access key secret?",
-    "default": "AWS_SECRET_ACCESS_KEY"
-  }, {
     "key": "main_git_branch",
     "question": "What is the git branch used for production deployments?",
     "default": "main"
@@ -16,25 +8,24 @@
     "question": "What is the template file path?",
     "default": "template.yaml"
   }, {
-    "key": "message_testing_stage_name",
-    "question": "We use the stage name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`",
+    "key": "message_testing_environment_name",
+    "question": "We use the environment name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`",
     "kind": "info"
   }, {
-    "key": "testing_stage_name",
-    "question": "What is the testing stage name (as provided during the bootstrapping)?",
+    "key": "testing_environment_name",
+    "question": "What is the testing environment name (as provided during the bootstrapping)?",
     "isRequired": true
   }, {
     "key": "testing_stack_name",
     "question": "What is the testing stack name?",
-    "isRequired": true,
-    "default": "testing"
+    "isRequired": true
   }, {
     "key": "testing_pipeline_execution_role",
     "question": "What is the testing pipeline execution role ARN?",
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "testing_stage_name"},
+          { "valueOf": "testing_environment_name"},
           "pipeline_execution_role"
       ]
     }
@@ -44,7 +35,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "testing_stage_name"},
+          { "valueOf": "testing_environment_name"},
           "cloudformation_execution_role"
       ]
     }
@@ -54,7 +45,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "testing_stage_name"},
+          { "valueOf": "testing_environment_name"},
           "artifacts_bucket"
       ]
     }
@@ -63,7 +54,7 @@
     "question": "What is the testing ECR repository URI?",
     "default": {
       "keyPath": [
-          { "valueOf": "testing_stage_name"},
+          { "valueOf": "testing_environment_name"},
           "ecr_repo"
       ]
     }
@@ -72,13 +63,13 @@
     "question": "What is the testing AWS region?",
     "default": {
       "keyPath": [
-          { "valueOf": "testing_stage_name"},
+          { "valueOf": "testing_environment_name"},
           "region"
       ]
     }
   }, {
-    "key": "prod_stage_name",
-    "question": "What is the production stage name (as provided during the bootstrapping)?",
+    "key": "prod_environment_name",
+    "question": "What is the production environment name (as provided during the bootstrapping)?",
     "isRequired": true
   }, {
     "key": "prod_stack_name",
@@ -90,7 +81,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "prod_stage_name"},
+          { "valueOf": "prod_environment_name"},
           "pipeline_execution_role"
       ]
     }
@@ -100,7 +91,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "prod_stage_name"},
+          { "valueOf": "prod_environment_name"},
           "cloudformation_execution_role"
       ]
     }
@@ -110,7 +101,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "prod_stage_name"},
+          { "valueOf": "prod_environment_name"},
           "artifacts_bucket"
       ]
     }
@@ -119,7 +110,7 @@
     "question": "What is the production ECR repository URI?",
     "default": {
       "keyPath": [
-          { "valueOf": "prod_stage_name"},
+          { "valueOf": "prod_environment_name"},
           "ecr_repo"
       ]
     }
@@ -128,7 +119,7 @@
     "question": "What is the production AWS region?",
     "default": {
       "keyPath": [
-          { "valueOf": "prod_stage_name"},
+          { "valueOf": "prod_environment_name"},
           "region"
       ]
     }
