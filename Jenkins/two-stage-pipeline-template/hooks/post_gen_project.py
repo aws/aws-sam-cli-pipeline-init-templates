@@ -15,4 +15,6 @@ if os.path.exists(destination_file_path):
 os.rename(jenkinsfile, os.path.join(project_root_dir, jenkinsfile))
 
 # There is only one file in output_dir, remove it
-shutil.rmtree(os.path.join(project_root_dir, output_dir))
+# on Windows, cwd cannot be deleted. Change the cwd to project_root first.
+os.chdir(project_root_dir)
+shutil.rmtree(output_dir)

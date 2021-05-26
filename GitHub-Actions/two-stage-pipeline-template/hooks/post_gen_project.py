@@ -20,4 +20,6 @@ if destination_file.exists():
 os.rename(workflow_file_name, destination_file)
 
 # There is only one file in output_dir, remove it
-shutil.rmtree(Path.cwd().resolve())
+# on Windows, cwd cannot be deleted. Change the cwd to project_root first.
+os.chdir(project_root_dir)
+shutil.rmtree(output_dir)

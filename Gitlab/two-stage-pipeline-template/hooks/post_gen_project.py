@@ -21,4 +21,6 @@ if os.path.exists(assume_role_file_path):
 os.rename(gitlab_file, os.path.join(project_root_dir, gitlab_file))
 os.rename(assume_role_file, os.path.join(project_root_dir, assume_role_file))
 
-shutil.rmtree(os.path.join(project_root_dir, output_dir))
+# on Windows, cwd cannot be deleted. Change the cwd to project_root first.
+os.chdir(project_root_dir)
+shutil.rmtree(output_dir)
