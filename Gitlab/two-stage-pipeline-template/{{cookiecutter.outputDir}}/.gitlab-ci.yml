@@ -72,9 +72,9 @@ build-and-deploy-feature:
   only:
     - /^feature-.*$/
   script:
-    - . {{cookiecutter.outputDir}}/assume-role.sh ${TESTING_REGION}
-                                                  ${TESTING_PIPELINE_EXECUTION_ROLE}
-                                                  feature-deployment
+    - . assume-role.sh ${TESTING_REGION}
+                        ${TESTING_PIPELINE_EXECUTION_ROLE}
+                        feature-deployment
     - sam build --template ${SAM_TEMPLATE} --use-container
     - sam deploy --stack-name features-${CI_COMMIT_REF_NAME}-cfn-stack
                  --capabilities CAPABILITY_IAM
@@ -96,9 +96,9 @@ build-and-package:
   script:
     - sam build --template ${SAM_TEMPLATE} --use-container
 
-    - . {{cookiecutter.outputDir}}/assume-role.sh ${TESTING_REGION}
-                                                  ${TESTING_PIPELINE_EXECUTION_ROLE}
-                                                  testing-stage-packaging
+    - . assume-role.sh ${TESTING_REGION}
+                        ${TESTING_PIPELINE_EXECUTION_ROLE}
+                        testing-stage-packaging
 
     - sam package --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
                    {%- if cookiecutter.testing_ecr_repo %}
@@ -107,9 +107,9 @@ build-and-package:
                    --region ${TESTING_REGION}
                    --output-template-file packaged-testing.yaml
 
-    - . {{cookiecutter.outputDir}}/assume-role.sh ${PROD_REGION}
-                                                  ${PROD_PIPELINE_EXECUTION_ROLE}
-                                                  prod-stage-packaging
+    - . assume-role.sh ${PROD_REGION}
+                        ${PROD_PIPELINE_EXECUTION_ROLE}
+                        prod-stage-packaging
 
     - sam package --s3-bucket ${PROD_ARTIFACTS_BUCKET}
                   {%- if cookiecutter.prod_ecr_repo %}
@@ -131,9 +131,9 @@ deploy-testing:
   only:
     - {{cookiecutter.main_git_branch}}
   script:
-    - . {{cookiecutter.outputDir}}/assume-role.sh ${TESTING_REGION}
-                                                  ${TESTING_PIPELINE_EXECUTION_ROLE}
-                                                  testing-deployment
+    - . assume-role.sh ${TESTING_REGION}
+                        ${TESTING_PIPELINE_EXECUTION_ROLE}
+                        testing-deployment
     - sam deploy --stack-name ${TESTING_STACK_NAME}
                  --template packaged-testing.yaml
                  --capabilities CAPABILITY_IAM
@@ -155,9 +155,9 @@ deploy-prod:
   only:
     - {{cookiecutter.main_git_branch}}
   script:
-    - . {{cookiecutter.outputDir}}/assume-role.sh ${PROD_REGION}
-                                                  ${PROD_PIPELINE_EXECUTION_ROLE}
-                                                  prod-deployment
+    - . assume-role.sh ${PROD_REGION}
+                        ${PROD_PIPELINE_EXECUTION_ROLE}
+                        prod-deployment
     - sam deploy --stack-name ${PROD_STACK_NAME}
                  --template packaged-prod.yaml
                  --capabilities CAPABILITY_IAM
