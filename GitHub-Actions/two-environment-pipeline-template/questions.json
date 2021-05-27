@@ -59,12 +59,12 @@
       ]
     }
   }, {
-    "key": "testing_ecr_repo",
+    "key": "testing_image-repository",
     "question": "What is the testing ECR repository URI?",
     "default": {
       "keyPath": [
           { "valueOf": "testing_environment_name"},
-          "ecr_repo"
+          "image-repository"
       ]
     }
   }, {
@@ -115,12 +115,12 @@
       ]
     }
   }, {
-    "key": "prod_ecr_repo",
+    "key": "prod_image-repository",
     "question": "What is the production ECR repository URI?",
     "default": {
       "keyPath": [
           { "valueOf": "prod_environment_name"},
-          "ecr_repo"
+          "image-repository"
       ]
     }
   }, {
