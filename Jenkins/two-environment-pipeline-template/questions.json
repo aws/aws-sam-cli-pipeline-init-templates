@@ -65,6 +65,7 @@
   }, {
     "key": "testing_region",
     "question": "What is the testing AWS region?",
+    "isRequired": true,
     "default": {
       "keyPath": [
           { "valueOf": "testing_environment_name"},
@@ -121,6 +122,7 @@
   }, {
     "key": "prod_region",
     "question": "What is the production AWS region?",
+    "isRequired": true,
     "default": {
       "keyPath": [
           { "valueOf": "prod_environment_name"},
