@@ -26,8 +26,7 @@
   }, {
     "key": "testing_stack_name",
     "question": "What is the testing stack name?",
-    "isRequired": true,
-    "default": "testing"
+    "isRequired": true
   }, {
     "key": "testing_pipeline_execution_role",
     "question": "What is the testing pipeline execution role ARN?",
@@ -70,6 +69,7 @@
   }, {
     "key": "testing_region",
     "question": "What is the testing AWS region?",
+    "isRequired": true,
     "default": {
       "keyPath": [
           { "valueOf": "testing_environment_name"},
@@ -126,6 +126,7 @@
   }, {
     "key": "prod_region",
     "question": "What is the production AWS region?",
+    "isRequired": true,
     "default": {
       "keyPath": [
           { "valueOf": "prod_environment_name"},
