@@ -1,0 +1,137 @@
+{
+  "questions": [{
+    "key": "codestar_connection_provider_type",
+    "question": "What is the provider type of CodeStart connection?",
+    "options": ["Bitbucket", "GitHub", "GitHubEnterpriseServer"]
+  }, {
+    "key": "full_repository_id",
+    "question": "What is the full repository id (Example: some-user/my-repo)?",
+    "isRequired": true
+  }, {
+    "key": "main_git_branch",
+    "question": "What is the git branch used for production deployments?",
+    "default": "main"
+  }, {
+    "key": "sam_template",
+    "question": "What is the template file path?",
+    "default": "template.yaml"
+  }, {
+    "key": "message_testing_environment_name",
+    "question": "We use the environment name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`",
+    "kind": "info"
+  }, {
+    "key": "testing_environment_name",
+    "question": "What is the testing environment name (as provided during the bootstrapping)?",
+    "isRequired": true
+  }, {
+    "key": "testing_stack_name",
+    "question": "What is the testing stack name?",
+    "isRequired": true
+  }, {
+    "key": "testing_pipeline_execution_role",
+    "question": "What is the testing pipeline execution role ARN?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "testing_environment_name"},
+          "pipeline_execution_role"
+      ]
+    }
+  }, {
+    "key": "testing_cloudformation_execution_role",
+    "question": "What is the testing CloudFormation execution role ARN?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "testing_environment_name"},
+          "cloudformation_execution_role"
+      ]
+    }
+  }, {
+    "key": "testing_artifacts_bucket",
+    "question": "What is the testing S3 bucket name for artifacts?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "testing_environment_name"},
+          "artifacts_bucket"
+      ]
+    }
+  }, {
+    "key": "testing_image_repository",
+    "question": "What is the testing ECR repository URI?",
+    "default": {
+      "keyPath": [
+          { "valueOf": "testing_environment_name"},
+          "image_repository"
+      ]
+    }
+  }, {
+    "key": "testing_region",
+    "question": "What is the testing AWS region?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "testing_environment_name"},
+          "region"
+      ]
+    }
+  }, {
+    "key": "prod_environment_name",
+    "question": "What is the production environment name (as provided during the bootstrapping)?",
+    "isRequired": true
+  }, {
+    "key": "prod_stack_name",
+    "question": "What is the production stack name?",
+    "isRequired": true
+  }, {
+    "key": "prod_pipeline_execution_role",
+    "question": "What is the production pipeline execution role ARN?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "prod_environment_name"},
+          "pipeline_execution_role"
+      ]
+    }
+  }, {
+    "key": "prod_cloudformation_execution_role",
+    "question": "What is the production CloudFormation execution role ARN?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "prod_environment_name"},
+          "cloudformation_execution_role"
+      ]
+    }
+  }, {
+    "key": "prod_artifacts_bucket",
+    "question": "What is the production S3 bucket name for artifacts?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "prod_environment_name"},
+          "artifacts_bucket"
+      ]
+    }
+  }, {
+    "key": "prod_image_repository",
+    "question": "What is the production ECR repository URI?",
+    "default": {
+      "keyPath": [
+          { "valueOf": "prod_environment_name"},
+          "image_repository"
+      ]
+    }
+  }, {
+    "key": "prod_region",
+    "question": "What is the production AWS region?",
+    "isRequired": true,
+    "default": {
+      "keyPath": [
+          { "valueOf": "prod_environment_name"},
+          "region"
+      ]
+    }
+  }]
+}
