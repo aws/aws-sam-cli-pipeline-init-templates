@@ -178,7 +178,15 @@ Resources:
                   Version: "1"
                 Configuration:
                   ProjectName: !Ref CodeBuildProjectDeploy
-                  EnvironmentVariables: !Sub '[{"name": "STAGE_TEMPLATE", "value": "packaged-test.yaml"}, {"name": "STAGE_REGION", "value": "${TestRegion}"}, {"name": "STAGE_STACK_NAME", "value": "${TestStackName}"}, {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${TestPipelineExecutionRole}"}, {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestCloudFormationExecutionRole}"}, {"name": "STAGE_BUCKET", "value": "${TestArtifactBucket}"}]'
+                  EnvironmentVariables: !Sub |
+                    [
+                      {"name": "STAGE_TEMPLATE", "value": "packaged-test.yaml"},
+                      {"name": "STAGE_REGION", "value": "${TestRegion}"},
+                      {"name": "STAGE_STACK_NAME", "value": "${TestStackName}"},
+                      {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${TestPipelineExecutionRole}"},
+                      {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestCloudFormationExecutionRole}"},
+                      {"name": "STAGE_BUCKET", "value": "${TestArtifactBucket}"}
+                    ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
           - !Ref AWS::NoValue
@@ -195,7 +203,15 @@ Resources:
                   Version: "1"
                 Configuration:
                   ProjectName: !Ref CodeBuildProjectDeploy
-                  EnvironmentVariables: !Sub '[{"name": "STAGE_TEMPLATE", "value": "packaged-prod.yaml"}, {"name": "STAGE_REGION", "value": "${ProdRegion}"}, {"name": "STAGE_STACK_NAME", "value": "${ProdStackName}"}, {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"}, {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionExeRole}"}, {"name": "STAGE_BUCKET", "value": "${ProdArtifactBucket}"}]'
+                  EnvironmentVariables: !Sub |
+                    [
+                      {"name": "STAGE_TEMPLATE", "value": "packaged-prod.yaml"},
+                      {"name": "STAGE_REGION", "value": "${ProdRegion}"},
+                      {"name": "STAGE_STACK_NAME", "value": "${ProdStackName}"},
+                      {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
+                      {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionExeRole}"},
+                      {"name": "STAGE_BUCKET", "value": "${ProdArtifactBucket}"}
+                    ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
           - !Ref AWS::NoValue
