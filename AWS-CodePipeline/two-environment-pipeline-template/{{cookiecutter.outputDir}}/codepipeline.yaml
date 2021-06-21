@@ -397,6 +397,7 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+        PrivilegedMode: true
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
@@ -423,12 +424,15 @@ Resources:
           phases:
             install:
               runtime-versions:
-                  python: 3.7
+                python: 3.7
+              commands:
+                - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+                - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
             build:
               commands:
                 - pip install --upgrade pip
                 - pip install awscli aws-sam-cli
-                - sam build --template ${SAM_TEMPLATE}
+                - sam build --use-container --template ${SAM_TEMPLATE}
                 - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} feature-deploy
                 - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
                              --capabilities CAPABILITY_IAM
@@ -447,6 +451,7 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+        PrivilegedMode: true
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
@@ -477,12 +482,15 @@ Resources:
           phases:
             install:
               runtime-versions:
-                  python: 3.7
+                python: 3.7
+              commands:
+                - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+                - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
             build:
               commands:
                 - pip install --upgrade pip
                 - pip install awscli aws-sam-cli
-                - sam build --template ${SAM_TEMPLATE}
+                - sam build --use-container --template ${SAM_TEMPLATE}
                 - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} test-package
                 - sam package --s3-bucket ${TEST_ARTIFACT_BUCKET}
                               --region ${TEST_REGION}
@@ -518,7 +526,7 @@ Resources:
           phases:
             install:
               runtime-versions:
-                  python: 3.7
+                python: 3.7
             build:
               commands:
                 - pip install --upgrade pip
