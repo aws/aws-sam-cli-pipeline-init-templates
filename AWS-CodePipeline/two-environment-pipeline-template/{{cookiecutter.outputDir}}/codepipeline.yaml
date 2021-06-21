@@ -497,7 +497,7 @@ Resources:
             build:
               commands:
                 - pip install --upgrade pip
-                - pip install awscli aws-sam-cli
+                - pip install --upgrade awscli aws-sam-cli
                 - sam build --use-container --template ${SAM_TEMPLATE}
                 - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} feature-deploy
                 - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
@@ -558,7 +558,7 @@ Resources:
             build:
               commands:
                 - pip install --upgrade pip
-                - pip install awscli aws-sam-cli
+                - pip install --upgrade awscli aws-sam-cli
                 - sam build --use-container --template ${SAM_TEMPLATE}
                 - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} test-package
                 - sam package --s3-bucket ${TEST_ARTIFACT_BUCKET}
@@ -629,7 +629,7 @@ Resources:
             build:
               commands:
                 - pip install --upgrade pip
-                - pip install awscli aws-sam-cli
+                - pip install --upgrade awscli aws-sam-cli
                 - . ./assume-role.sh ${STAGE_REGION} ${STAGE_PIPELINE_EXECUTION_ROLE} deploy
                 - sam deploy --stack-name ${STAGE_STACK_NAME} 
                              --template ${STAGE_TEMPLATE}
