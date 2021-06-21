@@ -132,6 +132,20 @@ Resources:
                 - Name: !Sub ${AWS::StackName}ChangeSet
               RunOrder: 2
 
+        # Uncomment and modify the following step for running the unit-tests
+        # - Name: UnitTest
+        #   Actions:
+        #     - Name: UnitTest
+        #       ActionTypeId:
+        #         Category: Build
+        #         Owner: AWS
+        #         Provider: CodeBuild
+        #         Version: "1"
+        #       Configuration:
+        #         ProjectName: !Ref CodeBuildProjectUnitTest
+        #       InputArtifacts:
+        #         - Name: SourceCodeAsZip
+
         - !If
           - IsFeatureBranchPipeline
           - Name: BuildAndDeployFeatureStack
@@ -386,7 +400,30 @@ Resources:
                   - sts:AssumeRole
                 Effect: Allow
                 Resource: "*"
-  
+
+  # Uncomment and modify the following step for running the unit-tests
+  # CodeBuildProjectUnitTest:
+  #   Type: AWS::CodeBuild::Project
+  #   Properties:
+  #     Artifacts:
+  #       Type: CODEPIPELINE
+  #     Environment:
+  #       Type: LINUX_CONTAINER
+  #       ComputeType: BUILD_GENERAL1_SMALL
+  #       Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+  #     ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+  #     Source:
+  #       Type: CODEPIPELINE
+  #       BuildSpec:  |
+  #         version: 0.2
+  #         phases:
+  #           install:
+  #             runtime-versions:
+  #               python: 3.7
+  #           build:
+  #             commands:
+  #               - echo 'Running unit test'
+
   CodeBuildProjectBuildAndDeployFeature:
     Condition: IsFeatureBranchPipeline
     Type: AWS::CodeBuild::Project
