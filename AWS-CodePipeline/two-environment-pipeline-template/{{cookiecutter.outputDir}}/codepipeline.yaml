@@ -208,13 +208,13 @@ Resources:
                   ProjectName: !Ref CodeBuildProjectDeploy
                   EnvironmentVariables: !Sub |
                     [
-                      {"name": "STAGE_TEMPLATE", "value": "packaged-test.yaml"},
-                      {"name": "STAGE_REGION", "value": "${TestingRegion}"},
-                      {"name": "STAGE_STACK_NAME", "value": "${TestingStackName}"},
-                      {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
-                      {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
-                      {"name": "STAGE_BUCKET", "value": "${TestingArtifactBucket}"},
-                      {"name": "STAGE_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
+                      {"name": "ENV_TEMPLATE", "value": "packaged-test.yaml"},
+                      {"name": "ENV_REGION", "value": "${TestingRegion}"},
+                      {"name": "ENV_STACK_NAME", "value": "${TestingStackName}"},
+                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
+                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
+                      {"name": "ENV_BUCKET", "value": "${TestingArtifactBucket}"},
+                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
@@ -246,13 +246,13 @@ Resources:
                   ProjectName: !Ref CodeBuildProjectDeploy
                   EnvironmentVariables: !Sub |
                     [
-                      {"name": "STAGE_TEMPLATE", "value": "packaged-prod.yaml"},
-                      {"name": "STAGE_REGION", "value": "${ProdRegion}"},
-                      {"name": "STAGE_STACK_NAME", "value": "${ProdStackName}"},
-                      {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
-                      {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionExeRole}"},
-                      {"name": "STAGE_BUCKET", "value": "${ProdArtifactBucket}"},
-                      {"name": "STAGE_IMAGE_REPOSITORY", "value": "${ProdImageRepository}"}
+                      {"name": "ENV_TEMPLATE", "value": "packaged-prod.yaml"},
+                      {"name": "ENV_REGION", "value": "${ProdRegion}"},
+                      {"name": "ENV_STACK_NAME", "value": "${ProdStackName}"},
+                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
+                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionExeRole}"},
+                      {"name": "ENV_BUCKET", "value": "${ProdArtifactBucket}"},
+                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${ProdImageRepository}"}
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
@@ -631,17 +631,17 @@ Resources:
                 - pip install --upgrade awscli aws-sam-cli
             build:
               commands:
-                - . ./assume-role.sh ${STAGE_REGION} ${STAGE_PIPELINE_EXECUTION_ROLE} deploy
-                - sam deploy --stack-name ${STAGE_STACK_NAME} 
-                             --template ${STAGE_TEMPLATE}
+                - . ./assume-role.sh ${ENV_REGION} ${ENV_PIPELINE_EXECUTION_ROLE} deploy
+                - sam deploy --stack-name ${ENV_STACK_NAME} 
+                             --template ${ENV_TEMPLATE}
                              --capabilities CAPABILITY_IAM
-                             --region ${STAGE_REGION}
-                             --s3-bucket ${STAGE_BUCKET}
+                             --region ${ENV_REGION}
+                             --s3-bucket ${ENV_BUCKET}
                              {%- if cookiecutter.testing_image_repository %}
-                             --image-repository ${STAGE_IMAGE_REPOSITORY}
+                             --image-repository ${ENV_IMAGE_REPOSITORY}
                              {%- endif %}
                              --no-fail-on-empty-changeset
-                             --role-arn ${STAGE_CLOUDFORMATION_EXECUTION_ROLE}
+                             --role-arn ${ENV_CLOUDFORMATION_EXECUTION_ROLE}
 
 Outputs:
   CodeStarConnectionArn:
