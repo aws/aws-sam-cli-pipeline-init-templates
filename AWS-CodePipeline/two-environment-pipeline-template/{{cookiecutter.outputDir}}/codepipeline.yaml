@@ -203,6 +203,18 @@ Resources:
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
+                RunOrder: 1
+              - Name: IntegrationTest
+                ActionTypeId:
+                  Category: Build
+                  Owner: AWS
+                  Provider: CodeBuild
+                  Version: "1"
+                Configuration:
+                  ProjectName: !Ref CodeBuildProjectIntegrationTest
+                InputArtifacts:
+                  - Name: SourceCodeAsZip
+                RunOrder: 2
           - !Ref AWS::NoValue
 
         - !If
@@ -422,7 +434,8 @@ Resources:
   #               python: 3.7
   #           build:
   #             commands:
-  #               - echo 'Running unit test'
+  #               # trigger the unit tests here
+  #               - echo 'Running unit tests'
 
   CodeBuildProjectBuildAndDeployFeature:
     Condition: IsFeatureBranchPipeline
@@ -541,7 +554,31 @@ Resources:
               - packaged-test.yaml
               - packaged-prod.yaml
               - assume-role.sh
-  
+
+  CodeBuildProjectIntegrationTest:
+    Condition: IsMainBranchPipeline
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec:  |
+          version: 0.2
+          phases:
+            install:
+              runtime-versions:
+                python: 3.7
+            build:
+              commands:
+                # trigger the integration tests here
+                - echo 'Running integration tests'
+
   CodeBuildProjectDeploy:
     Condition: IsMainBranchPipeline
     Type: AWS::CodeBuild::Project
