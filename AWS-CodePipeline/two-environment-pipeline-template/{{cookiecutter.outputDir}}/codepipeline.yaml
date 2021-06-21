@@ -13,43 +13,43 @@ Parameters:
   SamTemplate:
     Type: String
     Default: "{{cookiecutter.sam_template}}"
-  TestRegion:
+  TestingRegion:
     Type: String
     Default: "{{cookiecutter.testing_region}}"
   ProdRegion:
     Type: String
     Default: "{{cookiecutter.prod_region}}"
-  TestStackName:
+  TestingStackName:
     Type: String
     Default: "{{cookiecutter.testing_stack_name}}"
   ProdStackName:
     Type: String
     Default: "{{cookiecutter.prod_stack_name}}"
-  TestPipelineExecutionRole:
+  TestingPipelineExecutionRole:
     Type: String
     Default: "{{cookiecutter.testing_pipeline_execution_role}}"
   ProdPipelineExecutionRole:
     Type: String
     Default: "{{cookiecutter.prod_pipeline_execution_role}}"
-  TestCloudFormationExecutionRole:
+  TestingCloudFormationExecutionRole:
     Type: String
     Default: "{{cookiecutter.testing_cloudformation_execution_role}}"
   ProdCloudFormationExecutionExeRole:
     Type: String
     Default: "{{cookiecutter.prod_cloudformation_execution_role}}"
-  TestArtifactBucket:
+  TestingArtifactBucket:
     Type: String
     Default: "{{cookiecutter.testing_artifacts_bucket}}"
   ProdArtifactBucket:
     Type: String
     Default: "{{cookiecutter.prod_artifacts_bucket}}"
-  TestImageRepository:
+  TestingImageRepository:
     Type: String
     {%- if cookiecutter.testing_image_repository %}
     Default: "{{cookiecutter.testing_image_repository}}"
     {%- else %}
     # If there are functions with "Image" PackageType in your template,
-    # Update the line below with image repository URL and add "--image-repository ${TEST_IMAGE_REPOSITORY}" to
+    # Update the line below with image repository URL and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
     # prod "sam package" and "sam deploy" commands.
     Default: ""
     {%- endif %}
@@ -209,12 +209,12 @@ Resources:
                   EnvironmentVariables: !Sub |
                     [
                       {"name": "STAGE_TEMPLATE", "value": "packaged-test.yaml"},
-                      {"name": "STAGE_REGION", "value": "${TestRegion}"},
-                      {"name": "STAGE_STACK_NAME", "value": "${TestStackName}"},
-                      {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${TestPipelineExecutionRole}"},
-                      {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestCloudFormationExecutionRole}"},
-                      {"name": "STAGE_BUCKET", "value": "${TestArtifactBucket}"},
-                      {"name": "STAGE_IMAGE_REPOSITORY", "value": "${TestImageRepository}"}
+                      {"name": "STAGE_REGION", "value": "${TestingRegion}"},
+                      {"name": "STAGE_STACK_NAME", "value": "${TestingStackName}"},
+                      {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
+                      {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
+                      {"name": "STAGE_BUCKET", "value": "${TestingArtifactBucket}"},
+                      {"name": "STAGE_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
@@ -467,16 +467,16 @@ Resources:
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
-          - Name: TEST_REGION
-            Value: !Ref TestRegion
-          - Name: TEST_PIPELINE_EXECUTION_ROLE
-            Value: !Ref TestPipelineExecutionRole
-          - Name: TEST_CLOUDFORMATION_EXECUTION_ROLE
-            Value: !Ref TestCloudFormationExecutionRole
-          - Name: TEST_ARTIFACT_BUCKET
-            Value: !Ref TestArtifactBucket
-          - Name: TEST_IMAGE_REPOSITORY
-            Value: !Ref TestImageRepository
+          - Name: TESTING_REGION
+            Value: !Ref TestingRegion
+          - Name: TESTING_PIPELINE_EXECUTION_ROLE
+            Value: !Ref TestingPipelineExecutionRole
+          - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
+            Value: !Ref TestingCloudFormationExecutionRole
+          - Name: TESTING_ARTIFACT_BUCKET
+            Value: !Ref TestingArtifactBucket
+          - Name: TESTING_IMAGE_REPOSITORY
+            Value: !Ref TestingImageRepository
           - Name: FEATURE_BRANCH_NAME
             Value: !Ref FeatureGitBranch
       Cache:
@@ -499,16 +499,16 @@ Resources:
             build:
               commands:
                 - sam build --use-container --template ${SAM_TEMPLATE}
-                - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} feature-deploy
+                - . ./assume-role.sh ${TESTING_REGION} ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deploy
                 - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
                              --capabilities CAPABILITY_IAM
-                             --region ${TEST_REGION}
-                             --s3-bucket ${TEST_ARTIFACT_BUCKET}
+                             --region ${TESTING_REGION}
+                             --s3-bucket ${TESTING_ARTIFACT_BUCKET}
                              {%- if cookiecutter.testing_image_repository %}
-                             --image-repository ${TEST_IMAGE_REPOSITORY}
+                             --image-repository ${TESTING_IMAGE_REPOSITORY}
                              {%- endif %}
                              --no-fail-on-empty-changeset
-                             --role-arn ${TEST_CLOUDFORMATION_EXECUTION_ROLE}
+                             --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
 
   CodeBuildProjectBuildAndPackage:
     Condition: IsMainBranchPipeline
@@ -524,20 +524,20 @@ Resources:
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
-          - Name: TEST_REGION
-            Value: !Ref TestRegion
+          - Name: TESTING_REGION
+            Value: !Ref TestingRegion
           - Name: PROD_REGION
             Value: !Ref ProdRegion
-          - Name: TEST_PIPELINE_EXECUTION_ROLE
-            Value: !Ref TestPipelineExecutionRole
+          - Name: TESTING_PIPELINE_EXECUTION_ROLE
+            Value: !Ref TestingPipelineExecutionRole
           - Name: PROD_PIPELINE_EXECUTION_ROLE
             Value: !Ref ProdPipelineExecutionRole
-          - Name: TEST_ARTIFACT_BUCKET
-            Value: !Ref TestArtifactBucket
+          - Name: TESTING_ARTIFACT_BUCKET
+            Value: !Ref TestingArtifactBucket
           - Name: PROD_ARTIFACT_BUCKET
             Value: !Ref ProdArtifactBucket
-          - Name: TEST_IMAGE_REPOSITORY
-            Value: !Ref TestImageRepository
+          - Name: TESTING_IMAGE_REPOSITORY
+            Value: !Ref TestingImageRepository
           - Name: PROD_IMAGE_REPOSITORY
             Value: !Ref ProdImageRepository
       Cache:
@@ -560,12 +560,12 @@ Resources:
             build:
               commands:
                 - sam build --use-container --template ${SAM_TEMPLATE}
-                - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} test-package
-                - sam package --s3-bucket ${TEST_ARTIFACT_BUCKET}
+                - . ./assume-role.sh ${TESTING_REGION} ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
+                - sam package --s3-bucket ${TESTING_ARTIFACT_BUCKET}
                               {%- if cookiecutter.testing_image_repository %}
-                              --image-repository ${TEST_IMAGE_REPOSITORY}
+                              --image-repository ${TESTING_IMAGE_REPOSITORY}
                               {%- endif %}
-                              --region ${TEST_REGION}
+                              --region ${TESTING_REGION}
                               --output-template-file packaged-test.yaml
                 - . ./assume-role.sh ${PROD_REGION} ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
                 - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET}
