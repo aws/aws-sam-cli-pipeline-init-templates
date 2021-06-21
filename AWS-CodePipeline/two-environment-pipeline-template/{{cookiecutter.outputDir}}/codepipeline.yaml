@@ -45,10 +45,24 @@ Parameters:
     Default: "{{cookiecutter.prod_artifacts_bucket}}"
   TestImageRepository:
     Type: String
+    {%- if cookiecutter.testing_image_repository %}
     Default: "{{cookiecutter.testing_image_repository}}"
+    {%- else %}
+    # If there are functions with "Image" PackageType in your template,
+    # Update the line below with image repository URL and add "--image-repository ${TEST_IMAGE_REPOSITORY}" to
+    # prod "sam package" and "sam deploy" commands.
+    Default: ""
+    {%- endif %}
   ProdImageRepository:
     Type: String
+    {%- if cookiecutter.prod_image_repository %}
     Default: "{{cookiecutter.prod_image_repository}}"
+    {%- else %}
+    # If there are functions with "Image" PackageType in your template,
+    # Update the line below with image repository URL and add "--image-repository ${PROD_IMAGE_REPOSITORY}" to
+    # prod "sam package" and "sam deploy" commands.
+    Default: ""
+    {%- endif %}
   # CodeStarConnectionArn and FeatureGitBranch are required for pipelines for feature branches
   CodeStarConnectionArn:
     Type: String
@@ -199,7 +213,8 @@ Resources:
                       {"name": "STAGE_STACK_NAME", "value": "${TestStackName}"},
                       {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${TestPipelineExecutionRole}"},
                       {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestCloudFormationExecutionRole}"},
-                      {"name": "STAGE_BUCKET", "value": "${TestArtifactBucket}"}
+                      {"name": "STAGE_BUCKET", "value": "${TestArtifactBucket}"},
+                      {"name": "STAGE_IMAGE_REPOSITORY", "value": "${TestImageRepository}"}
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
@@ -236,7 +251,8 @@ Resources:
                       {"name": "STAGE_STACK_NAME", "value": "${ProdStackName}"},
                       {"name": "STAGE_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
                       {"name": "STAGE_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionExeRole}"},
-                      {"name": "STAGE_BUCKET", "value": "${ProdArtifactBucket}"}
+                      {"name": "STAGE_BUCKET", "value": "${ProdArtifactBucket}"},
+                      {"name": "STAGE_IMAGE_REPOSITORY", "value": "${ProdImageRepository}"}
                     ]
                 InputArtifacts:
                   - Name: BuildArtifactAsZip
@@ -488,6 +504,9 @@ Resources:
                              --capabilities CAPABILITY_IAM
                              --region ${TEST_REGION}
                              --s3-bucket ${TEST_ARTIFACT_BUCKET}
+                             {%- if cookiecutter.testing_image_repository %}
+                             --image-repository ${TEST_IMAGE_REPOSITORY}
+                             {%- endif %}
                              --no-fail-on-empty-changeset
                              --role-arn ${TEST_CLOUDFORMATION_EXECUTION_ROLE}
 
@@ -543,10 +562,16 @@ Resources:
                 - sam build --use-container --template ${SAM_TEMPLATE}
                 - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} test-package
                 - sam package --s3-bucket ${TEST_ARTIFACT_BUCKET}
+                              {%- if cookiecutter.testing_image_repository %}
+                              --image-repository ${TEST_IMAGE_REPOSITORY}
+                              {%- endif %}
                               --region ${TEST_REGION}
                               --output-template-file packaged-test.yaml
                 - . ./assume-role.sh ${PROD_REGION} ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
-                - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET} 
+                - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET}
+                              {%- if cookiecutter.testing_image_repository %}
+                              --image-repository ${PROD_IMAGE_REPOSITORY}
+                              {%- endif %}
                               --region ${PROD_REGION}
                               --output-template-file packaged-prod.yaml
           artifacts:
@@ -611,6 +636,9 @@ Resources:
                              --capabilities CAPABILITY_IAM
                              --region ${STAGE_REGION}
                              --s3-bucket ${STAGE_BUCKET}
+                             {%- if cookiecutter.testing_image_repository %}
+                             --image-repository ${STAGE_IMAGE_REPOSITORY}
+                             {%- endif %}
                              --no-fail-on-empty-changeset
                              --role-arn ${STAGE_CLOUDFORMATION_EXECUTION_ROLE}
 
