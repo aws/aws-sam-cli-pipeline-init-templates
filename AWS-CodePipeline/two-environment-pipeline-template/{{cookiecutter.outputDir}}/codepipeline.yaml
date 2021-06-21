@@ -492,12 +492,12 @@ Resources:
               runtime-versions:
                 python: 3.7
               commands:
+                - pip install --upgrade pip
+                - pip install --upgrade awscli aws-sam-cli
                 - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
                 - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
             build:
               commands:
-                - pip install --upgrade pip
-                - pip install --upgrade awscli aws-sam-cli
                 - sam build --use-container --template ${SAM_TEMPLATE}
                 - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} feature-deploy
                 - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
@@ -553,12 +553,12 @@ Resources:
               runtime-versions:
                 python: 3.7
               commands:
+                - pip install --upgrade pip
+                - pip install --upgrade awscli aws-sam-cli
                 - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
                 - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
             build:
               commands:
-                - pip install --upgrade pip
-                - pip install --upgrade awscli aws-sam-cli
                 - sam build --use-container --template ${SAM_TEMPLATE}
                 - . ./assume-role.sh ${TEST_REGION} ${TEST_PIPELINE_EXECUTION_ROLE} test-package
                 - sam package --s3-bucket ${TEST_ARTIFACT_BUCKET}
@@ -626,10 +626,11 @@ Resources:
             install:
               runtime-versions:
                 python: 3.7
-            build:
               commands:
                 - pip install --upgrade pip
                 - pip install --upgrade awscli aws-sam-cli
+            build:
+              commands:
                 - . ./assume-role.sh ${STAGE_REGION} ${STAGE_PIPELINE_EXECUTION_ROLE} deploy
                 - sam deploy --stack-name ${STAGE_STACK_NAME} 
                              --template ${STAGE_TEMPLATE}
