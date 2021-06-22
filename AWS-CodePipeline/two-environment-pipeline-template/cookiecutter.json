@@ -1,7 +1,8 @@
 {
   "outputDir": "aws-sam-pipeline",
-  "codestar_connection_provider_type": "",
-  "full_repository_id": "",
+  "git_provider_type": "",
+  "codestar_full_repository_id": "",
+  "codecommit_repository_name": "",
   "main_git_branch": "",
   "sam_template": "",
   "testing_stack_name": "",

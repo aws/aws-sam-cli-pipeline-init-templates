@@ -33,12 +33,19 @@ Description: >
 
 
 Parameters:
-  CodeStarConnectionProviderType:
+  GitProviderType:
     Type: String
-    Default: "{{cookiecutter.codestar_connection_provider_type}}"
+    Default: "{{cookiecutter.git_provider_type}}"
+  {%- if cookiecutter.codestar_full_repository_id %}
   FullRepositoryId:
     Type: String
-    Default: "{{cookiecutter.full_repository_id}}"
+    Default: "{{cookiecutter.codestar_full_repository_id}}"
+  {%- endif %}
+  {%- if cookiecutter.codecommit_repository_name %}
+  CodeCommitRepositoryName:
+    Type: String
+    Default: "{{cookiecutter.codecommit_repository_name}}"
+  {%- endif %}
   MainGitBranch:
     Type: String
     Default: "{{cookiecutter.main_git_branch}}"
@@ -106,15 +113,70 @@ Parameters:
 Conditions:
   IsMainBranchPipeline: !Equals [!Ref FeatureGitBranch, ""]
   IsFeatureBranchPipeline: !Not [Condition: IsMainBranchPipeline]
+  {%- if cookiecutter.codestar_full_repository_id %}
   CreateConnection: !Equals [!Ref CodeStarConnectionArn, ""]
+  {%- endif %}
 
 Resources:
+  {%- if cookiecutter.codestar_full_repository_id %}
   CodeStarConnection:
     Condition: CreateConnection
     Type: AWS::CodeStarConnections::Connection
     Properties: 
       ConnectionName: GitRepositoryConnection
-      ProviderType: !Ref CodeStarConnectionProviderType
+      ProviderType: !Ref GitProviderType
+  {%- endif %}
+
+  {%- if cookiecutter.codecommit_repository_name %}
+  AmazonCloudWatchEventRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        -
+          PolicyName: cwe-pipeline-execution
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              -
+                Effect: Allow
+                Action: codepipeline:StartPipelineExecution
+                Resource: !Join [ '', [ 'arn:aws:codepipeline:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref Pipeline ] ] 
+
+  AmazonCloudWatchEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.codecommit
+        detail-type:
+          - 'CodeCommit Repository State Change'
+        resources:
+          - !Join [ '', [ 'arn:aws:codecommit:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref CodeCommitRepositoryName ] ]
+        detail:
+          event:
+            - referenceCreated
+            - referenceUpdated
+          referenceType:
+            - branch
+          referenceName:
+            - main
+      Targets:
+        -
+          Arn: 
+            !Join [ '', [ 'arn:aws:codepipeline:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref Pipeline ] ]
+          RoleArn: !GetAtt AmazonCloudWatchEventRole.Arn
+          Id: codepipeline-AppPipeline
+  {%- endif %}
 
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -131,11 +193,20 @@ Resources:
               ActionTypeId:
                 Category: Source
                 Owner: AWS
+                {%- if cookiecutter.codestar_full_repository_id %}
                 Provider: CodeStarSourceConnection
+                {%- elif cookiecutter.codecommit_repository_name %}
+                Provider: CodeCommit
+                {%- endif %}
                 Version: "1"
               Configuration:
+                {%- if cookiecutter.codestar_full_repository_id %}
                 ConnectionArn: !If [CreateConnection, !Ref CodeStarConnection, !Ref CodeStarConnectionArn]
                 FullRepositoryId: !Ref FullRepositoryId
+                {%- elif cookiecutter.codecommit_repository_name %}
+                RepositoryName: !Ref CodeCommitRepositoryName
+                PollForSourceChanges: false
+                {%- endif %}
                 BranchName: !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch]
               OutputArtifacts:
                 - Name: SourceCodeAsZip
@@ -341,6 +412,7 @@ Resources:
                 Action:
                   - "iam:PassRole"
                 Resource: "*"
+        {%- if cookiecutter.codestar_full_repository_id %}
         - PolicyName: CodeStarConnectionAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -349,6 +421,21 @@ Resources:
                 Action:
                   - "codestar-connections:UseConnection"
                 Resource: !If [CreateConnection, !Ref CodeStarConnection, !Ref CodeStarConnectionArn]
+        {%- elif cookiecutter.codecommit_repository_name %}
+        - PolicyName: CodeCommitAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'codecommit:CancelUploadArchive'
+                  - 'codecommit:GetBranch'
+                  - 'codecommit:GetCommit'
+                  - 'codecommit:GetUploadArchiveStatus'
+                  - 'codecommit:UploadArchive'
+                Resource:
+                  - !Join [ '', [ 'arn:aws:codecommit:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref CodeCommitRepositoryName ] ]
+        {%- endif %}
         - PolicyName: CodePipelineCodeAndS3Bucket
           PolicyDocument:
             Version: "2012-10-17"
@@ -378,7 +465,24 @@ Resources:
                   - "codebuild:StartBuild"
                   - "codebuild:BatchGetBuilds"
                 Resource:
-                  - !Sub "arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/*"
+                  # Uncomment the line below to enable the unit-tests
+                  # - !GetAtt CodeBuildProjectUnitTest.Arn
+                  - !If
+                    - IsFeatureBranchPipeline
+                    - !GetAtt CodeBuildProjectBuildAndDeployFeature.Arn
+                    - !Ref AWS::NoValue
+                  - !If
+                    - IsMainBranchPipeline
+                    - !GetAtt CodeBuildProjectBuildAndPackage.Arn
+                    - !Ref AWS::NoValue
+                  - !If
+                    - IsMainBranchPipeline
+                    - !GetAtt CodeBuildProjectIntegrationTest.Arn
+                    - !Ref AWS::NoValue
+                  - !If
+                    - IsMainBranchPipeline
+                    - !GetAtt CodeBuildProjectDeploy.Arn
+                    - !Ref AWS::NoValue
               - Effect: Allow
                 Action:
                   - "cloudformation:CreateStack"
@@ -393,7 +497,7 @@ Resources:
                   - "cloudformation:SetStackPolicy"
                   - "cloudformation:ValidateTemplate"
                 Resource:
-                  - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}*/*"
+                  - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*"
                 
   PipelineStackCloudFormationExecutionRole:
     Type: AWS::IAM::Role
@@ -674,8 +778,10 @@ Resources:
                              {%- endif %}
                              --no-fail-on-empty-changeset
                              --role-arn ${ENV_CLOUDFORMATION_EXECUTION_ROLE}
-
+{%- if cookiecutter.codestar_full_repository_id %}
 Outputs:
   CodeStarConnectionArn:
+    Condition: CreateConnection
     Description: The Arn of AWS CodeStar Connection used to connect to external code repositories.
-    Value: !If [CreateConnection, !Ref CodeStarConnection, !Ref CodeStarConnectionArn]
+    Value: !Ref CodeStarConnection
+{%- endif %}
