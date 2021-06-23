@@ -673,7 +673,7 @@ Resources:
             build:
               commands:
                 - sam build --use-container --template ${SAM_TEMPLATE}
-                - . ./assume-role.sh ${TESTING_REGION} ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deploy
+                - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deploy
                 - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
                              --capabilities CAPABILITY_IAM
                              --region ${TESTING_REGION}
@@ -734,14 +734,14 @@ Resources:
             build:
               commands:
                 - sam build --use-container --template ${SAM_TEMPLATE}
-                - . ./assume-role.sh ${TESTING_REGION} ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
+                - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
                 - sam package --s3-bucket ${TESTING_ARTIFACT_BUCKET}
                               {%- if cookiecutter.testing_image_repository %}
                               --image-repository ${TESTING_IMAGE_REPOSITORY}
                               {%- endif %}
                               --region ${TESTING_REGION}
                               --output-template-file packaged-test.yaml
-                - . ./assume-role.sh ${PROD_REGION} ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
+                - . ./assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
                 - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET}
                               {%- if cookiecutter.testing_image_repository %}
                               --image-repository ${PROD_IMAGE_REPOSITORY}
@@ -805,7 +805,7 @@ Resources:
                 - pip install --upgrade awscli aws-sam-cli
             build:
               commands:
-                - . ./assume-role.sh ${ENV_REGION} ${ENV_PIPELINE_EXECUTION_ROLE} deploy
+                - . ./assume-role.sh ${ENV_PIPELINE_EXECUTION_ROLE} deploy
                 - sam deploy --stack-name ${ENV_STACK_NAME} 
                              --template ${ENV_TEMPLATE}
                              --capabilities CAPABILITY_IAM
