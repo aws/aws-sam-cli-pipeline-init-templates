@@ -150,7 +150,7 @@ Resources:
               -
                 Effect: Allow
                 Action: codepipeline:StartPipelineExecution
-                Resource: !Join [ '', [ 'arn:aws:codepipeline:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref Pipeline ] ] 
+                Resource: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
 
   AmazonCloudWatchEventRule:
     Type: AWS::Events::Rule
@@ -161,7 +161,7 @@ Resources:
         detail-type:
           - 'CodeCommit Repository State Change'
         resources:
-          - !Join [ '', [ 'arn:aws:codecommit:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref CodeCommitRepositoryName ] ]
+          - !Sub "arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"
         detail:
           event:
             - referenceCreated
@@ -171,9 +171,7 @@ Resources:
           referenceName:
             - main
       Targets:
-        -
-          Arn: 
-            !Join [ '', [ 'arn:aws:codepipeline:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref Pipeline ] ]
+        - Arn: - !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
           RoleArn: !GetAtt AmazonCloudWatchEventRole.Arn
           Id: codepipeline-AppPipeline
   {%- endif %}
@@ -473,7 +471,7 @@ Resources:
                   - 'codecommit:GetUploadArchiveStatus'
                   - 'codecommit:UploadArchive'
                 Resource:
-                  - !Join [ '', [ 'arn:aws:codecommit:', !Ref 'AWS::Region', ':', !Ref 'AWS::AccountId', ':', !Ref CodeCommitRepositoryName ] ]
+                  - !Sub "arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"
         {%- endif %}
         - PolicyName: CodePipelineCodeAndS3Bucket
           PolicyDocument:
