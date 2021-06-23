@@ -183,15 +183,14 @@ jobs:
             --no-fail-on-empty-changeset \
             --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
   
-  # uncomment and modify the following step for running the integration-tests
-  # integration-test:
-  #   if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
-  #   needs: [deploy-testing]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - run: |
-  #         # trigger the integration tests here
+  integration-test:
+    if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
+    needs: [deploy-testing]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          # trigger the integration tests here
   
   deploy-prod:
     if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
