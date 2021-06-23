@@ -169,7 +169,7 @@ Resources:
           referenceType:
             - branch
           referenceName:
-            - main
+            - !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch]
       Targets:
         - Arn: - !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
           RoleArn: !GetAtt AmazonCloudWatchEventRole.Arn
