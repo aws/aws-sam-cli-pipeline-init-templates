@@ -145,6 +145,15 @@ deploy-testing:
                  --no-fail-on-empty-changeset
                  --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
 
+# uncomment and modify the following step for running the integration-tests
+#
+#integration-test:
+#  stage: testing
+#  only:
+#    - {{cookiecutter.main_git_branch}}
+#  script: |
+#    #trigger the integration tests here
+
 # This stage is triggered for main branch you set in the question,
 # which will deploy the SAM application to prod environment using
 # the templated file generated.
