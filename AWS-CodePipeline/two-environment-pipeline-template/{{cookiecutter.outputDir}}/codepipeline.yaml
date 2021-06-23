@@ -363,15 +363,18 @@ Resources:
 
   PipelineArtifactsBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: "Retain"
     Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      LoggingConfiguration:
+        DestinationBucketName:
+          !Ref PipelineArtifactsLoggingBucket
+        LogFilePrefix: "artifacts-logs"
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-      VersioningConfiguration:
-        Status: Enabled
-    UpdateReplacePolicy: Retain
-    DeletionPolicy: Retain
   
   PipelineArtifactsBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -379,8 +382,16 @@ Resources:
       Bucket: !Ref PipelineArtifactsBucket
       PolicyDocument:
         Statement:
-          -
-            Action:
+          - Effect: "Deny"
+            Action: "s3:*"
+            Principal: "*"
+            Resource:
+              - !Join [ '',[ !GetAtt PipelineArtifactsBucket.Arn, '/*' ] ]
+              - !GetAtt PipelineArtifactsBucket.Arn
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+          - Action:
               - s3:*
             Effect: Allow
             Resource:
@@ -389,6 +400,34 @@ Resources:
             Principal:
               AWS:
                 - !GetAtt CodePipelineExecutionRole.Arn
+
+  PipelineArtifactsLoggingBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: "Retain"
+    Properties:
+      AccessControl: "LogDeliveryWrite"
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  PipelineArtifactsLoggingBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref PipelineArtifactsLoggingBucket
+      PolicyDocument:
+        Statement:
+          - Effect: "Deny"
+            Action: "s3:*"
+            Principal: "*"
+            Resource:
+              - !Join [ '',[ !GetAtt PipelineArtifactsLoggingBucket.Arn, '/*' ] ]
+              - !GetAtt PipelineArtifactsLoggingBucket.Arn
+            Condition:
+              Bool:
+                aws:SecureTransport: false
 
   CodePipelineExecutionRole:
     Type: AWS::IAM::Role
