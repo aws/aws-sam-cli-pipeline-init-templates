@@ -1,7 +1,6 @@
 AWSTemplateFormatVersion : '2010-09-09'
 Description: >
   This template deploys a CodePipiline with its required resources.
-  It uses AWS CodeStar Connections to connect the pipeline to git repository.
 
   The following stages are predefined in this template:
   - Source
@@ -18,18 +17,27 @@ Description: >
 # `sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`
 # (replace "<stack-name>" with the name of the AWS CloudFormation stack that you're deploying to).
 
+{%- if cookiecutter.codestar_full_repository_id %}
 # After creating the stack, the CodeStar Connection is in PENDING status by default. You must complete 
 # the OAuth handshake with the third-party provider using the installation associated with your connection.
 # See https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html for instructions.
+{%- endif %}
 
 # If later you need to deploy a new CodePipeline to connect to a non-main git branch, run
 # ```
 # sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM \
-#   --parameter-overrides="FeatureGitBranch=<branch-name> CodeStarConnectionArn=<codestar-connection-arn>
+{%- if cookiecutter.codestar_full_repository_id %}
+#   --parameter-overrides="FeatureGitBranch=<branch-name> CodeStarConnectionArn=<codestar-connection-arn>"
+{%- else %}
+#   --parameter-overrides="FeatureGitBranch=<branch-name>"
+{%- endif %}
 # ```
-# (replace "<stack-name>" with the name of the AWS CloudFormation stack that you're deploying to,
-# "<branch-name>" with the branch name and "<codestar-connection-arn>" with the CodeStar Connection ARN which
+# (replace "<stack-name>" with the name of the AWS CloudFormation stack 
+# that you're deploying to, "<branch-name>" with the branch name
+{%- if cookiecutter.codestar_full_repository_id %}
+# and "<codestar-connection-arn>" with the CodeStar Connection ARN which
 # can be found in the first pipeline stack's output.)
+{%- endif %}
 
 
 Parameters:
