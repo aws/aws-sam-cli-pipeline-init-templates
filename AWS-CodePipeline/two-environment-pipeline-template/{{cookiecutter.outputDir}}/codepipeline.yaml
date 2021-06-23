@@ -279,84 +279,76 @@ Resources:
 
         - !If
           - IsMainBranchPipeline
-          - Name: BuildAndPackage
-            Actions:
-              - Name: CodeBuild
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectBuildAndPackage
-                InputArtifacts:
-                  - Name: SourceCodeAsZip
-                OutputArtifacts:
-                  - Name: BuildArtifactAsZip
-          - !Ref AWS::NoValue
-        
-        - !If
-          - IsMainBranchPipeline
-          - Name: DeployTest
-            Actions:
-              - Name: DeployTest
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectDeploy
-                  EnvironmentVariables: !Sub |
-                    [
-                      {"name": "ENV_TEMPLATE", "value": "packaged-test.yaml"},
-                      {"name": "ENV_REGION", "value": "${TestingRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${TestingStackName}"},
-                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
-                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
-                      {"name": "ENV_BUCKET", "value": "${TestingArtifactBucket}"},
-                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
-                    ]
-                InputArtifacts:
-                  - Name: BuildArtifactAsZip
-                RunOrder: 1
-              - Name: IntegrationTest
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectIntegrationTest
-                InputArtifacts:
-                  - Name: SourceCodeAsZip
-                RunOrder: 2
-          - !Ref AWS::NoValue
-
-        - !If
-          - IsMainBranchPipeline
-          - Name: DeployProd
-            Actions:
-              - Name: DeployProd
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectDeploy
-                  EnvironmentVariables: !Sub |
-                    [
-                      {"name": "ENV_TEMPLATE", "value": "packaged-prod.yaml"},
-                      {"name": "ENV_REGION", "value": "${ProdRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${ProdStackName}"},
-                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
-                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionExeRole}"},
-                      {"name": "ENV_BUCKET", "value": "${ProdArtifactBucket}"},
-                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${ProdImageRepository}"}
-                    ]
-                InputArtifacts:
-                  - Name: BuildArtifactAsZip
+          - - Name: BuildAndPackage
+              Actions:
+                - Name: CodeBuild
+                  ActionTypeId:
+                    Category: Build
+                    Owner: AWS
+                    Provider: CodeBuild
+                    Version: "1"
+                  Configuration:
+                    ProjectName: !Ref CodeBuildProjectBuildAndPackage
+                  InputArtifacts:
+                    - Name: SourceCodeAsZip
+                  OutputArtifacts:
+                    - Name: BuildArtifactAsZip
+            - Name: DeployTest
+              Actions:
+                - Name: DeployTest
+                  ActionTypeId:
+                    Category: Build
+                    Owner: AWS
+                    Provider: CodeBuild
+                    Version: "1"
+                  Configuration:
+                    ProjectName: !Ref CodeBuildProjectDeploy
+                    EnvironmentVariables: !Sub |
+                      [
+                        {"name": "ENV_TEMPLATE", "value": "packaged-test.yaml"},
+                        {"name": "ENV_REGION", "value": "${TestingRegion}"},
+                        {"name": "ENV_STACK_NAME", "value": "${TestingStackName}"},
+                        {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
+                        {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
+                        {"name": "ENV_BUCKET", "value": "${TestingArtifactBucket}"},
+                        {"name": "ENV_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
+                      ]
+                  InputArtifacts:
+                    - Name: BuildArtifactAsZip
+                  RunOrder: 1
+                - Name: IntegrationTest
+                  ActionTypeId:
+                    Category: Build
+                    Owner: AWS
+                    Provider: CodeBuild
+                    Version: "1"
+                  Configuration:
+                    ProjectName: !Ref CodeBuildProjectIntegrationTest
+                  InputArtifacts:
+                    - Name: SourceCodeAsZip
+                  RunOrder: 2
+            - Name: DeployProd
+              Actions:
+                - Name: DeployProd
+                  ActionTypeId:
+                    Category: Build
+                    Owner: AWS
+                    Provider: CodeBuild
+                    Version: "1"
+                  Configuration:
+                    ProjectName: !Ref CodeBuildProjectDeploy
+                    EnvironmentVariables: !Sub |
+                      [
+                        {"name": "ENV_TEMPLATE", "value": "packaged-prod.yaml"},
+                        {"name": "ENV_REGION", "value": "${ProdRegion}"},
+                        {"name": "ENV_STACK_NAME", "value": "${ProdStackName}"},
+                        {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${ProdPipelineExecutionRole}"},
+                        {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${ProdCloudFormationExecutionExeRole}"},
+                        {"name": "ENV_BUCKET", "value": "${ProdArtifactBucket}"},
+                        {"name": "ENV_IMAGE_REPOSITORY", "value": "${ProdImageRepository}"}
+                      ]
+                  InputArtifacts:
+                    - Name: BuildArtifactAsZip
           - !Ref AWS::NoValue
 
   PipelineArtifactsBucket:
@@ -510,15 +502,9 @@ Resources:
                     - !Ref AWS::NoValue
                   - !If
                     - IsMainBranchPipeline
-                    - !GetAtt CodeBuildProjectBuildAndPackage.Arn
-                    - !Ref AWS::NoValue
-                  - !If
-                    - IsMainBranchPipeline
-                    - !GetAtt CodeBuildProjectIntegrationTest.Arn
-                    - !Ref AWS::NoValue
-                  - !If
-                    - IsMainBranchPipeline
-                    - !GetAtt CodeBuildProjectDeploy.Arn
+                    - - !GetAtt CodeBuildProjectBuildAndPackage.Arn
+                      - !GetAtt CodeBuildProjectIntegrationTest.Arn
+                      - !GetAtt CodeBuildProjectDeploy.Arn
                     - !Ref AWS::NoValue
               - Effect: Allow
                 Action:
