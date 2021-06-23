@@ -549,13 +549,6 @@ Resources:
                   - "s3:PutObject"
                 Resource:
                   - !Sub "arn:aws:s3:::${PipelineArtifactsBucket}/*"
-        - PolicyName: CodeBuildParameterStore
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: "ssm:GetParameters"
-                Resource: "*"
         - PolicyName: AssumeStagePipExecutionRoles
           PolicyDocument:
             Version: "2012-10-17"
