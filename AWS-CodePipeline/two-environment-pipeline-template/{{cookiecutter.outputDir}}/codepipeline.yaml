@@ -303,43 +303,44 @@ Resources:
                   - Name: BuildArtifactAsZip
           - !Ref AWS::NoValue
         
-        - !If
-          - IsMainBranchPipeline
-          - Name: DeployTest
-            Actions:
-              - Name: DeployTest
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectDeploy
-                  EnvironmentVariables: !Sub |
-                    [
-                      {"name": "ENV_TEMPLATE", "value": "packaged-test.yaml"},
-                      {"name": "ENV_REGION", "value": "${TestingRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${TestingStackName}"},
-                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
-                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
-                      {"name": "ENV_BUCKET", "value": "${TestingArtifactBucket}"},
-                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
-                    ]
-                InputArtifacts:
-                  - Name: BuildArtifactAsZip
-                RunOrder: 1
-              - Name: IntegrationTest
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectIntegrationTest
-                InputArtifacts:
-                  - Name: SourceCodeAsZip
-                RunOrder: 2
-          - !Ref AWS::NoValue
+        # Uncomment the following step for running the integration tests
+        # - !If
+        #   - IsMainBranchPipeline
+        #   - Name: DeployTest
+        #     Actions:
+        #       - Name: DeployTest
+        #         ActionTypeId:
+        #           Category: Build
+        #           Owner: AWS
+        #           Provider: CodeBuild
+        #           Version: "1"
+        #         Configuration:
+        #           ProjectName: !Ref CodeBuildProjectDeploy
+        #           EnvironmentVariables: !Sub |
+        #             [
+        #               {"name": "ENV_TEMPLATE", "value": "packaged-test.yaml"},
+        #               {"name": "ENV_REGION", "value": "${TestingRegion}"},
+        #               {"name": "ENV_STACK_NAME", "value": "${TestingStackName}"},
+        #               {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
+        #               {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
+        #               {"name": "ENV_BUCKET", "value": "${TestingArtifactBucket}"},
+        #               {"name": "ENV_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
+        #             ]
+        #         InputArtifacts:
+        #           - Name: BuildArtifactAsZip
+        #         RunOrder: 1
+        #       - Name: IntegrationTest
+        #         ActionTypeId:
+        #           Category: Build
+        #           Owner: AWS
+        #           Provider: CodeBuild
+        #           Version: "1"
+        #         Configuration:
+        #           ProjectName: !Ref CodeBuildProjectIntegrationTest
+        #         InputArtifacts:
+        #           - Name: SourceCodeAsZip
+        #         RunOrder: 2
+        #   - !Ref AWS::NoValue
 
         - !If
           - IsMainBranchPipeline
@@ -520,10 +521,11 @@ Resources:
                     - IsMainBranchPipeline
                     - !GetAtt CodeBuildProjectBuildAndPackage.Arn
                     - !Ref AWS::NoValue
-                  - !If
-                    - IsMainBranchPipeline
-                    - !GetAtt CodeBuildProjectIntegrationTest.Arn
-                    - !Ref AWS::NoValue
+                  # Uncomment the following step for running the integration tests
+                  # - !If
+                  #   - IsMainBranchPipeline
+                  #   - !GetAtt CodeBuildProjectIntegrationTest.Arn
+                  #   - !Ref AWS::NoValue
                   - !If
                     - IsMainBranchPipeline
                     - !GetAtt CodeBuildProjectDeploy.Arn
@@ -754,29 +756,30 @@ Resources:
               - packaged-prod.yaml
               - assume-role.sh
 
-  CodeBuildProjectIntegrationTest:
-    Condition: IsMainBranchPipeline
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Artifacts:
-        Type: CODEPIPELINE
-      Environment:
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
-      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
-      Source:
-        Type: CODEPIPELINE
-        BuildSpec:  |
-          version: 0.2
-          phases:
-            install:
-              runtime-versions:
-                python: 3.7
-            build:
-              commands:
-                # trigger the integration tests here
-                - echo 'Running integration tests'
+  # Uncomment and modify the following step for running the integration tests
+  # CodeBuildProjectIntegrationTest:
+  #   Condition: IsMainBranchPipeline
+  #   Type: AWS::CodeBuild::Project
+  #   Properties:
+  #     Artifacts:
+  #       Type: CODEPIPELINE
+  #     Environment:
+  #       Type: LINUX_CONTAINER
+  #       ComputeType: BUILD_GENERAL1_SMALL
+  #       Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+  #     ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+  #     Source:
+  #       Type: CODEPIPELINE
+  #       BuildSpec:  |
+  #         version: 0.2
+  #         phases:
+  #           install:
+  #             runtime-versions:
+  #               python: 3.7
+  #           build:
+  #             commands:
+  #               # trigger the integration tests here
+  #               - echo 'Running integration tests'
 
   CodeBuildProjectDeploy:
     Condition: IsMainBranchPipeline
