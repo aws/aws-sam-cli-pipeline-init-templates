@@ -1,5 +1,9 @@
 {
   "questions": [{
+    "key": "intro",
+    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production environments.\n",
+    "kind": "info"
+  }, {
     "key": "pipeline_user_aws_access_key_id_variable_name",
     "question": "What is the GitHub Secret name for pipeline user account access key id?",
     "default": "AWS_ACCESS_KEY_ID"
