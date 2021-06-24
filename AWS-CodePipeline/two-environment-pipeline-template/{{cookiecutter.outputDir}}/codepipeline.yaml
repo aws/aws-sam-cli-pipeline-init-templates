@@ -646,9 +646,6 @@ Resources:
             Value: !Ref TestingImageRepository
           - Name: FEATURE_BRANCH_NAME
             Value: !Ref FeatureGitBranch
-      Cache:
-        Type: S3
-        Location: !Sub ${PipelineArtifactsBucket}/codebuild-cache-${FeatureGitBranch}
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE
@@ -707,9 +704,6 @@ Resources:
             Value: !Ref TestingImageRepository
           - Name: PROD_IMAGE_REPOSITORY
             Value: !Ref ProdImageRepository
-      Cache:
-        Type: S3
-        Location: !Sub ${PipelineArtifactsBucket}/codebuild-cache
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE
@@ -782,9 +776,6 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
-      Cache:
-        Type: S3
-        Location: !Sub ${PipelineArtifactsBucket}/codebuild-cache
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE
