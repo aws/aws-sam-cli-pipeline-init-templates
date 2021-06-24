@@ -132,6 +132,7 @@ Resources:
   AmazonCloudWatchEventRole:
     Type: AWS::IAM::Role
     Properties:
+      Path: /AWS-SAM-Pipeline/
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -433,6 +434,7 @@ Resources:
   CodePipelineExecutionRole:
     Type: AWS::IAM::Role
     Properties:
+      Path: /AWS-SAM-Pipeline/
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -542,6 +544,7 @@ Resources:
   PipelineStackCloudFormationExecutionRole:
     Type: AWS::IAM::Role
     Properties:
+      Path: /AWS-SAM-Pipeline/
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -555,6 +558,7 @@ Resources:
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
     Properties:
+      Path: /AWS-SAM-Pipeline/Assumer/
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
