@@ -369,7 +369,8 @@ Resources:
 
   PipelineArtifactsBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: "Retain"
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       VersioningConfiguration:
         Status: Enabled
@@ -409,7 +410,8 @@ Resources:
 
   PipelineArtifactsLoggingBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: "Retain"
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       AccessControl: "LogDeliveryWrite"
       VersioningConfiguration:
