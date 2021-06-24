@@ -5,7 +5,6 @@ SESSION_NAME=$2
 # Unset AWS credentials stored in env so that every time this script runs,
 # it will use the AWS CodeBuild service role to assume the target IAM roles.
 unset AWS_SESSION_TOKEN
-unset AWS_DEFAULT_REGION
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 
