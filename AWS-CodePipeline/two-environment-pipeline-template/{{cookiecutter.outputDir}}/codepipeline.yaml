@@ -14,8 +14,7 @@ Description: >
 
 
 # To deploy this template and connect to the main git branch, run this against the leading account:
-# `sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`
-# (replace "<stack-name>" with the name of the AWS CloudFormation stack that you're deploying to).
+# `sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`.
 
 {%- if cookiecutter.codestar_full_repository_id %}
 # After creating the stack, the CodeStar Connection is in PENDING status by default. You must complete 
@@ -32,12 +31,6 @@ Description: >
 #   --parameter-overrides="FeatureGitBranch=<branch-name>"
 {%- endif %}
 # ```
-# (replace "<stack-name>" with the name of the AWS CloudFormation stack 
-# that you're deploying to, "<branch-name>" with the branch name
-{%- if cookiecutter.codestar_full_repository_id %}
-# and "<codestar-connection-arn>" with the CodeStar Connection ARN which
-# can be found in the first pipeline stack's output.)
-{%- endif %}
 
 
 Parameters:
