@@ -148,7 +148,6 @@ Resources:
               Service:
                 - events.amazonaws.com
             Action: sts:AssumeRole
-      Path: /
       Policies:
         -
           PolicyName: cwe-pipeline-execution
@@ -448,7 +447,6 @@ Resources:
             Principal:
               Service:
                 - codepipeline.amazonaws.com
-      Path: /
       Policies:
         - PolicyName: CodePipelineAccess
           PolicyDocument:
@@ -556,7 +554,6 @@ Resources:
           Effect: Allow
           Principal:
             Service: cloudformation.amazonaws.com
-      Path: /
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AdministratorAccess"
 
@@ -572,7 +569,6 @@ Resources:
             Principal:
               Service:
                 - codebuild.amazonaws.com
-      Path: /
       Policies:
         - PolicyName: CodeBuildLogs
           PolicyDocument:
