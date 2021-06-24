@@ -614,7 +614,7 @@ Resources:
   #         phases:
   #           install:
   #             runtime-versions:
-  #               python: 3.7
+  #               python: 3.8
   #           build:
   #             commands:
   #               # trigger the unit tests here
@@ -657,7 +657,7 @@ Resources:
           phases:
             install:
               runtime-versions:
-                python: 3.7
+                python: 3.8
               commands:
                 - pip install --upgrade pip
                 - pip install --upgrade awscli aws-sam-cli
@@ -718,7 +718,7 @@ Resources:
           phases:
             install:
               runtime-versions:
-                python: 3.7
+                python: 3.8
               commands:
                 - pip install --upgrade pip
                 - pip install --upgrade awscli aws-sam-cli
@@ -766,7 +766,7 @@ Resources:
   #         phases:
   #           install:
   #             runtime-versions:
-  #               python: 3.7
+  #               python: 3.8
   #           build:
   #             commands:
   #               # trigger the integration tests here
@@ -793,7 +793,7 @@ Resources:
           phases:
             install:
               runtime-versions:
-                python: 3.7
+                python: 3.8
               commands:
                 - pip install --upgrade pip
                 - pip install --upgrade awscli aws-sam-cli
