@@ -386,7 +386,7 @@ Resources:
             Action: "s3:*"
             Principal: "*"
             Resource:
-              - !Join [ '',[ !GetAtt PipelineArtifactsBucket.Arn, '/*' ] ]
+              - !Sub  "${PipelineArtifactsBucket.Arn}/*"
               - !GetAtt PipelineArtifactsBucket.Arn
             Condition:
               Bool:
@@ -424,7 +424,7 @@ Resources:
             Action: "s3:*"
             Principal: "*"
             Resource:
-              - !Join [ '',[ !GetAtt PipelineArtifactsLoggingBucket.Arn, '/*' ] ]
+              - !Sub "${PipelineArtifactsLoggingBucket.Arn}/*"
               - !GetAtt PipelineArtifactsLoggingBucket.Arn
             Condition:
               Bool:
