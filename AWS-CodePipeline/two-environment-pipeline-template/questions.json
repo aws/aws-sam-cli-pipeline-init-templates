@@ -144,7 +144,7 @@
     }
   }, {
     "key": "instructions",
-    "question": "To deploy this template and connect to the main git branch, run\n`sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`\n(replace \"<stack-name>\" with the name of the AWS CloudFormation stack that you're deploying to).\n    \nAfter creating the stack, the CodeStar Connection is in PENDING status by default. You must complete \nthe OAuth handshake with the third-party provider using the installation associated with your connection.\nSee https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html for instructions.\n    \nIf later you need to deploy a new CodePipeline to connect to a non-main git branch, run\n```\nsam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM \\n--parameter-overrides=\"FeatureGitBranch=<branch-name> CodeStarConnectionArn=<codestar-connection-arn>\n```\n(replace \"<stack-name>\" with the name of the AWS CloudFormation stack that you're deploying to,\n\"<branch-name>\" with the branch name and \"<codestar-connection-arn>\" with the CodeStar Connection ARN which\ncan be found in the first pipeline stack's output.)",
+    "question": "To deploy this template and connect to the main git branch, run\n`sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`\n(replace \"<stack-name>\" with the name of the AWS CloudFormation stack that you're deploying to).",
     "kind": "info"
   }]
 }
