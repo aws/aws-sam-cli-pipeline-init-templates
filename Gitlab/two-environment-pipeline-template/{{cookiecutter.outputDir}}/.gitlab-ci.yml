@@ -137,7 +137,7 @@ deploy-testing:
                  --no-fail-on-empty-changeset
                  --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
 
-# uncomment and modify the following step for running the integration-tests
+# Uncomment and modify the following stage for integration tests
 #
 #integration-test:
 #  stage: testing

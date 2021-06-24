@@ -1,11 +1,11 @@
 {
   "questions": [{
     "key": "intro",
-    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production environments.\n",
+    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production environment.\n",
     "kind": "info"
   }, {
     "key": "main_git_branch",
-    "question": "What is the git branch used for production deployments?",
+    "question": "What is the Git branch used for production deployments?",
     "default": "main"
   }, {
     "key": "sam_template",

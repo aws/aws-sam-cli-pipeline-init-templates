@@ -1,7 +1,7 @@
 {
   "questions": [{
     "key": "intro",
-    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production environments.\n",
+    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production environment.\n",
     "kind": "info"
   }, {
     "key": "pipeline_user_jenkins_credential_id",
