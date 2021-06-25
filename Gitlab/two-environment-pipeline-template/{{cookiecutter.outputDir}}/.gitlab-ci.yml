@@ -72,9 +72,7 @@ build-and-deploy-feature:
   only:
     - /^feature-.*$/
   script:
-    - . assume-role.sh ${TESTING_REGION}
-                        ${TESTING_PIPELINE_EXECUTION_ROLE}
-                        feature-deployment
+    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deployment
     - sam build --template ${SAM_TEMPLATE} --use-container
     - sam deploy --stack-name features-${CI_COMMIT_REF_NAME}-cfn-stack
                  --capabilities CAPABILITY_IAM
@@ -96,9 +94,7 @@ build-and-package:
   script:
     - sam build --template ${SAM_TEMPLATE} --use-container
 
-    - . assume-role.sh ${TESTING_REGION}
-                        ${TESTING_PIPELINE_EXECUTION_ROLE}
-                        testing-stage-packaging
+    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-stage-packaging
 
     - sam package --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
                    {%- if cookiecutter.testing_image_repository %}
@@ -107,9 +103,7 @@ build-and-package:
                    --region ${TESTING_REGION}
                    --output-template-file packaged-testing.yaml
 
-    - . assume-role.sh ${PROD_REGION}
-                        ${PROD_PIPELINE_EXECUTION_ROLE}
-                        prod-stage-packaging
+    - . assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-stage-packaging
 
     - sam package --s3-bucket ${PROD_ARTIFACTS_BUCKET}
                   {%- if cookiecutter.prod_image_repository %}
@@ -131,9 +125,7 @@ deploy-testing:
   only:
     - {{cookiecutter.main_git_branch}}
   script:
-    - . assume-role.sh ${TESTING_REGION}
-                        ${TESTING_PIPELINE_EXECUTION_ROLE}
-                        testing-deployment
+    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-deployment
     - sam deploy --stack-name ${TESTING_STACK_NAME}
                  --template packaged-testing.yaml
                  --capabilities CAPABILITY_IAM
@@ -145,6 +137,15 @@ deploy-testing:
                  --no-fail-on-empty-changeset
                  --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
 
+# Uncomment and modify the following stage for integration tests
+#
+#integration-test:
+#  stage: testing
+#  only:
+#    - {{cookiecutter.main_git_branch}}
+#  script: |
+#    #trigger the integration tests here
+
 # This stage is triggered for main branch you set in the question,
 # which will deploy the SAM application to prod environment using
 # the templated file generated.
@@ -155,9 +156,7 @@ deploy-prod:
   only:
     - {{cookiecutter.main_git_branch}}
   script:
-    - . assume-role.sh ${PROD_REGION}
-                        ${PROD_PIPELINE_EXECUTION_ROLE}
-                        prod-deployment
+    - . assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-deployment
     - sam deploy --stack-name ${PROD_STACK_NAME}
                  --template packaged-prod.yaml
                  --capabilities CAPABILITY_IAM

@@ -1,5 +1,9 @@
 {
   "questions": [{
+    "key": "intro",
+    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production environment.\n",
+    "kind": "info"
+  }, {
     "key": "pipeline_user_jenkins_credential_id",
     "question": "What is the Jenkins credential ID (via Jenkins plugin \"aws-credentials\") for pipeline user access key?",
     "isRequired": true
