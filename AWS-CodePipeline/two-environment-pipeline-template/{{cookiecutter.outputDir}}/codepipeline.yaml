@@ -1,3 +1,5 @@
+{% set is_codestar_source = cookiecutter.codestar_full_repository_id != "" -%}
+{% set is_codecommit_source = cookiecutter.codecommit_repository_name != "" -%}
 AWSTemplateFormatVersion : '2010-09-09'
 Description: >
   This template deploys a CodePipiline with its required resources.
@@ -16,7 +18,7 @@ Description: >
 # To deploy this template and connect to the main git branch, run this against the leading account:
 # `sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`.
 
-{%- if cookiecutter.codestar_full_repository_id %}
+{%- if is_codestar_source %}
 # After creating the stack, the CodeStar Connection is in PENDING status by default. You must complete 
 # the OAuth handshake with the third-party provider using the installation associated with your connection.
 # See https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html for instructions.
@@ -25,7 +27,7 @@ Description: >
 # If later you need to deploy a new CodePipeline to connect to a non-main git branch, run
 # ```
 # sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM \
-{%- if cookiecutter.codestar_full_repository_id %}
+{%- if is_codestar_source %}
 #   --parameter-overrides="FeatureGitBranch=<branch-name> CodeStarConnectionArn=<codestar-connection-arn>"
 {%- else %}
 #   --parameter-overrides="FeatureGitBranch=<branch-name>"
@@ -37,12 +39,12 @@ Parameters:
   GitProviderType:
     Type: String
     Default: "{{cookiecutter.git_provider_type}}"
-  {%- if cookiecutter.codestar_full_repository_id %}
+  {%- if is_codestar_source %}
   FullRepositoryId:
     Type: String
     Default: "{{cookiecutter.codestar_full_repository_id}}"
   {%- endif %}
-  {%- if cookiecutter.codecommit_repository_name %}
+  {%- if is_codecommit_source %}
   CodeCommitRepositoryName:
     Type: String
     Default: "{{cookiecutter.codecommit_repository_name}}"
@@ -114,12 +116,12 @@ Parameters:
 Conditions:
   IsMainBranchPipeline: !Equals [!Ref FeatureGitBranch, ""]
   IsFeatureBranchPipeline: !Not [Condition: IsMainBranchPipeline]
-  {%- if cookiecutter.codestar_full_repository_id %}
+  {%- if is_codestar_source %}
   CreateConnection: !Equals [!Ref CodeStarConnectionArn, ""]
   {%- endif %}
 
 Resources:
-  {%- if cookiecutter.codestar_full_repository_id %}
+  {%- if is_codestar_source %}
   CodeStarConnection:
     Condition: CreateConnection
     Type: AWS::CodeStarConnections::Connection
@@ -128,7 +130,7 @@ Resources:
       ProviderType: !Ref GitProviderType
   {%- endif %}
 
-  {%- if cookiecutter.codecommit_repository_name %}
+  {%- if is_codecommit_source %}
   AmazonCloudWatchEventRole:
     Type: AWS::IAM::Role
     Properties:
@@ -191,17 +193,17 @@ Resources:
               ActionTypeId:
                 Category: Source
                 Owner: AWS
-                {%- if cookiecutter.codestar_full_repository_id %}
+                {%- if is_codestar_source %}
                 Provider: CodeStarSourceConnection
-                {%- elif cookiecutter.codecommit_repository_name %}
+                {%- elif is_codecommit_source %}
                 Provider: CodeCommit
                 {%- endif %}
                 Version: "1"
               Configuration:
-                {%- if cookiecutter.codestar_full_repository_id %}
+                {%- if is_codestar_source %}
                 ConnectionArn: !If [CreateConnection, !Ref CodeStarConnection, !Ref CodeStarConnectionArn]
                 FullRepositoryId: !Ref FullRepositoryId
-                {%- elif cookiecutter.codecommit_repository_name %}
+                {%- elif is_codecommit_source %}
                 RepositoryName: !Ref CodeCommitRepositoryName
                 PollForSourceChanges: false
                 {%- endif %}
@@ -451,7 +453,7 @@ Resources:
                 Action:
                   - "iam:PassRole"
                 Resource: "*"
-        {%- if cookiecutter.codestar_full_repository_id %}
+        {%- if is_codestar_source %}
         - PolicyName: CodeStarConnectionAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -460,7 +462,7 @@ Resources:
                 Action:
                   - "codestar-connections:UseConnection"
                 Resource: !If [CreateConnection, !Ref CodeStarConnection, !Ref CodeStarConnectionArn]
-        {%- elif cookiecutter.codecommit_repository_name %}
+        {%- elif is_codecommit_source %}
         - PolicyName: CodeCommitAccess
           PolicyDocument:
             Version: 2012-10-17
@@ -801,7 +803,7 @@ Resources:
                              {%- endif %}
                              --no-fail-on-empty-changeset
                              --role-arn ${ENV_CLOUDFORMATION_EXECUTION_ROLE}
-{%- if cookiecutter.codestar_full_repository_id %}
+{%- if is_codestar_source %}
 Outputs:
   CodeStarConnectionArn:
     Condition: CreateConnection
