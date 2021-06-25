@@ -600,6 +600,9 @@ Resources:
                   - sts:AssumeRole
                 Effect: Allow
                 Resource: "*"
+                Condition:
+                  StringEquals:
+                    aws:ResourceTag/Role: pipeline-execution-role
 
   # Uncomment and modify the following step for running the unit-tests
   # CodeBuildProjectUnitTest:
