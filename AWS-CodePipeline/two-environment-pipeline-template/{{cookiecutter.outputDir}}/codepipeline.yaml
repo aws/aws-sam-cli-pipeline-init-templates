@@ -131,7 +131,7 @@ Resources:
   {%- endif %}
 
   {%- if is_codecommit_source %}
-  AmazonCloudWatchEventRole:
+  CloudWatchEventRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -154,7 +154,7 @@ Resources:
                 Action: codepipeline:StartPipelineExecution
                 Resource: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
 
-  AmazonCloudWatchEventRule:
+  CloudWatchEventRule:
     Type: AWS::Events::Rule
     Properties:
       EventPattern:
@@ -174,7 +174,7 @@ Resources:
             - !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch]
       Targets:
         - Arn: - !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
-          RoleArn: !GetAtt AmazonCloudWatchEventRole.Arn
+          RoleArn: !GetAtt CloudWatchEventRole.Arn
           Id: codepipeline-AppPipeline
   {%- endif %}
 
