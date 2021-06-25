@@ -551,8 +551,14 @@ Resources:
           Effect: Allow
           Principal:
             Service: cloudformation.amazonaws.com
-      ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/AdministratorAccess"
+      Policies:
+        - PolicyName: GrantCloudFormationFullAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
 
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
