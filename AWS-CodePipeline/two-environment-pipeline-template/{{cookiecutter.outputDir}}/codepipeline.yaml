@@ -557,6 +557,9 @@ Resources:
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
     Properties:
+      Tags:
+        - Key: Role
+          Value: aws-sam-pipeline-codebuild-service-role
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
