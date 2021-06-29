@@ -74,7 +74,7 @@ build-and-deploy-feature:
   script:
     - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deployment
     - sam build --template ${SAM_TEMPLATE} --use-container
-    - sam deploy --stack-name features-${CI_COMMIT_REF_NAME}-cfn-stack
+    - sam deploy --stack-name $(echo ${CI_COMMIT_REF_NAME} | tr -cd '[a-zA-Z0-9-]')
                  --capabilities CAPABILITY_IAM
                  --region ${TESTING_REGION}
                  --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
