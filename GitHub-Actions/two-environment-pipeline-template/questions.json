@@ -29,8 +29,9 @@
     "isRequired": true
   }, {
     "key": "testing_stack_name",
-    "question": "What is the testing stack name?",
-    "isRequired": true
+    "question": "Please specify a stack name for testing environment",
+    "isRequired": true,
+    "default": "testing-stack"
   }, {
     "key": "testing_pipeline_execution_role",
     "question": "What is the testing pipeline execution role ARN?",
@@ -86,8 +87,9 @@
     "isRequired": true
   }, {
     "key": "prod_stack_name",
-    "question": "What is the production stack name?",
-    "isRequired": true
+    "question": "Please specify a stack name for production environment",
+    "isRequired": true,
+    "default": "production-stack"
   }, {
     "key": "prod_pipeline_execution_role",
     "question": "What is the production pipeline execution role ARN?",
