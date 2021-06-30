@@ -16,6 +16,12 @@
     "question": "What is the template file path?",
     "default": "template.yaml"
   }, {
+    "key": "message_list_environment_names_testing",
+    "question": {
+      "keyPath": ["environment_names_message"]
+    },
+    "kind": "info"
+  }, {
     "key": "message_testing_environment_name",
     "question": "We use the environment name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`",
     "kind": "info"
@@ -76,6 +82,12 @@
           "region"
       ]
     }
+  }, {
+    "key": "message_list_environment_names_prod",
+    "question": {
+      "keyPath": ["environment_names_message"]
+    },
+    "kind": "info"
   }, {
     "key": "prod_environment_name",
     "question": "What is the production environment name (as provided during the bootstrapping)?",
