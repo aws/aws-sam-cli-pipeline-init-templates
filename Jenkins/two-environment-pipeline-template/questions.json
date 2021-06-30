@@ -85,7 +85,7 @@
     "key": "prod_stack_name",
     "question": "Please specify a stack name for production environment",
     "isRequired": true,
-    "default": "production-stack"
+    "default": "prod-stack"
   }, {
     "key": "prod_pipeline_execution_role",
     "question": "What is the production pipeline execution role ARN?",
