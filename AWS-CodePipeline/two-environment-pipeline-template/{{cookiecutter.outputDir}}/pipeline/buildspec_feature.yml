@@ -1,0 +1,24 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - pip install --upgrade pip
+      - pip install --upgrade awscli aws-sam-cli
+      # Enable docker https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  build:
+    commands:
+      - sam build --use-container --template ${SAM_TEMPLATE}
+      - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deploy
+      - sam deploy --stack-name $(echo ${FEATURE_BRANCH_NAME} | tr -cd '[a-zA-Z0-9-]')
+                    --capabilities CAPABILITY_IAM
+                    --region ${TESTING_REGION}
+                    --s3-bucket ${TESTING_ARTIFACT_BUCKET}
+                    {%- if cookiecutter.testing_image_repository %}
+                    --image-repository ${TESTING_IMAGE_REPOSITORY}
+                    {%- endif %}
+                    --no-fail-on-empty-changeset
+                    --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
