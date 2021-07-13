@@ -1,7 +1,7 @@
 {
   "questions": [{
     "key": "intro",
-    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production environment.\n",
+    "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production stage.\n",
     "kind": "info"
   }, {
     "key": "pipeline_user_aws_access_key_id_variable_name",
@@ -20,18 +20,18 @@
     "question": "What is the template file path?",
     "default": "template.yaml"
   }, {
-    "key": "message_list_environment_names_testing",
+    "key": "message_list_stage_names_testing",
     "question": {
-      "keyPath": ["environment_names_message"]
+      "keyPath": ["stage_names_message"]
     },
     "kind": "info"
   }, {
-    "key": "message_testing_environment_name",
-    "question": "We use the environment name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`",
+    "key": "message_testing_stage_name",
+    "question": "We use the stage name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`",
     "kind": "info"
   }, {
-    "key": "testing_environment_name",
-    "question": "What is the testing environment name (as provided during the bootstrapping)?",
+    "key": "testing_stage_name",
+    "question": "What is the testing stage name (as provided during the bootstrapping)?",
     "isRequired": true
   }, {
     "key": "testing_stack_name",
@@ -43,7 +43,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "testing_environment_name"},
+          { "valueOf": "testing_stage_name"},
           "pipeline_execution_role"
       ]
     }
@@ -53,7 +53,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "testing_environment_name"},
+          { "valueOf": "testing_stage_name"},
           "cloudformation_execution_role"
       ]
     }
@@ -63,7 +63,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "testing_environment_name"},
+          { "valueOf": "testing_stage_name"},
           "artifacts_bucket"
       ]
     }
@@ -72,7 +72,7 @@
     "question": "What is the testing ECR repository URI?",
     "default": {
       "keyPath": [
-          { "valueOf": "testing_environment_name"},
+          { "valueOf": "testing_stage_name"},
           "image_repository"
       ]
     }
@@ -82,19 +82,19 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "testing_environment_name"},
+          { "valueOf": "testing_stage_name"},
           "region"
       ]
     }
   }, {
-    "key": "message_list_environment_names_prod",
+    "key": "message_list_stage_names_prod",
     "question": {
-      "keyPath": ["environment_names_message"]
+      "keyPath": ["stage_names_message"]
     },
     "kind": "info"
   }, {
-    "key": "prod_environment_name",
-    "question": "What is the production environment name (as provided during the bootstrapping)?",
+    "key": "prod_stage_name",
+    "question": "What is the production stage name (as provided during the bootstrapping)?",
     "isRequired": true
   }, {
     "key": "prod_stack_name",
@@ -106,7 +106,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "prod_environment_name"},
+          { "valueOf": "prod_stage_name"},
           "pipeline_execution_role"
       ]
     }
@@ -116,7 +116,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "prod_environment_name"},
+          { "valueOf": "prod_stage_name"},
           "cloudformation_execution_role"
       ]
     }
@@ -126,7 +126,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "prod_environment_name"},
+          { "valueOf": "prod_stage_name"},
           "artifacts_bucket"
       ]
     }
@@ -135,7 +135,7 @@
     "question": "What is the production ECR repository URI?",
     "default": {
       "keyPath": [
-          { "valueOf": "prod_environment_name"},
+          { "valueOf": "prod_stage_name"},
           "image_repository"
       ]
     }
@@ -145,7 +145,7 @@
     "isRequired": true,
     "default": {
       "keyPath": [
-          { "valueOf": "prod_environment_name"},
+          { "valueOf": "prod_stage_name"},
           "region"
       ]
     }
