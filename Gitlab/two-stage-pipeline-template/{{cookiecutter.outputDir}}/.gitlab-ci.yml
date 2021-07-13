@@ -118,7 +118,7 @@ build-and-package:
       - packaged-prod.yaml
 
 # This stage is triggered for main branch you set in the question,
-# which will deploy the SAM application to testing environment using
+# which will deploy the testing stage SAM application using
 # the templated file generated.
 deploy-testing:
   stage: testing
@@ -147,7 +147,7 @@ deploy-testing:
 #    #trigger the integration tests here
 
 # This stage is triggered for main branch you set in the question,
-# which will deploy the SAM application to prod environment using
+# which will deploy the prod stage SAM application using
 # the templated file generated.
 deploy-prod:
   stage: prod
