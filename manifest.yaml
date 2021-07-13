@@ -6,12 +6,12 @@ providers:
   - displayName: GitHub Actions
     id: github-actions
 templates:
-  - displayName: Two-stage pipeline
+  - displayName: Two-environment pipeline
     provider: jenkins
-    location: Jenkins/two-stage-pipeline-template
-  - displayName: Two-stage pipeline
+    location: Jenkins/two-environment-pipeline-template
+  - displayName: Two-environment pipeline
     provider: gitlab
-    location: Gitlab/two-stage-pipeline-template
-  - displayName: Two-stage pipeline
+    location: Gitlab/two-environment-pipeline-template
+  - displayName: Two-environment pipeline
     provider: github-actions
-    location: GitHub-Actions/two-stage-pipeline-template
+    location: GitHub-Actions/two-environment-pipeline-template
