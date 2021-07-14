@@ -27,7 +27,7 @@
     "kind": "info"
   }, {
     "key": "testing_stage_name",
-    "question": "What is the testing stage name (as provided during the bootstrapping)?",
+    "question": "What is the testing stage name (as provided during the bootstrapping)?\nSelect an index or enter the stage name:",
     "isRequired": true
   }, {
     "key": "testing_stack_name",
@@ -99,7 +99,7 @@
     "kind": "info"
   }, {
     "key": "prod_stage_name",
-    "question": "What is the production stage name (as provided during the bootstrapping)?",
+    "question": "What is the production stage name (as provided during the bootstrapping)?\nSelect an index or enter the stage name:",
     "isRequired": true
   }, {
     "key": "prod_stack_name",
