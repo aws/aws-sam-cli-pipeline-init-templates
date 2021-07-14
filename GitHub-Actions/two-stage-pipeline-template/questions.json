@@ -31,15 +31,15 @@
     "kind": "info"
   }, {
     "key": "testing_stage_name",
-    "question": "What is the testing stage name (as provided during the bootstrapping)?",
+    "question": "What is the name of stage 1 (as provided during the bootstrapping)?\nSelect an index or enter the stage name:",
     "isRequired": true
   }, {
     "key": "testing_stack_name",
-    "question": "What is the testing stack name?",
+    "question": "What is the sam application stack name for stage 1?",
     "isRequired": true
   }, {
     "key": "testing_pipeline_execution_role",
-    "question": "What is the testing pipeline execution role ARN?",
+    "question": "What is the pipeline execution role ARN for stage 1?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
@@ -50,7 +50,7 @@
     }
   }, {
     "key": "testing_cloudformation_execution_role",
-    "question": "What is the testing CloudFormation execution role ARN?",
+    "question": "What is the CloudFormation execution role ARN for stage 1?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
@@ -61,7 +61,7 @@
     }
   }, {
     "key": "testing_artifacts_bucket",
-    "question": "What is the testing S3 bucket name for artifacts?",
+    "question": "What is the S3 bucket name for artifacts for stage 1?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
@@ -72,7 +72,7 @@
     }
   }, {
     "key": "testing_image_repository",
-    "question": "What is the testing ECR repository URI?",
+    "question": "What is the ECR repository URI for stage 1?",
     "allowAutofill": true,
     "default": {
       "keyPath": [
@@ -82,7 +82,7 @@
     }
   }, {
     "key": "testing_region",
-    "question": "What is the testing AWS region?",
+    "question": "What is the AWS region for stage 1?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
@@ -103,15 +103,15 @@
     "kind": "info"
   }, {
     "key": "prod_stage_name",
-    "question": "What is the production stage name (as provided during the bootstrapping)?",
+    "question": "What is the name of stage 2 (as provided during the bootstrapping)?\nSelect an index or enter the stage name:",
     "isRequired": true
   }, {
     "key": "prod_stack_name",
-    "question": "What is the production stack name?",
+    "question": "What is the sam application stack name for stage 2?",
     "isRequired": true
   }, {
     "key": "prod_pipeline_execution_role",
-    "question": "What is the production pipeline execution role ARN?",
+    "question": "What is the pipeline execution role ARN for stage 2?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
@@ -122,7 +122,7 @@
     }
   }, {
     "key": "prod_cloudformation_execution_role",
-    "question": "What is the production CloudFormation execution role ARN?",
+    "question": "What is the CloudFormation execution role ARN for stage 2?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
@@ -133,7 +133,7 @@
     }
   }, {
     "key": "prod_artifacts_bucket",
-    "question": "What is the production S3 bucket name for artifacts?",
+    "question": "What is the S3 bucket name for artifacts for stage 2?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
@@ -144,7 +144,7 @@
     }
   }, {
     "key": "prod_image_repository",
-    "question": "What is the production ECR repository URI?",
+    "question": "What is the ECR repository URI for stage 2?",
     "allowAutofill": true,
     "default": {
       "keyPath": [
@@ -154,7 +154,7 @@
     }
   }, {
     "key": "prod_region",
-    "question": "What is the production AWS region?",
+    "question": "What is the AWS region for stage 2?",
     "isRequired": true,
     "allowAutofill": true,
     "default": {
