@@ -118,7 +118,6 @@ jobs:
         with:
           name: packaged-testing.yaml
           path: packaged-testing.yaml
-          retention-days: 365
           
       - name: Assume the prod pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
@@ -145,7 +144,6 @@ jobs:
         with:
           name: packaged-prod.yaml
           path: packaged-prod.yaml
-          retention-days: 365
     
   deploy-testing:
     if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
