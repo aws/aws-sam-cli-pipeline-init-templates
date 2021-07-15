@@ -144,7 +144,6 @@ jobs:
         with:
           name: packaged-prod.yaml
           path: packaged-prod.yaml
-          retention-days: 90
     
   deploy-testing:
     if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
