@@ -32,7 +32,8 @@
   }, {
     "key": "testing_stack_name",
     "question": "What is the sam application stack name for stage 1?",
-    "isRequired": true
+    "isRequired": true,
+    "default": "sam-app"
   }, {
     "key": "testing_pipeline_execution_role",
     "question": "What is the pipeline execution role ARN for stage 1?",
@@ -104,7 +105,8 @@
   }, {
     "key": "prod_stack_name",
     "question": "What is the sam application stack name for stage 2?",
-    "isRequired": true
+    "isRequired": true,
+    "default": "sam-app"
   }, {
     "key": "prod_pipeline_execution_role",
     "question": "What is the pipeline execution role ARN for stage 2?",
