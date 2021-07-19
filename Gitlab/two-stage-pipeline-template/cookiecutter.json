@@ -1,5 +1,7 @@
 {
   "outputDir": "aws-sam-pipeline",
+  "pipeline_user_aws_access_key_id_variable_name": "",
+  "pipeline_user_aws_secret_access_key_variable_name": "",
   "main_git_branch": "",
   "sam_template": "",
   "testing_stack_name": "",
