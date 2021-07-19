@@ -1,7 +1,7 @@
 variables:
   SAM_TEMPLATE: {{cookiecutter.sam_template}}
-  PIPELINE_USER_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-  PIPELINE_USER_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+  PIPELINE_USER_ACCESS_KEY_ID: ${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+  PIPELINE_USER_SECRET_ACCESS_KEY: ${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
   TESTING_STACK_NAME: {{cookiecutter.testing_stack_name}}
   TESTING_REGION: {{cookiecutter.testing_region}}
   TESTING_PIPELINE_EXECUTION_ROLE: {{cookiecutter.testing_pipeline_execution_role}}

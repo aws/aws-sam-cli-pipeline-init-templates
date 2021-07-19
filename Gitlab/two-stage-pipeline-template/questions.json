@@ -4,6 +4,14 @@
     "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production stage.\n",
     "kind": "info"
   }, {
+    "key": "pipeline_user_aws_access_key_id_variable_name",
+    "question": "What is the GitLab variable key for pipeline user account access key ID?",
+    "default": "AWS_ACCESS_KEY_ID"
+  }, {
+    "key": "pipeline_user_aws_secret_access_key_variable_name",
+    "question": "What is the GitLab variable key for pipeline user account access key secret?",
+    "default": "AWS_SECRET_ACCESS_KEY"
+  }, {
     "key": "main_git_branch",
     "question": "What is the Git branch used for production deployments?",
     "default": "main"
