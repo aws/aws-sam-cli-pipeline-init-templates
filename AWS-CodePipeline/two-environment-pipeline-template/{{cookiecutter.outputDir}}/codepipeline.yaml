@@ -142,13 +142,12 @@ Resources:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Action: sts:AssumeRole
+          -
             Effect: Allow
             Principal:
-              Service: events.amazonaws.com
-            Condition:
-              StringEquals:
-                aws:SourceAccount: !Ref AWS::AccountId
+              Service:
+                - events.amazonaws.com
+            Action: sts:AssumeRole
       Policies:
         -
           PolicyName: cwe-pipeline-execution
@@ -454,10 +453,8 @@ Resources:
               - "sts:AssumeRole"
             Effect: Allow
             Principal:
-              Service: codepipeline.amazonaws.com
-            Condition:
-              StringEquals:
-                aws:SourceAccount: !Ref AWS::AccountId
+              Service:
+                - codepipeline.amazonaws.com
       Policies:
         - PolicyName: CodePipelineAccess
           PolicyDocument:
@@ -566,9 +563,6 @@ Resources:
           Effect: Allow
           Principal:
             Service: cloudformation.amazonaws.com
-          Condition:
-            StringEquals:
-              aws:SourceAccount: !Ref AWS::AccountId
       Policies:
         - PolicyName: GrantCloudFormationFullAccess
           PolicyDocument:
@@ -596,10 +590,8 @@ Resources:
               - "sts:AssumeRole"
             Effect: Allow
             Principal:
-              Service: codebuild.amazonaws.com
-            Condition:
-              StringEquals:
-                aws:SourceAccount: !Ref AWS::AccountId
+              Service:
+                - codebuild.amazonaws.com
       Policies:
         - PolicyName: CodeBuildLogs
           PolicyDocument:
