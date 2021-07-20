@@ -1,0 +1,20 @@
+{
+  "outputDir": "aws-sam-pipeline",
+  "git_provider_type": "",
+  "codestar_full_repository_id": "",
+  "codecommit_repository_name": "",
+  "main_git_branch": "",
+  "sam_template": "",
+  "testing_stack_name": "",
+  "testing_pipeline_execution_role": "",
+  "testing_cloudformation_execution_role": "",
+  "testing_artifacts_bucket": "",
+  "testing_image_repository": "",
+  "testing_region": "",
+  "prod_stack_name": "",
+  "prod_pipeline_execution_role": "",
+  "prod_cloudformation_execution_role": "",
+  "prod_artifacts_bucket":  "",
+  "prod_image_repository":  "",
+  "prod_region": ""
+}
