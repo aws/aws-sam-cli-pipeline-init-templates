@@ -5,6 +5,8 @@ providers:
     id: gitlab
   - displayName: GitHub Actions
     id: github-actions
+  - displayName: AWS CodePipeline
+    id: aws-codepipeline
 templates:
   - displayName: Two-stage pipeline
     provider: jenkins
@@ -15,3 +17,6 @@ templates:
   - displayName: Two-stage pipeline
     provider: github-actions
     location: GitHub-Actions/two-stage-pipeline-template
+  - displayName: Two-stage pipeline
+    provider: aws-codepipeline
+    location: AWS-CodePipeline/two-stage-pipeline-template
