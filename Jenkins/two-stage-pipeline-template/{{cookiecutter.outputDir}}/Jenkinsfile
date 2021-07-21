@@ -167,11 +167,6 @@ pipeline {
     //   }
     // }
 
-    // uncomment this to have a manual approval step before deployment to production
-    // stage('production-deployment-approval'){
-    //   input "Do you want to deploy to production environment?"
-    // }
-
     stage('deploy-prod') {
       when {
         branch env.MAIN_BRANCH
@@ -182,6 +177,10 @@ pipeline {
         }
       }
       steps {
+        // uncomment this to have a manual approval step before deployment to production
+        // timeout(time: 24, unit: 'HOURS') {
+        //   input 'Please confirm before starting production deployment'
+        // }
         withAWS(
             credentials: env.PIPELINE_USER_CREDENTIAL_ID, 
             region: env.PROD_REGION,
