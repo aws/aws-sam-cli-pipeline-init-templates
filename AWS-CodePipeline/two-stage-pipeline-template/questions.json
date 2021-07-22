@@ -109,7 +109,7 @@
     "kind": "info"
   }, {
     "key": "prod_stage_name",
-    "question": "What is the name of stage 1 (as provided during the bootstrapping)?\nSelect an index or enter the stage name",
+    "question": "What is the name of stage 2 (as provided during the bootstrapping)?\nSelect an index or enter the stage name",
     "isRequired": true
   }, {
     "key": "prod_stack_name",
