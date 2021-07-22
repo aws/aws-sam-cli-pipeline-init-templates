@@ -1,11 +1,12 @@
-## My Project
+# AWS SAM CLI Pipeline Init Templates
 
-TODO: Fill this README out!
+This repository containers the pipeline init templates used in the AWS SAM CLI for `sam pipeline` calls.
 
-Be sure to:
+## Getting Started
 
-* Change the title in this README
-* Edit your repository description on GitHub
+To get started with SAM-based pipelines, use the SAM CLI.
+
+* [Introducing AWS SAM Pipelines](https://aws.amazon.com/blogs/compute/introducing-aws-sam-pipelines-automatically-generate-deployment-pipelines-for-serverless-applications/)
 
 ## Security
 
@@ -14,4 +15,3 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
-
