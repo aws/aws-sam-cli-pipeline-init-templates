@@ -9,7 +9,7 @@ phases:
   build:
     commands:
       - . ./assume-role.sh ${ENV_PIPELINE_EXECUTION_ROLE} deploy
-      - sam deploy --stack-name ${ENV_STACK_NAME} 
+      - sam deploy --stack-name ${ENV_STACK_NAME}
                     --template ${ENV_TEMPLATE}
                     --capabilities CAPABILITY_IAM
                     --region ${ENV_REGION}
