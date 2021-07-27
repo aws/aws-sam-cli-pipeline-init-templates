@@ -1,6 +1,6 @@
 # AWS SAM CLI Pipeline Init Templates
 
-This repository containers the pipeline init templates used in the AWS SAM CLI for `sam pipeline` calls.
+This repository contains the pipeline init templates used in the AWS SAM CLI for `sam pipeline` commands.
 
 ## Getting Started
 
