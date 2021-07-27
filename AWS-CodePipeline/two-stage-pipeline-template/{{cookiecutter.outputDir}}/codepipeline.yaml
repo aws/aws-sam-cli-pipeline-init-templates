@@ -19,7 +19,7 @@ Description: >
 # `sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`.
 
 {%- if is_codestar_source %}
-# After creating the stack, the CodeStar Connection is in PENDING status by default. You must complete 
+# After creating the stack, the CodeStar Connection is in PENDING status by default. You must complete
 # the OAuth handshake with the third-party provider using the installation associated with your connection.
 # See https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html for instructions.
 {%- endif %}
@@ -121,8 +121,8 @@ Conditions:
   {%- endif %}
 
 Resources:
-  #   ____                           
-  # / ___|  ___  _   _ _ __ ___ ___ 
+  #   ____
+  # / ___|  ___  _   _ _ __ ___ ___
   # \___ \ / _ \| | | | '__/ __/ _ \
   #   ___) | (_) | |_| | | | (_|  __/
   # |____/ \___/ \__,_|_|  \___\___|
@@ -130,7 +130,7 @@ Resources:
   CodeStarConnection:
     Condition: CreateConnection
     Type: AWS::CodeStarConnections::Connection
-    Properties: 
+    Properties:
       ConnectionName: GitRepositoryConnection
       ProviderType: !Ref GitProviderType
   {%- endif %}
@@ -183,12 +183,12 @@ Resources:
           Id: codepipeline-AppPipeline
   {%- endif %}
 
-  #  ____  _            _ _            
-  # |  _ \(_)_ __   ___| (_)_ __   ___ 
+  #  ____  _            _ _
+  # |  _ \(_)_ __   ___| (_)_ __   ___
   # | |_) | | '_ \ / _ | | | '_ \ / _ \
   # |  __/| | |_) |  __| | | | | |  __/
   # |_|   |_| .__/ \___|_|_|_| |_|\___|
-  #         |_|                        
+  #         |_|
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -307,7 +307,7 @@ Resources:
                 OutputArtifacts:
                   - Name: BuildArtifactAsZip
           - !Ref AWS::NoValue
-        
+
         - !If
           - IsMainBranchPipeline
           - Name: DeployTest
@@ -397,7 +397,7 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
-  
+
   PipelineArtifactsBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -580,8 +580,8 @@ Resources:
               - Effect: Allow
                 Action: '*'
                 Resource: '*'
-  
-  #   ____          _      ____        _ _     _ 
+
+  #   ____          _      ____        _ _     _
   #  / ___|___   __| | ___| __ ) _   _(_| | __| |
   # | |   / _ \ / _` |/ _ |  _ \| | | | | |/ _` |
   # | |__| (_) | (_| |  __| |_) | |_| | | | (_| |

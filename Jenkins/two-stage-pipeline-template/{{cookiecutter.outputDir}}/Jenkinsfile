@@ -135,7 +135,7 @@ pipeline {
       }
       steps {
         withAWS(
-            credentials: env.PIPELINE_USER_CREDENTIAL_ID, 
+            credentials: env.PIPELINE_USER_CREDENTIAL_ID,
             region: env.TESTING_REGION,
             role: env.TESTING_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'testing-deployment') {
@@ -182,7 +182,7 @@ pipeline {
         //   input 'Please confirm before starting production deployment'
         // }
         withAWS(
-            credentials: env.PIPELINE_USER_CREDENTIAL_ID, 
+            credentials: env.PIPELINE_USER_CREDENTIAL_ID,
             region: env.PROD_REGION,
             role: env.PROD_PIPELINE_EXECUTION_ROLE,
             roleSessionName: 'prod-deployment') {

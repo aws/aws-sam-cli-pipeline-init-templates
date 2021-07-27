@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           # trigger the tests here
-  
+
   build-and-deploy-feature:
     # this stage is triggered only for feature branches (feature*),
     # which will build the stack and deploy to a stack named with branch name.
@@ -80,7 +80,7 @@ jobs:
             {%- endif %}
             --no-fail-on-empty-changeset \
             --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
-  
+
   build-and-package:
     if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
     needs: [test]
@@ -118,7 +118,7 @@ jobs:
         with:
           name: packaged-testing.yaml
           path: packaged-testing.yaml
-          
+
       - name: Assume the prod pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -144,7 +144,7 @@ jobs:
         with:
           name: packaged-prod.yaml
           path: packaged-prod.yaml
-    
+
   deploy-testing:
     if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
     needs: [build-and-package]
@@ -180,7 +180,7 @@ jobs:
             {%- endif %}
             --no-fail-on-empty-changeset \
             --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
-  
+
   integration-test:
     if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
     needs: [deploy-testing]
@@ -189,7 +189,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           # trigger the integration tests here
-  
+
   deploy-prod:
     if: github.ref == 'refs/heads/{{ cookiecutter.main_git_branch }}'
     needs: [integration-test]
@@ -204,7 +204,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: packaged-prod.yaml
-      
+
       - name: Assume the prod pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
