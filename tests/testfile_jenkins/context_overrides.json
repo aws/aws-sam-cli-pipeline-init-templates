@@ -1,0 +1,17 @@
+{
+    "pipeline_user_jenkins_credential_id": "credential-id",
+    "main_git_branch": "main",
+    "sam_template": "template.yaml",
+    "testing_stack_name": "test-stack",
+    "testing_pipeline_execution_role": "test-pipeline-execution-role",
+    "testing_cloudformation_execution_role": "test-cfn-execution-role",
+    "testing_artifacts_bucket": "test-bucket",
+    "testing_image_repository": "test-ecr",
+    "testing_region": "us-east-2",
+    "prod_stack_name": "prod-stack",
+    "prod_pipeline_execution_role": "prod-pipeline-execution-role",
+    "prod_cloudformation_execution_role": "prod-cfn-execution-role",
+    "prod_artifacts_bucket": "prod-bucket",
+    "prod_image_repository": "prod-ecr",
+    "prod_region": "us-west-2"
+}
