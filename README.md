@@ -12,6 +12,15 @@ To get started with SAM-based pipelines, use the SAM CLI.
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
+## Test
+
+```sh
+# Recommend: run these in a Python virtual environment
+pip install aws-sam-cli==1.27.2
+pip install pytest~=6.0
+pytest tests/
+```
+
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
