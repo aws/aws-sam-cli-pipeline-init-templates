@@ -2,7 +2,7 @@
 {% set is_codecommit_source = cookiecutter.codecommit_repository_name != "" -%}
 AWSTemplateFormatVersion : '2010-09-09'
 Description: >
-  This template deploys a CodePipiline with its required resources.
+  This template deploys a CodePipeline with its required resources.
 
   The following stages are predefined in this template:
   - Source
