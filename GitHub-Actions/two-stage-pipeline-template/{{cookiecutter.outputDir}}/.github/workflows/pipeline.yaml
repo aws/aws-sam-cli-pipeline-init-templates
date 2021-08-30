@@ -70,10 +70,10 @@ jobs:
 
       - name: Delete feature branch stack
         env:
-          FEATURE_STACK_NAME: {{ '${{ toJSON(github.event.ref) }}' }}
+          FEATURE_BRANCH_NAME: {{ '${{ github.event.ref }}' }}
         run: |
           sam delete \
-            --stack-name $(echo ${FEATURE_STACK_NAME##*/} | tr -cd '[a-zA-Z0-9-]') \
+            --stack-name $(echo ${FEATURE_BRANCH_NAME##*/} | tr -cd '[a-zA-Z0-9-]') \
             --region ${TESTING_REGION} \
             --no-prompts
 
