@@ -5,6 +5,9 @@ on:
     branches:
       - '{{ cookiecutter.main_git_branch }}'
       - 'feature**'
+  delete:
+    branches:
+      - 'feature**'
 
 env:
   PIPELINE_USER_ACCESS_KEY_ID: ${{ "{{" }} secrets.{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}} {{ "}}" }}
@@ -39,11 +42,40 @@ env:
 
 jobs:
   test:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: |
           # trigger the tests here
+
+  delete-feature:
+    if: startsWith(github.event.ref, 'feature') && github.event_name == 'delete'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: aws-actions/setup-sam@v1
+
+      - name: Assume the testing pipeline user role
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: {{ '${{ env.PIPELINE_USER_ACCESS_KEY_ID }}' }}
+          aws-secret-access-key: {{ '${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}' }}
+          aws-region: {{ '${{ env.TESTING_REGION }}' }}
+          role-to-assume: {{ '${{ env.TESTING_PIPELINE_EXECUTION_ROLE }}' }}
+          role-session-name: testing-packaging
+          role-duration-seconds: 3600
+          role-skip-session-tagging: true
+
+      - name: Delete feature branch stack
+        env:
+          FEATURE_STACK_NAME: {{ '${{ toJSON(github.event.ref) }}' }}
+        run: |
+          sam delete \
+            --stack-name $(echo ${FEATURE_STACK_NAME##*/} | tr -cd '[a-zA-Z0-9-]') \
+            --region ${TESTING_REGION} \
+            --no-prompts
 
   build-and-deploy-feature:
     # this stage is triggered only for feature branches (feature*),
