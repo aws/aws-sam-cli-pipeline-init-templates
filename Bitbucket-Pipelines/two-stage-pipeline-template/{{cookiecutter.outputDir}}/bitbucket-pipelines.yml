@@ -1,0 +1,65 @@
+# Prerequisites: Parameter oidc: true in the step configuration and variable AWS_OIDC_ROLE_ARN setup in the Deployment variables https://support.atlassian.com/bitbucket-cloud/docs/set-up-and-monitor-deployments/.
+
+image: atlassian/default-image:2
+
+
+pipelines:
+  default:
+    - step:
+        name: Test
+        script:
+          - echo "Tests go here..."
+          # Add testing logic here
+
+
+  branches:
+    {{ cookiecutter.main_git_branch }}:
+      - parallel:
+        - step:
+            name: Test
+            script:
+              - echo "Tests here..."
+              # Add testing logic here
+        - step:
+            name: Security Scan
+            script:
+              # Run a security scan for sensitive data.
+              # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
+              - pipe: atlassian/git-secrets-scan:0.5.1
+      - step:
+          name: Deploy to Testing
+          deployment: Test
+          oidc: true
+          script:
+            # Deploy a new version using OpenID Connect (OIDC) authentication without requiring AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY keys.
+            # Parameter oidc: true in the step configuration and variable AWS_OIDC_ROLE_ARN are required.
+            # More details https://bitbucket.org/atlassian/aws-sam-deploy/
+            - pipe: atlassian/aws-sam-deploy:1.3.1
+              variables:
+                AWS_OIDC_ROLE_ARN: {{cookiecutter.testing_pipeline_execution_role}}
+                AWS_DEFAULT_REGION: {{cookiecutter.testing_region}}
+                S3_BUCKET: {{cookiecutter.testing_artifacts_bucket}}
+                STACK_NAME: {{cookiecutter.testing_stack_name}}
+                SAM_TEMPLATE: {{cookiecutter.sam_template}}
+                {%- if cookiecutter.testing_cloudformation_execution_role %}
+                ROLE_ARN: {{cookiecutter.testing_cloudformation_execution_role}}
+                {%- endif %}
+      - step:
+          name: Deploy to Production
+          deployment: Production
+          trigger: manual
+          oidc: true
+          script:
+            # Deploy a new version using OpenID Connect (OIDC) authentication without requiring AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY keys.
+            # Parameter oidc: true in the step configuration and variable AWS_OIDC_ROLE_ARN are required.
+            # More details https://bitbucket.org/atlassian/aws-sam-deploy/
+            - pipe: atlassian/aws-sam-deploy:1.3.1
+              variables:
+                AWS_OIDC_ROLE_ARN: {{cookiecutter.prod_pipeline_execution_role}}
+                AWS_DEFAULT_REGION: {{cookiecutter.prod_region}}
+                S3_BUCKET: {{cookiecutter.prod_artifacts_bucket}}
+                STACK_NAME: {{cookiecutter.prod_stack_name}}
+                SAM_TEMPLATE: {{cookiecutter.sam_template}}
+                {%- if cookiecutter.prod_cloudformation_execution_role %}
+                ROLE_ARN: {{cookiecutter.prod_cloudformation_execution_role}}
+                {%- endif %}
