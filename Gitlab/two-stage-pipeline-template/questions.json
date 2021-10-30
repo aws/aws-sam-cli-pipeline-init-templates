@@ -21,7 +21,7 @@
     "default": "template.yaml"
   }, {
     "key": "message_testing_stage_name",
-    "question": "We use the stage name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`.\n",
+    "question": "We use the configuration name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`.\n",
     "kind": "info"
   }, {
     "key": "message_list_stage_names_testing",
@@ -31,7 +31,7 @@
     "kind": "info"
   }, {
     "key": "testing_stage_name",
-    "question": "What is the name of stage 1 (as provided during the bootstrapping)?\nSelect an index or enter the stage name",
+    "question": "Select an index or enter the stage 1’s configuration name (as provided during the bootstrapping)",
     "isRequired": true
   }, {
     "key": "testing_stack_name",
@@ -104,7 +104,7 @@
     "kind": "info"
   }, {
     "key": "prod_stage_name",
-    "question": "What is the name of stage 2 (as provided during the bootstrapping)?\nSelect an index or enter the stage name",
+    "question": "Select an index or enter the stage 1’s configuration name (as provided during the bootstrapping)",
     "isRequired": true
   }, {
     "key": "prod_stack_name",
