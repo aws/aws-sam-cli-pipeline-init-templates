@@ -5,10 +5,10 @@ providers:
     id: gitlab
   - displayName: GitHub Actions
     id: github-actions
-  - displayName: AWS CodePipeline
-    id: aws-codepipeline
   - displayName: Bitbucket Pipelines
     id: bitbucket-pipelines
+  - displayName: AWS CodePipeline
+    id: aws-codepipeline
 templates:
   - displayName: Two-stage pipeline
     provider: jenkins
