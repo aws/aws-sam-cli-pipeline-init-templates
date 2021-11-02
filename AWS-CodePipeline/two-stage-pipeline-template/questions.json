@@ -26,7 +26,7 @@
     "default": "template.yaml"
   }, {
     "key": "message_testing_stage_name",
-    "question": "We use the configuration name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`.\n",
+    "question": "We use the stage configuration name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`.\n",
     "kind": "info"
   }, {
     "key": "message_list_stage_names_testing",
