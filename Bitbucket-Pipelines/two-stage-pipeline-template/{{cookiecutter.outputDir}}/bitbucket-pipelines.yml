@@ -1,0 +1,177 @@
+image: public.ecr.aws/sam/build-provided
+
+pipelines:
+  branches:
+    feature:
+      - step:
+          name: Build and Package
+          script:
+            - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
+            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export TESTING_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.testing_pipeline_execution_role }}"
+            - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.testing_cloudformation_execution_role }}"
+            - export TESTING_ARTIFACTS_BUCKET="{{ cookiecutter.testing_artifacts_bucket }}"
+            - export TESTING_STACK_NAME="{{ cookiecutter.testing_stack_name }}"
+            - export TESTING_REGION="{{ cookiecutter.testing_region }}"
+            {%- if cookiecutter.testing_image_repository %}
+            - export TESTING_IMAGE_REPOSITORY="{{ cookiecutter.testing_image_repository }}"
+            {% else %}
+            # If there are functions with "Image" PackageType in your template,
+            # uncomment the line below and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
+            # testing "sam package" and "sam deploy" commands.'
+            #- export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
+            {% endif -%}
+            - sam build --template $SAM_TEMPLATE --use-container
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage
+            - >
+              sam package --profile testing-stage
+              --s3-bucket $TESTING_ARTIFACTS_BUCKET
+              --region $TESTING_REGION
+              {%- if cookiecutter.testing_image_repository %}
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              {%- endif %}
+              --output-template-file packaged-testing.yaml
+            - >
+              sam deploy --profile testing-stage
+              --stack-name ${TESTING_STACK_NAME}
+              --template packaged-testing.yaml
+              --capabilities CAPABILITY_IAM
+              --region ${TESTING_REGION}
+              --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
+              {%- if cookiecutter.prod_image_repository %}
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              {%- endif %}
+              --no-fail-on-empty-changeset
+              --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+          services:
+            - docker
+
+    {{ cookiecutter.main_git_branch }}:
+      - step:
+          name: Build and Package
+          script:
+            - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
+            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export TESTING_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.testing_pipeline_execution_role }}"
+            - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.testing_cloudformation_execution_role }}"
+            - export TESTING_ARTIFACTS_BUCKET="{{ cookiecutter.testing_artifacts_bucket }}"
+            - export TESTING_REGION="{{ cookiecutter.testing_region }}"
+            {%- if cookiecutter.testing_image_repository %}
+            - export TESTING_IMAGE_REPOSITORY="{{ cookiecutter.testing_image_repository }}"
+            {% else %}
+            # If there are functions with "Image" PackageType in your template,
+            # uncomment the line below and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
+            # testing "sam package" and "sam deploy" commands.'
+            #- export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
+            {% endif -%}
+            - export PRODUCTION_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.prod_pipeline_execution_role }}"
+            - export PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.prod_cloudformation_execution_role }}"
+            - export PRODUCTION_ARTIFACTS_BUCKET="{{ cookiecutter.prod_artifacts_bucket }}"
+            - export PRODUCTION_REGION="{{ cookiecutter.prod_region }}"
+            {%- if cookiecutter.prod_image_repository %}
+            - export PRODUCTION_IMAGE_REPOSITORY="{{ cookiecutter.prod_image_repository }}"
+            {% else %}
+            # If there are functions with "Image" PackageType in your template,
+            # uncomment the line below and add "--image-repository ${PRODUCTION_IMAGE_REPOSITORY}" to
+            # testing "sam package" and "sam deploy" commands.'
+            #- export PRODUCTION_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
+            {% endif -%}
+            - sam build --template $SAM_TEMPLATE --use-container
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage
+            - >
+              sam package --profile testing-stage
+              --s3-bucket $TESTING_ARTIFACTS_BUCKET
+              --region $TESTING_REGION
+              {%- if cookiecutter.testing_image_repository %}
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              {%- endif %}
+              --output-template-file packaged-testing.yaml
+            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage
+            - >
+              sam package --profile production-stage
+              --s3-bucket $PRODUCTION_ARTIFACTS_BUCKET
+              --region $PRODUCTION_REGION
+              {%- if cookiecutter.prod_image_repository %}
+              --image-repository ${PRODUCTION_IMAGE_REPOSITORY}
+              {%- endif %}
+              --output-template-file packaged-production.yaml
+          artifacts:
+            - packaged-testing.yaml
+            - packaged-production.yaml
+          services:
+            - docker
+      - step:
+          name: Deploy to Test
+          script:
+            - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
+            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export TESTING_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.testing_pipeline_execution_role }}"
+            - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.testing_cloudformation_execution_role }}"
+            - export TESTING_ARTIFACTS_BUCKET="{{ cookiecutter.testing_artifacts_bucket }}"
+            - export TESTING_STACK_NAME="{{ cookiecutter.testing_stack_name }}"
+            - export TESTING_REGION="{{ cookiecutter.testing_region }}"
+            {%- if cookiecutter.testing_image_repository %}
+            - export TESTING_IMAGE_REPOSITORY="{{ cookiecutter.testing_image_repository }}"
+            {% else %}
+            # If there are functions with "Image" PackageType in your template,
+            # uncomment the line below and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
+            # prod "sam package" and "sam deploy" commands.'
+            # - export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
+            {% endif -%}
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage
+            - >
+              sam deploy --profile testing-stage
+              --stack-name ${TESTING_STACK_NAME}
+              --template packaged-testing.yaml
+              --capabilities CAPABILITY_IAM
+              --region ${TESTING_REGION}
+              --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
+              {%- if cookiecutter.prod_image_repository %}
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              {%- endif %}
+              --no-fail-on-empty-changeset
+              --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+          artifacts:
+            - packaged-testing.yaml
+            - packaged-production.yaml
+          services:
+            - docker
+      - step:
+          name: Deploy to Prod
+          script:
+            - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
+            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export PRODUCTION_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.prod_pipeline_execution_role }}"
+            - export PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.prod_cloudformation_execution_role }}"
+            - export PRODUCTION_ARTIFACTS_BUCKET="{{ cookiecutter.prod_artifacts_bucket }}"
+            - export PRODUCTION_STACK_NAME="{{ cookiecutter.prod_stack_name }}"
+            - export PRODUCTION_REGION="{{ cookiecutter.prod_region }}"
+            {%- if cookiecutter.prod_image_repository %}
+            - export PRODUCTION_IMAGE_REPOSITORY="{{ cookiecutter.prod_image_repository }}"
+            {% else %}
+            # If there are functions with "Image" PackageType in your template,
+            # uncomment the line below and add "--image-repository ${PRODUCTION_IMAGE_REPOSITORY}" to
+            # prod "sam package" and "sam deploy" commands.'
+            # - export PRODUCTION_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
+            {% endif -%}
+            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage
+            - >
+              sam deploy --profile production-stage
+              --stack-name ${PRODUCTION_STACK_NAME}
+              --template packaged-production.yaml
+              --capabilities CAPABILITY_IAM
+              --region ${PRODUCTION_REGION}
+              --s3-bucket ${PRODUCTION_ARTIFACTS_BUCKET}
+              {%- if cookiecutter.prod_image_repository %}
+              --image-repository ${PRODUCTION_IMAGE_REPOSITORY}
+              {%- endif %}
+              --no-fail-on-empty-changeset
+              --role-arn ${PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE}
+          services:
+            - docker
+          # Uncomment following line to enable approval for prod deployment.
+          # trigger: manual
