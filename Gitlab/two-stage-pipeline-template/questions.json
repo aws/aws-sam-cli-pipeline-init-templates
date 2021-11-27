@@ -104,7 +104,7 @@
     "kind": "info"
   }, {
     "key": "prod_stage_name",
-    "question": "Select an index or enter the stage 1's configuration name (as provided during the bootstrapping)",
+    "question": "Select an index or enter the stage 2's configuration name (as provided during the bootstrapping)",
     "isRequired": true
   }, {
     "key": "prod_stack_name",
