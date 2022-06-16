@@ -211,12 +211,12 @@ jobs:
           role-duration-seconds: 3600
           role-skip-session-tagging: true      
 
-      - name: Assume the testing pipeline user role via OIDC
+      - name: Assume the prod pipeline user role via OIDC
         if: env.PERMISSIONS_PROVIDER == 'OpenID Connect'
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: {{ '${{ env.TESTING_REGION }}' }}
-          role-to-assume: {{ '${{ env.TESTING_PIPELINE_EXECUTION_ROLE }}' }}
+          aws-region: {{ '${{ env.PROD_REGION }}' }}
+          role-to-assume: {{ '${{ env.PROD_PIPELINE_EXECUTION_ROLE }}' }}
           role-session-name: testing-packaging
           role-duration-seconds: 3600
           role-skip-session-tagging: true
@@ -325,12 +325,12 @@ jobs:
           role-duration-seconds: 3600
           role-skip-session-tagging: true
         
-      - name: Assume the testing pipeline user role via OIDC
+      - name: Assume the prod pipeline user role via OIDC
         if: env.PERMISSIONS_PROVIDER == 'OpenID Connect'
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-region: {{ '${{ env.TESTING_REGION }}' }}
-          role-to-assume: {{ '${{ env.TESTING_PIPELINE_EXECUTION_ROLE }}' }}
+          aws-region: {{ '${{ env.PROD_REGION }}' }}
+          role-to-assume: {{ '${{ env.PROD_PIPELINE_EXECUTION_ROLE }}' }}
           role-session-name: testing-packaging
           role-duration-seconds: 3600
           role-skip-session-tagging: true
