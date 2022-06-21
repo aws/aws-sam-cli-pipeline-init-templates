@@ -4,11 +4,16 @@ pipelines:
   branches:
     feature:
       - step:
+          oidc: true
           name: Build and Package
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
-            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
-            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = IAM ]; then
+                export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+                export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+              fi
             - export TESTING_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.testing_pipeline_execution_role }}"
             - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.testing_cloudformation_execution_role }}"
             - export TESTING_ARTIFACTS_BUCKET="{{ cookiecutter.testing_artifacts_bucket }}"
@@ -23,7 +28,14 @@ pipelines:
             #- export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
             - sam build --template $SAM_TEMPLATE --use-container
-            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = "OpenID Connect" ]; then
+                export AWS_REGION=$TESTING_REGION
+                export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
+                export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+                echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+              fi
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
             - >
               sam package --profile testing-stage
               --s3-bucket $TESTING_ARTIFACTS_BUCKET
@@ -49,11 +61,16 @@ pipelines:
 
     {{ cookiecutter.main_git_branch }}:
       - step:
+          oidc: true
           name: Build and Package
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
-            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
-            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = IAM ]; then
+                export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+                export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+              fi
             - export TESTING_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.testing_pipeline_execution_role }}"
             - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.testing_cloudformation_execution_role }}"
             - export TESTING_ARTIFACTS_BUCKET="{{ cookiecutter.testing_artifacts_bucket }}"
@@ -79,7 +96,14 @@ pipelines:
             #- export PRODUCTION_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
             - sam build --template $SAM_TEMPLATE --use-container
-            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = "OpenID Connect" ]; then
+                export AWS_REGION=$TESTING_REGION
+                export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
+                export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+                echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+              fi
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
             - >
               sam package --profile testing-stage
               --s3-bucket $TESTING_ARTIFACTS_BUCKET
@@ -88,7 +112,12 @@ pipelines:
               --image-repository ${TESTING_IMAGE_REPOSITORY}
               {%- endif %}
               --output-template-file packaged-testing.yaml
-            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = "OpenID Connect" ]; then
+                export AWS_REGION=$PRODUCTION_REGION
+                export AWS_ROLE_ARN=$PRODUCTION_PIPELINE_EXECUTION_ROLE
+              fi
+            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
             - >
               sam package --profile production-stage
               --s3-bucket $PRODUCTION_ARTIFACTS_BUCKET
@@ -103,11 +132,16 @@ pipelines:
           services:
             - docker
       - step:
+          oidc: true
           name: Deploy to Test
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
-            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
-            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = IAM ]; then
+                export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+                export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+              fi
             - export TESTING_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.testing_pipeline_execution_role }}"
             - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.testing_cloudformation_execution_role }}"
             - export TESTING_ARTIFACTS_BUCKET="{{ cookiecutter.testing_artifacts_bucket }}"
@@ -121,7 +155,14 @@ pipelines:
             # prod "sam package" and "sam deploy" commands.'
             # - export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
-            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = "OpenID Connect" ]; then
+                export AWS_REGION=$TESTING_REGION
+                export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
+                export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+                echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+              fi
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
             - >
               sam deploy --profile testing-stage
               --stack-name ${TESTING_STACK_NAME}
@@ -140,11 +181,16 @@ pipelines:
           services:
             - docker
       - step:
+          oidc: true
           name: Deploy to Prod
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
-            - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
-            - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+            - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = IAM ]; then
+                export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
+                export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
+              fi
             - export PRODUCTION_PIPELINE_EXECUTION_ROLE="{{ cookiecutter.prod_pipeline_execution_role }}"
             - export PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE="{{ cookiecutter.prod_cloudformation_execution_role }}"
             - export PRODUCTION_ARTIFACTS_BUCKET="{{ cookiecutter.prod_artifacts_bucket }}"
@@ -158,7 +204,14 @@ pipelines:
             # prod "sam package" and "sam deploy" commands.'
             # - export PRODUCTION_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
-            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage
+            - |
+              if [ "$PERMISSIONS_PROVIDER" = "OpenID Connect" ]; then
+                export AWS_REGION=$PRODUCTION_REGION
+                export AWS_ROLE_ARN=$PRODUCTION_PIPELINE_EXECUTION_ROLE
+                export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+                echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+              fi
+            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
             - >
               sam deploy --profile production-stage
               --stack-name ${PRODUCTION_STACK_NAME}

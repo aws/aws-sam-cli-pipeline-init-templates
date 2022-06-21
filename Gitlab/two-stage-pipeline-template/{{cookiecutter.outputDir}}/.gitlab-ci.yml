@@ -1,5 +1,6 @@
 variables:
   SAM_TEMPLATE: {{cookiecutter.sam_template}}
+  PERMISSIONS_PROVIDER: {{cookiecutter.permissions_provider}}
   PIPELINE_USER_ACCESS_KEY_ID: ${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
   TESTING_STACK_NAME: {{cookiecutter.testing_stack_name}}
@@ -72,7 +73,7 @@ build-and-deploy-feature:
   only:
     - /^feature-.*$/
   script:
-    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deployment
+    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} feature-deployment "${PERMISSIONS_PROVIDER}"
     - sam build --template ${SAM_TEMPLATE} --use-container
     - sam deploy --stack-name $(echo ${CI_COMMIT_REF_NAME} | tr -cd '[a-zA-Z0-9-]')
                  --capabilities CAPABILITY_IAM
@@ -94,7 +95,7 @@ build-and-package:
   script:
     - sam build --template ${SAM_TEMPLATE} --use-container
 
-    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-stage-packaging
+    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-stage-packaging "${PERMISSIONS_PROVIDER}"
 
     - sam package --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
                    {%- if cookiecutter.testing_image_repository %}
@@ -103,7 +104,7 @@ build-and-package:
                    --region ${TESTING_REGION}
                    --output-template-file packaged-testing.yaml
 
-    - . assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-stage-packaging
+    - . assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-stage-packaging "${PERMISSIONS_PROVIDER}"
 
     - sam package --s3-bucket ${PROD_ARTIFACTS_BUCKET}
                   {%- if cookiecutter.prod_image_repository %}
@@ -125,7 +126,7 @@ deploy-testing:
   only:
     - {{cookiecutter.main_git_branch}}
   script:
-    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-deployment
+    - . assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} testing-deployment "${PERMISSIONS_PROVIDER}"
     - sam deploy --stack-name ${TESTING_STACK_NAME}
                  --template packaged-testing.yaml
                  --capabilities CAPABILITY_IAM
@@ -156,7 +157,7 @@ deploy-prod:
   only:
     - {{cookiecutter.main_git_branch}}
   script:
-    - . assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-deployment
+    - . assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-deployment "${PERMISSIONS_PROVIDER}"
     - sam deploy --stack-name ${PROD_STACK_NAME}
                  --template packaged-prod.yaml
                  --capabilities CAPABILITY_IAM
