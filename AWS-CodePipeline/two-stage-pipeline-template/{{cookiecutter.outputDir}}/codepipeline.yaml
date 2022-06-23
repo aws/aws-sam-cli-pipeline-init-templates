@@ -157,7 +157,7 @@ Resources:
               -
                 Effect: Allow
                 Action: codepipeline:StartPipelineExecution
-                Resource: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
+                Resource: !Sub "arn:${AWS::Partition}:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
 
   CloudWatchEventRule:
     Type: AWS::Events::Rule
@@ -168,7 +168,7 @@ Resources:
         detail-type:
           - 'CodeCommit Repository State Change'
         resources:
-          - !Sub "arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"
+          - !Sub "arn:${AWS::Partition}:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"
         detail:
           event:
             - referenceCreated
@@ -178,7 +178,7 @@ Resources:
           referenceName:
             - !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch]
       Targets:
-        - Arn: !Sub "arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
+        - Arn: !Sub "arn:${AWS::Partition}:codepipeline:${AWS::Region}:${AWS::AccountId}:${Pipeline}"
           RoleArn: !GetAtt CloudWatchEventRole.Arn
           Id: codepipeline-AppPipeline
   {%- endif %}
@@ -417,8 +417,8 @@ Resources:
               - s3:*
             Effect: Allow
             Resource:
-              - !Sub arn:aws:s3:::${PipelineArtifactsBucket}
-              - !Sub arn:aws:s3:::${PipelineArtifactsBucket}/*
+              - !Sub arn:${AWS::Partition}:s3:::${PipelineArtifactsBucket}
+              - !Sub arn:${AWS::Partition}:s3:::${PipelineArtifactsBucket}/*
             Principal:
               AWS:
                 - !GetAtt CodePipelineExecutionRole.Arn
@@ -495,7 +495,7 @@ Resources:
                   - 'codecommit:GetUploadArchiveStatus'
                   - 'codecommit:UploadArchive'
                 Resource:
-                  - !Sub "arn:aws:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"
+                  - !Sub "arn:${AWS::Partition}:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"
         {%- endif %}
         - PolicyName: CodePipelineCodeAndS3Bucket
           PolicyDocument:
@@ -559,7 +559,7 @@ Resources:
                   - "cloudformation:SetStackPolicy"
                   - "cloudformation:ValidateTemplate"
                 Resource:
-                  - !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*"
+                  - !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*"
 
   # PipelineStackCloudFormationExecutionRole is used for the pipeline to self mutate
   PipelineStackCloudFormationExecutionRole:
@@ -612,7 +612,7 @@ Resources:
                   - "logs:CreateLogStream"
                   - "logs:PutLogEvents"
                 Resource:
-                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*"
+                  - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*"
         - PolicyName: CodeBuildArtifactsBucket
           PolicyDocument:
             Version: "2012-10-17"
@@ -623,7 +623,7 @@ Resources:
                   - "s3:GetObjectVersion"
                   - "s3:PutObject"
                 Resource:
-                  - !Sub "arn:aws:s3:::${PipelineArtifactsBucket}/*"
+                  - !Sub "arn:${AWS::Partition}:s3:::${PipelineArtifactsBucket}/*"
         - PolicyName: AssumeStagePipExecutionRoles
           PolicyDocument:
             Version: "2012-10-17"
