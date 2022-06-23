@@ -12,13 +12,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
-    - uses: aws-actions/setup-sam@v2
-      with:
-        version: 1.27.2
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install aws-sam-cli==1.27.2
+        python -m pip install markupsafe==2.0.1 # https://github.com/aws/aws-sam-cli/issues/3661#issuecomment-1044340547
         python -m pip install pytest~=6.0
 
     - name: Run tests
