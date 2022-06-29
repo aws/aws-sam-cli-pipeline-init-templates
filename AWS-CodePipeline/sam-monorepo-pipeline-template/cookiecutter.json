@@ -1,0 +1,19 @@
+{
+    "outputDir": "aws-sam-pipeline",
+    "monorepo_project_subfolder": "",
+    "sam_template": "",
+    "test_region": "",
+    "test_stack_name": "",
+    "test_stage_name": "",
+    "test_pipeline_execution_role": "",
+    "test_cloudformation_execution_role": "",
+    "test_artifacts_bucket": "",
+    "test_image_repository": "",
+    "prod_region": "",
+    "prod_stack_name": "",
+    "prod_stage_name": "",
+    "prod_pipeline_execution_role": "",
+    "prod_cloudformation_execution_role": "",
+    "prod_artifacts_bucket": "",
+    "prod_image_repository": ""
+}

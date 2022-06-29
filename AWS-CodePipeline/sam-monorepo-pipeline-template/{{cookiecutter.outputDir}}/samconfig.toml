@@ -1,0 +1,34 @@
+version = 0.1
+
+[default.global.parameters]
+template = "{{cookiecutter.sam_template}}"
+resolve_s3 = true
+no_fail_on_empty_changeset = true
+capabilities = "CAPABILITY_IAM"
+
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "{{cookiecutter.monorepo_project_subfolder}}"
+s3_prefix = "{{cookiecutter.monorepo_project_subfolder}}"
+
+[{{cookiecutter.test_stage_name}}]
+[{{cookiecutter.test_stage_name}}.deploy]
+[{{cookiecutter.test_stage_name}}.deploy.parameters]
+stack_name = "{{cookiecutter.test_stack_name}}"
+s3_prefix = "{{cookiecutter.test_stack_name}}"
+region = "{{cookiecutter.test_region}}"
+
+[{{cookiecutter.prod_stage_name}}]
+[{{cookiecutter.prod_stage_name}}.deploy]
+[{{cookiecutter.prod_stage_name}}.deploy.parameters]
+stack_name = "{{cookiecutter.prod_stack_name}}"
+s3_prefix = "{{cookiecutter.prod_stack_name}}"
+region = "{{cookiecutter.prod_region}}"
+
+[pipeline]
+[pipeline.deploy]
+[pipeline.deploy.parameters]
+stack_name = "{{cookiecutter.monorepo_project_subfolder}}-pipeline"
+s3_prefix = "sam-pipeline/"
+template = "codepipeline.yaml"
