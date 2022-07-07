@@ -15,7 +15,7 @@ templates:
     location: Jenkins/two-stage-pipeline-template
   - displayName: Two-stage pipeline
     provider: gitlab
-    location: Gitlab/two-stage-pipeline-template
+    location: GitlabNoDocker/two-stage-pipeline-template
   - displayName: Two-stage pipeline
     provider: github-actions
     location: GitHub-Actions/two-stage-pipeline-template
