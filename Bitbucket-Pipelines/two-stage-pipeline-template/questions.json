@@ -7,7 +7,13 @@
     "key": "permissions_provider",
     "question": "Select a user permissions provider.",
     "options": ["IAM", "OpenID Connect"],
-    "default": "1",
+    "default": {
+      "keyPath": [
+          { "valueOf": "shared_values"},
+          "permissions_provider"
+      ]
+    },
+    "allowAutofill": true,
     "nextQuestion": {
       "OpenID Connect": "main_git_branch"
     },
