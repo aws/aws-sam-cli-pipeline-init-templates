@@ -15,7 +15,7 @@
     },
     "allowAutofill": true,
     "nextQuestion": {
-      "OpenID Connect": "main_git_branch"
+      "OpenID Connect (OIDC)": "main_git_branch"
     },
     "defaultNextQuestion": "pipeline_user_aws_access_key_id_variable_name"
   },{
