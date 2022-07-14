@@ -1,0 +1,148 @@
+image: public.ecr.aws/sam/build-provided
+
+pipelines:
+  branches:
+    feature:
+      - step:
+          oidc: true
+          name: Build and Package
+          script:
+            - export SAM_TEMPLATE="template.yaml"
+            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
+            - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="test-cfn-execution-role"
+            - export TESTING_ARTIFACTS_BUCKET="test-bucket"
+            - export TESTING_STACK_NAME="test-stack"
+            - export TESTING_REGION="us-east-2"
+            - export TESTING_IMAGE_REPOSITORY="test-ecr"
+            - sam build --template $SAM_TEMPLATE --use-container
+            - export AWS_REGION=$TESTING_REGION
+            - export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
+            - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+            - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
+            - >
+              sam package --profile testing-stage
+              --s3-bucket $TESTING_ARTIFACTS_BUCKET
+              --region $TESTING_REGION
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              --output-template-file packaged-testing.yaml
+            - >
+              sam deploy --profile testing-stage
+              --stack-name ${TESTING_STACK_NAME}
+              --template packaged-testing.yaml
+              --capabilities CAPABILITY_IAM
+              --region ${TESTING_REGION}
+              --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              --no-fail-on-empty-changeset
+              --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+          services:
+            - docker
+
+    main:
+      - step:
+          oidc: true
+          name: Build and Package
+          script:
+            - export SAM_TEMPLATE="template.yaml"
+            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
+            - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="test-cfn-execution-role"
+            - export TESTING_ARTIFACTS_BUCKET="test-bucket"
+            - export TESTING_REGION="us-east-2"
+            - export TESTING_IMAGE_REPOSITORY="test-ecr"
+            - export PRODUCTION_PIPELINE_EXECUTION_ROLE="prod-pipeline-execution-role"
+            - export PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE="prod-cfn-execution-role"
+            - export PRODUCTION_ARTIFACTS_BUCKET="prod-bucket"
+            - export PRODUCTION_REGION="us-west-2"
+            - export PRODUCTION_IMAGE_REPOSITORY="prod-ecr"
+            - sam build --template $SAM_TEMPLATE --use-container
+            - export AWS_REGION=$TESTING_REGION
+            - export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
+            - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+            - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" "$BITBUCKET_STEP_OIDC_TOKEN"
+            - >
+              sam package --profile testing-stage
+              --s3-bucket $TESTING_ARTIFACTS_BUCKET
+              --region $TESTING_REGION
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              --output-template-file packaged-testing.yaml
+            - export AWS_REGION=$PRODUCTION_REGION
+            - export AWS_ROLE_ARN=$PRODUCTION_PIPELINE_EXECUTION_ROLE
+            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
+            - >
+              sam package --profile production-stage
+              --s3-bucket $PRODUCTION_ARTIFACTS_BUCKET
+              --region $PRODUCTION_REGION
+              --image-repository ${PRODUCTION_IMAGE_REPOSITORY}
+              --output-template-file packaged-production.yaml
+          artifacts:
+            - packaged-testing.yaml
+            - packaged-production.yaml
+          services:
+            - docker
+      - step:
+          oidc: true
+          name: Deploy to Test
+          script:
+            - export SAM_TEMPLATE="template.yaml"
+            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
+            - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="test-cfn-execution-role"
+            - export TESTING_ARTIFACTS_BUCKET="test-bucket"
+            - export TESTING_STACK_NAME="test-stack"
+            - export TESTING_REGION="us-east-2"
+            - export TESTING_IMAGE_REPOSITORY="test-ecr"
+            - export AWS_REGION=$TESTING_REGION
+            - export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
+            - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+            - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+            - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
+            - >
+              sam deploy --profile testing-stage
+              --stack-name ${TESTING_STACK_NAME}
+              --template packaged-testing.yaml
+              --capabilities CAPABILITY_IAM
+              --region ${TESTING_REGION}
+              --s3-bucket ${TESTING_ARTIFACTS_BUCKET}
+              --image-repository ${TESTING_IMAGE_REPOSITORY}
+              --no-fail-on-empty-changeset
+              --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE}
+          artifacts:
+            - packaged-testing.yaml
+            - packaged-production.yaml
+          services:
+            - docker
+      - step:
+          oidc: true
+          name: Deploy to Prod
+          script:
+            - export SAM_TEMPLATE="template.yaml"
+            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export PRODUCTION_PIPELINE_EXECUTION_ROLE="prod-pipeline-execution-role"
+            - export PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE="prod-cfn-execution-role"
+            - export PRODUCTION_ARTIFACTS_BUCKET="prod-bucket"
+            - export PRODUCTION_STACK_NAME="prod-stack"
+            - export PRODUCTION_REGION="us-west-2"
+            - export PRODUCTION_IMAGE_REPOSITORY="prod-ecr"
+            - export AWS_REGION=$PRODUCTION_REGION
+            - export AWS_ROLE_ARN=$PRODUCTION_PIPELINE_EXECUTION_ROLE
+            - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+            - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+            - source assume-role.sh $PRODUCTION_PIPELINE_EXECUTION_ROLE testing-stage-packaging production-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
+            - >
+              sam deploy --profile production-stage
+              --stack-name ${PRODUCTION_STACK_NAME}
+              --template packaged-production.yaml
+              --capabilities CAPABILITY_IAM
+              --region ${PRODUCTION_REGION}
+              --s3-bucket ${PRODUCTION_ARTIFACTS_BUCKET}
+              --image-repository ${PRODUCTION_IMAGE_REPOSITORY}
+              --no-fail-on-empty-changeset
+              --role-arn ${PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE}
+          services:
+            - docker
+          # Uncomment following line to enable approval for prod deployment.
+          # trigger: manual
