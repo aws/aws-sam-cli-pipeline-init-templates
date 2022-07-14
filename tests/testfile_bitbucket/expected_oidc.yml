@@ -8,7 +8,7 @@ pipelines:
           name: Build and Package
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export PERMISSIONS_PROVIDER="OpenID Connect (OIDC)"
             - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
             - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="test-cfn-execution-role"
             - export TESTING_ARTIFACTS_BUCKET="test-bucket"
@@ -46,7 +46,7 @@ pipelines:
           name: Build and Package
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export PERMISSIONS_PROVIDER="OpenID Connect (OIDC)"
             - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
             - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="test-cfn-execution-role"
             - export TESTING_ARTIFACTS_BUCKET="test-bucket"
@@ -88,7 +88,7 @@ pipelines:
           name: Deploy to Test
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export PERMISSIONS_PROVIDER="OpenID Connect (OIDC)"
             - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
             - export TESTING_CLOUDFORMATION_EXECUTION_ROLE="test-cfn-execution-role"
             - export TESTING_ARTIFACTS_BUCKET="test-bucket"
@@ -120,7 +120,7 @@ pipelines:
           name: Deploy to Prod
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="OpenID Connect"
+            - export PERMISSIONS_PROVIDER="OpenID Connect (OIDC)"
             - export PRODUCTION_PIPELINE_EXECUTION_ROLE="prod-pipeline-execution-role"
             - export PRODUCTION_CLOUDFORMATION_EXECUTION_ROLE="prod-cfn-execution-role"
             - export PRODUCTION_ARTIFACTS_BUCKET="prod-bucket"

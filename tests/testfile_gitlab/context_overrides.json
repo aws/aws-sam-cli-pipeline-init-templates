@@ -15,5 +15,5 @@
   "prod_artifacts_bucket": "prod-bucket",
   "prod_image_repository": "prod-ecr",
   "prod_region": "us-west-2",
-  "permissions_provider": "OpenID Connect"
+  "permissions_provider": "OpenID Connect (OIDC)"
 }

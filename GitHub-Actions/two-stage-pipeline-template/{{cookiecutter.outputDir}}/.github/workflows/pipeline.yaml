@@ -42,7 +42,7 @@ env:
   {% endif -%}
   PROD_REGION: {{cookiecutter.prod_region}}
 
-{% if cookiecutter.permissions_provider == "OpenID Connect" -%}
+{% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
 permissions:
   id-token: write
   contents: read

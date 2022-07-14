@@ -1,6 +1,6 @@
 variables:
   SAM_TEMPLATE: template.yaml
-  PERMISSIONS_PROVIDER: OpenID Connect
+  PERMISSIONS_PROVIDER: OpenID Connect (OIDC)
   TESTING_STACK_NAME: test-stack
   TESTING_REGION: us-east-2
   TESTING_PIPELINE_EXECUTION_ROLE: test-pipeline-execution-role

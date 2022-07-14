@@ -7,7 +7,7 @@ unset AWS_SESSION_TOKEN
 export AWS_ACCESS_KEY_ID=$PIPELINE_USER_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$PIPELINE_USER_SECRET_ACCESS_KEY
 
-if [ "$PERMISSIONS_PROVIDER" = "OpenID Connect" ]
+if [ "$PERMISSIONS_PROVIDER" = "OpenID Connect (OIDC)" ]
 then
     # Use assume-role-with-web-identity instead of assume-role
     cred=$(aws sts assume-role-with-web-identity --role-arn "$ROLE" \

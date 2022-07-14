@@ -27,7 +27,7 @@ pipelines:
             #- export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
             - sam build --template $SAM_TEMPLATE --use-container
-            {% if cookiecutter.permissions_provider == "OpenID Connect" -%}
+            {% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
             - export AWS_REGION=$TESTING_REGION
             - export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
             - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
@@ -93,7 +93,7 @@ pipelines:
             #- export PRODUCTION_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
             - sam build --template $SAM_TEMPLATE --use-container
-            {% if cookiecutter.permissions_provider == "OpenID Connect" -%}
+            {% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
             - export AWS_REGION=$TESTING_REGION
             - export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
             - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
@@ -108,7 +108,7 @@ pipelines:
               --image-repository ${TESTING_IMAGE_REPOSITORY}
               {%- endif %}
               --output-template-file packaged-testing.yaml
-            {% if cookiecutter.permissions_provider == "OpenID Connect" -%}
+            {% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
             - export AWS_REGION=$PRODUCTION_REGION
             - export AWS_ROLE_ARN=$PRODUCTION_PIPELINE_EXECUTION_ROLE
             {% endif -%}
@@ -149,7 +149,7 @@ pipelines:
             # prod "sam package" and "sam deploy" commands.'
             # - export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
-            {% if cookiecutter.permissions_provider == "OpenID Connect" -%}
+            {% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
             - export AWS_REGION=$TESTING_REGION
             - export AWS_ROLE_ARN=$TESTING_PIPELINE_EXECUTION_ROLE
             - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
@@ -196,7 +196,7 @@ pipelines:
             # prod "sam package" and "sam deploy" commands.'
             # - export PRODUCTION_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
-            {% if cookiecutter.permissions_provider == "OpenID Connect" -%}
+            {% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
             - export AWS_REGION=$PRODUCTION_REGION
             - export AWS_ROLE_ARN=$PRODUCTION_PIPELINE_EXECUTION_ROLE
             - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token

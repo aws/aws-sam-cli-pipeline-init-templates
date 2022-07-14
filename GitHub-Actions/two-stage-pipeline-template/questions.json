@@ -6,7 +6,7 @@
   }, {
     "key": "permissions_provider",
     "question": "Select a user permissions provider.",
-    "options": ["IAM", "OpenID Connect"],
+    "options": ["IAM", "OpenID Connect (OIDC)"],
     "default": {
       "keyPath": [
           { "valueOf": "shared_values"},
