@@ -9,7 +9,7 @@ pipelines:
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
             - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
-            {% if cookiecutter.permissions_provider == "IAM" -%}
+            {% if cookiecutter.permissions_provider == "AWS IAM" -%}
             - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
             {% endif -%}
@@ -64,7 +64,7 @@ pipelines:
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
             - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
-            {% if cookiecutter.permissions_provider == "IAM" -%}
+            {% if cookiecutter.permissions_provider == "AWS IAM" -%}
             - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
             {% endif -%}
@@ -132,7 +132,7 @@ pipelines:
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
             - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
-            {% if cookiecutter.permissions_provider == "IAM" -%}
+            {% if cookiecutter.permissions_provider == "AWS IAM" -%}
             - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
             {% endif -%}
@@ -179,7 +179,7 @@ pipelines:
           script:
             - export SAM_TEMPLATE="{{ cookiecutter.sam_template }}"
             - export PERMISSIONS_PROVIDER="{{ cookiecutter.permissions_provider }}"
-            {% if cookiecutter.permissions_provider == "IAM" -%}
+            {% if cookiecutter.permissions_provider == "AWS IAM" -%}
             - export PIPELINE_USER_ACCESS_KEY_ID=${{ "{" }}{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}}{{ "}" }}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${{ "{" }}{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}}{{ "}" }}
             {% endif -%}

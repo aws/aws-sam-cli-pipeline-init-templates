@@ -7,7 +7,7 @@ TOKEN=$5
 
 unset AWS_SESSION_TOKEN
 
-if [ "$PERMISSIONS_PROVIDER" = "IAM" ]
+if [ "$PERMISSIONS_PROVIDER" = "AWS IAM" ]
 then
     aws configure --profile sam-pipeline-user set aws_access_key_id "$PIPELINE_USER_ACCESS_KEY_ID"
     aws configure --profile sam-pipeline-user set aws_secret_access_key "$PIPELINE_USER_SECRET_ACCESS_KEY"

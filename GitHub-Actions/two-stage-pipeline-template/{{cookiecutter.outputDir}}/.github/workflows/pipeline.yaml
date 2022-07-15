@@ -10,7 +10,7 @@ on:
       - 'feature**'
 
 env:
-  {% if cookiecutter.permissions_provider == "IAM" -%}
+  {% if cookiecutter.permissions_provider == "AWS IAM" -%}
   PIPELINE_USER_ACCESS_KEY_ID: ${{ "{{" }} secrets.{{cookiecutter.pipeline_user_aws_access_key_id_variable_name}} {{ "}}" }}
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ "{{" }} secrets.{{cookiecutter.pipeline_user_aws_secret_access_key_variable_name}} {{ "}}" }}
   {% endif -%}
@@ -69,7 +69,7 @@ jobs:
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          {% if cookiecutter.permissions_provider == "IAM" -%}
+          {% if cookiecutter.permissions_provider == "AWS IAM" -%}
           aws-access-key-id: {{ '${{ env.PIPELINE_USER_ACCESS_KEY_ID }}' }}
           aws-secret-access-key: {{ '${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}' }}
           {% endif -%}
@@ -103,7 +103,7 @@ jobs:
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          {% if cookiecutter.permissions_provider == "IAM" -%}
+          {% if cookiecutter.permissions_provider == "AWS IAM" -%}
           aws-access-key-id: {{ '${{ env.PIPELINE_USER_ACCESS_KEY_ID }}' }}
           aws-secret-access-key: {{ '${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}' }}
           {% endif -%}
@@ -141,7 +141,7 @@ jobs:
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          {% if cookiecutter.permissions_provider == "IAM" -%}
+          {% if cookiecutter.permissions_provider == "AWS IAM" -%}
           aws-access-key-id: {{ '${{ env.PIPELINE_USER_ACCESS_KEY_ID }}' }}
           aws-secret-access-key: {{ '${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}' }}
           {% endif -%}
@@ -169,7 +169,7 @@ jobs:
       - name: Assume the prod pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          {% if cookiecutter.permissions_provider == "IAM" -%}
+          {% if cookiecutter.permissions_provider == "AWS IAM" -%}
           aws-access-key-id: {{ '${{ env.PIPELINE_USER_ACCESS_KEY_ID }}' }}
           aws-secret-access-key: {{ '${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}' }}
           {% endif -%}
@@ -209,7 +209,7 @@ jobs:
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          {% if cookiecutter.permissions_provider == "IAM" -%}
+          {% if cookiecutter.permissions_provider == "AWS IAM" -%}
           aws-access-key-id: {{ '${{ env.PIPELINE_USER_ACCESS_KEY_ID }}' }}
           aws-secret-access-key: {{ '${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}' }}
           {% endif -%}
@@ -259,7 +259,7 @@ jobs:
       - name: Assume the prod pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          {% if cookiecutter.permissions_provider == "IAM" -%}
+          {% if cookiecutter.permissions_provider == "AWS IAM" -%}
           aws-access-key-id: {{ '${{ env.PIPELINE_USER_ACCESS_KEY_ID }}' }}
           aws-secret-access-key: {{ '${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}' }}
           {% endif -%}

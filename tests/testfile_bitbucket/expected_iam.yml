@@ -8,7 +8,7 @@ pipelines:
           name: Build and Package
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="IAM"
+            - export PERMISSIONS_PROVIDER="AWS IAM"
             - export PIPELINE_USER_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
@@ -44,7 +44,7 @@ pipelines:
           name: Build and Package
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="IAM"
+            - export PERMISSIONS_PROVIDER="AWS IAM"
             - export PIPELINE_USER_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
@@ -82,7 +82,7 @@ pipelines:
           name: Deploy to Test
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="IAM"
+            - export PERMISSIONS_PROVIDER="AWS IAM"
             - export PIPELINE_USER_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             - export TESTING_PIPELINE_EXECUTION_ROLE="test-pipeline-execution-role"
@@ -112,7 +112,7 @@ pipelines:
           name: Deploy to Prod
           script:
             - export SAM_TEMPLATE="template.yaml"
-            - export PERMISSIONS_PROVIDER="IAM"
+            - export PERMISSIONS_PROVIDER="AWS IAM"
             - export PIPELINE_USER_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
             - export PIPELINE_USER_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
             - export PRODUCTION_PIPELINE_EXECUTION_ROLE="prod-pipeline-execution-role"
