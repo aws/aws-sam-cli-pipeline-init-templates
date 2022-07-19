@@ -45,3 +45,68 @@ class TestTemplateGeneration(TestCase):
         self._generate_and_verify(
             template_dir, context_overrides_file, "Jenkinsfile", expected_file
         )
+
+    def test_bitbucket_oidc(self):
+        template_dir = Path(__file__).parent.parent.joinpath(
+            "Bitbucket-Pipelines/two-stage-pipeline-template"
+        )
+        context_overrides_file = Path(__file__).parent.joinpath(
+            "testfile_bitbucket", "context_overrides_oidc.json"
+        )
+        expected_file = Path(__file__).parent.joinpath("testfile_bitbucket", "expected_oidc.yml")
+
+        self._generate_and_verify(
+            template_dir, context_overrides_file, "bitbucket-pipelines.yml", expected_file
+        )
+
+    def test_bitbucket_iam(self):
+        template_dir = Path(__file__).parent.parent.joinpath(
+            "Bitbucket-Pipelines/two-stage-pipeline-template"
+        )
+        context_overrides_file = Path(__file__).parent.joinpath(
+            "testfile_bitbucket", "context_overrides_iam.json"
+        )
+        expected_file = Path(__file__).parent.joinpath("testfile_bitbucket", "expected_iam.yml")
+
+        self._generate_and_verify(
+            template_dir, context_overrides_file, "bitbucket-pipelines.yml", expected_file
+        )
+
+    def test_github_actions_oidc(self):
+        template_dir = Path(__file__).parent.parent.joinpath(
+            "GitHub-Actions/two-stage-pipeline-template"
+        )
+        context_overrides_file = Path(__file__).parent.joinpath(
+            "testfile_github", "context_overrides_oidc.json"
+        )
+        expected_file = Path(__file__).parent.joinpath("testfile_github", "expected_oidc.yaml")
+
+        self._generate_and_verify(
+            template_dir, context_overrides_file, "./.github/workflows/pipeline.yaml", expected_file
+        )
+
+    def test_github_actions_iam(self):
+        template_dir = Path(__file__).parent.parent.joinpath(
+            "GitHub-Actions/two-stage-pipeline-template"
+        )
+        context_overrides_file = Path(__file__).parent.joinpath(
+            "testfile_github", "context_overrides_iam.json"
+        )
+        expected_file = Path(__file__).parent.joinpath("testfile_github", "expected_iam.yaml")
+
+        self._generate_and_verify(
+            template_dir, context_overrides_file, "./.github/workflows/pipeline.yaml", expected_file
+        )
+
+    def test_gitlab(self):
+        template_dir = Path(__file__).parent.parent.joinpath(
+            "Gitlab/two-stage-pipeline-template"
+        )
+        context_overrides_file = Path(__file__).parent.joinpath(
+            "testfile_gitlab", "context_overrides.json"
+        )
+        expected_file = Path(__file__).parent.joinpath("testfile_gitlab", "expected.yml")
+
+        self._generate_and_verify(
+            template_dir, context_overrides_file, ".gitlab-ci.yml", expected_file
+        )

@@ -4,6 +4,21 @@
     "question": "\nThis template configures a pipeline that deploys a serverless application to a testing and a production stage.\n",
     "kind": "info"
   }, {
+    "key": "permissions_provider",
+    "question": "Select a user permissions provider.",
+    "options": ["AWS IAM", "OpenID Connect (OIDC)" ],
+    "default": {
+      "keyPath": [
+          { "valueOf": "shared_values"},
+          "permissions_provider"
+      ]
+    },
+    "allowAutofill": true,
+    "nextQuestion": {
+      "OpenID Connect (OIDC)": "main_git_branch"
+    },
+    "defaultNextQuestion": "pipeline_user_aws_access_key_id_variable_name"
+  },{
     "key": "pipeline_user_aws_access_key_id_variable_name",
     "question": "What is the Bitbucket variable key for pipeline user account access key ID?",
     "default": "AWS_ACCESS_KEY_ID"
