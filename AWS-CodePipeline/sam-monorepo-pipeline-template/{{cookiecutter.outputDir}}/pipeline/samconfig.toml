@@ -7,10 +7,10 @@ stack_name = "{{cookiecutter.test_stack_name}}"
 s3_prefix = "{{cookiecutter.test_stack_name}}"
 s3_bucket = "{{cookiecutter.test_artifacts_bucket}}"
 template = "{{cookiecutter.sam_template}}"
-region = "{{cookiecutter.test_region}}"
-parameter_overrides = ""
 fail_on_empty_changeset = false
 capabilities = "CAPABILITY_IAM"
+region = "{{cookiecutter.test_region}}"
+parameter_overrides = ""
 
 [{{cookiecutter.test_stage_name}}]
 [{{cookiecutter.test_stage_name}}.deploy]
@@ -24,11 +24,11 @@ template = "packaged-test.yaml"
 stack_name = "{{cookiecutter.prod_stack_name}}"
 s3_prefix = "{{cookiecutter.prod_stack_name}}"
 s3_bucket = "{{cookiecutter.prod_artifacts_bucket}}"
-region = "{{cookiecutter.prod_region}}"
-parameter_overrides = ""
-template = "template.yaml"
+template = "{{cookiecutter.sam_template}}"
 fail_on_empty_changeset = false
 capabilities = "CAPABILITY_IAM"
+region = "{{cookiecutter.prod_region}}"
+parameter_overrides = ""
 
 [{{cookiecutter.prod_stage_name}}]
 [{{cookiecutter.prod_stage_name}}.deploy]
@@ -41,7 +41,7 @@ template = "packaged-prod.yaml"
 [pipeline.deploy.parameters]
 stack_name = "{{cookiecutter.monorepo_project_subfolder}}-pipeline"
 s3_prefix = "{{cookiecutter.monorepo_project_subfolder}}-pipeline/"
+resolve_s3 = true
 template = "codepipeline.yaml"
 fail_on_empty_changeset = false
-resolve_s3 = true
 capabilities = "CAPABILITY_IAM"
