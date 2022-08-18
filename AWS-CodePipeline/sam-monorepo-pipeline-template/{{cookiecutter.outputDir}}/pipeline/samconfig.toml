@@ -1,17 +1,5 @@
 version = 0.1
 
-[default]
-[default.global]
-[default.global.parameters]
-stack_name = "{{cookiecutter.monorepo_project_subfolder}}"
-s3_prefix = "{{cookiecutter.monorepo_project_subfolder}}"
-resolve_s3 = true
-resolve_image_repos = true
-template = "{{cookiecutter.sam_template}}"
-fail_on_empty_changeset = false
-capabilities = "CAPABILITY_IAM"
-
-
 [{{cookiecutter.test_stage_name}}]
 [{{cookiecutter.test_stage_name}}.global]
 [{{cookiecutter.test_stage_name}}.global.parameters]
