@@ -26,13 +26,13 @@ Parameters:
   # Stage 1 Parameters
   TestConfigEnvName:
     Type: String
-    Default: "{{cookiecutter.test_stage_name}}"
+    Default: "{{cookiecutter.testing_stage_name}}"
   TestingPipelineExecutionRole:
     Type: String
-    Default: "{{cookiecutter.test_pipeline_execution_role}}"
+    Default: "{{cookiecutter.testing_pipeline_execution_role}}"
   TestingCloudFormationExecutionRole:
     Type: String
-    Default: "{{cookiecutter.test_cloudformation_execution_role}}"
+    Default: "{{cookiecutter.testing_cloudformation_execution_role}}"
   # Stage 2 Parameters
   ProdConfigEnvName:
     Type: String

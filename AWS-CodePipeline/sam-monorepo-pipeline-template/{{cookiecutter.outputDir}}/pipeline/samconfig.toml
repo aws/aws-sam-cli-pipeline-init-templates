@@ -1,20 +1,20 @@
 version = 0.1
 
-[{{cookiecutter.test_stage_name}}]
-[{{cookiecutter.test_stage_name}}.global]
-[{{cookiecutter.test_stage_name}}.global.parameters]
-stack_name = "{{cookiecutter.test_stack_name}}"
-s3_prefix = "{{cookiecutter.test_stack_name}}"
-s3_bucket = "{{cookiecutter.test_artifacts_bucket}}"
+[{{cookiecutter.testing_stage_name}}]
+[{{cookiecutter.testing_stage_name}}.global]
+[{{cookiecutter.testing_stage_name}}.global.parameters]
+stack_name = "{{cookiecutter.testing_stack_name}}"
+s3_prefix = "{{cookiecutter.testing_stack_name}}"
+s3_bucket = "{{cookiecutter.testing_artifacts_bucket}}"
 template = "{{cookiecutter.sam_template}}"
 fail_on_empty_changeset = false
 capabilities = "CAPABILITY_IAM"
-region = "{{cookiecutter.test_region}}"
+region = "{{cookiecutter.testing_region}}"
 parameter_overrides = ""
 
-[{{cookiecutter.test_stage_name}}]
-[{{cookiecutter.test_stage_name}}.deploy]
-[{{cookiecutter.test_stage_name}}.deploy.parameters]
+[{{cookiecutter.testing_stage_name}}]
+[{{cookiecutter.testing_stage_name}}.deploy]
+[{{cookiecutter.testing_stage_name}}.deploy.parameters]
 template = "packaged-test.yaml"
 
 

@@ -31,81 +31,81 @@
             "kind": "info"
         },
         {
-            "key": "test_stage_name",
+            "key": "testing_stage_name",
             "question": "Select an index or enter the stage 1's configuration name (as provided during the bootstrapping)",
             "allowAutofill": true,
             "isRequired": true
         },
         {
-            "key": "test_stack_name",
+            "key": "testing_stack_name",
             "question": "What is the sam application stack name for stage 1?",
             "isRequired": true,
             "default": "sam-app-test"
         },
         {
-            "key": "test_pipeline_execution_role",
+            "key": "testing_pipeline_execution_role",
             "question": "What is the pipeline execution role ARN for stage 1?",
             "isRequired": true,
             "allowAutofill": true,
             "default": {
                 "keyPath": [
                     {
-                        "valueOf": "test_stage_name"
+                        "valueOf": "testing_stage_name"
                     },
                     "pipeline_execution_role"
                 ]
             }
         },
         {
-            "key": "test_cloudformation_execution_role",
+            "key": "testing_cloudformation_execution_role",
             "question": "What is the CloudFormation execution role ARN for stage 1?",
             "isRequired": true,
             "allowAutofill": true,
             "default": {
                 "keyPath": [
                     {
-                        "valueOf": "test_stage_name"
+                        "valueOf": "testing_stage_name"
                     },
                     "cloudformation_execution_role"
                 ]
             }
         },
         {
-            "key": "test_artifacts_bucket",
+            "key": "testing_artifacts_bucket",
             "question": "What is the S3 bucket name for artifacts for stage 1?",
             "isRequired": true,
             "allowAutofill": true,
             "default": {
                 "keyPath": [
                     {
-                        "valueOf": "test_stage_name"
+                        "valueOf": "testing_stage_name"
                     },
                     "artifacts_bucket"
                 ]
             }
         },
         {
-            "key": "test_image_repository",
+            "key": "testing_image_repository",
             "question": "What is the ECR repository URI for stage 1?",
             "allowAutofill": true,
             "default": {
                 "keyPath": [
                     {
-                        "valueOf": "test_stage_name"
+                        "valueOf": "testing_stage_name"
                     },
                     "image_repository"
                 ]
             }
         },
         {
-            "key": "test_region",
+            "key": "testing_region",
             "question": "What is the AWS region for stage 1?",
             "isRequired": true,
             "allowAutofill": true,
             "default": {
                 "keyPath": [
                     {
-                        "valueOf": "test_stage_name"
+                        "valueOf": "testing_stage_name"
                     },
                     "region"
                 ]
