@@ -21,7 +21,7 @@ phases:
                     --output-template-file packaged-test.yaml
       - . ./assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
       - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET}
-                    {%- if cookiecutter.testing_image_repository %}
+                    {%- if cookiecutter.prod_image_repository %}
                     --image-repository ${PROD_IMAGE_REPOSITORY}
                     {%- endif %}
                     --region ${PROD_REGION}

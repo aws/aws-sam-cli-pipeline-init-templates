@@ -521,6 +521,11 @@ Resources:
 Outputs:
   CodePipelineUrl:
     Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${Pipeline}/view?region=${AWS::Region}"
-  # TODO: Add output links to CodeBuild projects
-  # TODO: Add outputs for IAM Roles
-  # TODO: Add outputs for S3 Buckets
+  CodePipelineExecutionRoleArn:
+    Value: !GetAtt CodePipelineExecutionRole.Arn
+  CodeBuildServiceRoleArn:
+    Value: !GetAtt CodeBuildServiceRole.Arn
+  PipelineArtifactsBucketName:
+    Value: !Ref PipelineArtifactsBucket
+  PipelineArtifactsLoggingBucketName:
+    Value: !Ref PipelineArtifactsLoggingBucket

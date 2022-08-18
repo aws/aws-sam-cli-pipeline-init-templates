@@ -13,17 +13,16 @@ phases:
     commands:
       - cd ${PROJECT_SUBFOLDER}
       - sam build   --config-file pipeline/samconfig.toml 
-                    --use-container
       - . pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
       - sam package --config-file pipeline/samconfig.toml 
                     --config-env ${TESTING_ENV_CONFIG_NAME}
-                    --output-template-file packaged-test.yaml
+                    --output-template-file packaged-testing.yaml
       - . pipeline/assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
       - sam package --config-file pipeline/samconfig.toml 
                     --config-env ${PROD_ENV_CONFIG_NAME}
                     --output-template-file packaged-prod.yaml
 artifacts:
   files:
-    - {{cookiecutter.monorepo_project_subfolder}}/packaged-test.yaml
+    - {{cookiecutter.monorepo_project_subfolder}}/packaged-testing.yaml
     - {{cookiecutter.monorepo_project_subfolder}}/packaged-prod.yaml
     - {{cookiecutter.monorepo_project_subfolder}}/pipeline/*
