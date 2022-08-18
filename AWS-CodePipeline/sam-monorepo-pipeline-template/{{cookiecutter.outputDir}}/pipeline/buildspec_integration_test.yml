@@ -1,10 +1,8 @@
 version: 0.2
 phases:
-  install:
-    runtime-versions:
-      python: 3.8
   build:
     commands:
-      # trigger the integration tests here
       - cd ${PROJECT_SUBFOLDER}
+      - . pipeline/assume-role.sh ${ENV_PIPELINE_EXECUTION_ROLE} test-package
+      # trigger the integration tests here
       - echo 'Running integration tests'

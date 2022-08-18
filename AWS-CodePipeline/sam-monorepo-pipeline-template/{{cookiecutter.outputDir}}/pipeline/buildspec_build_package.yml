@@ -2,7 +2,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      python: 3.9
     commands:
       - pip install --upgrade pip
       - pip install --upgrade awscli aws-sam-cli
@@ -12,15 +12,16 @@ phases:
   build:
     commands:
       - cd ${PROJECT_SUBFOLDER}
-      - sam build --use-container --template ${SAM_TEMPLATE}
+      - sam build --use-container
       - . pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
-      - sam package --config-env ${ENV_CONFIG_NAME}
+      - sam package --config-env ${TESTING_ENV_CONFIG_NAME}
                     --output-template-file packaged-test.yaml
       - . pipeline/assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
-      - sam package --config-env ${ENV_CONFIG_NAME}
+      - sam package --config-env ${PROD_ENV_CONFIG_NAME}
                     --output-template-file packaged-prod.yaml
 artifacts:
   files:
     - {{cookiecutter.monorepo_project_subfolder}}/packaged-test.yaml
     - {{cookiecutter.monorepo_project_subfolder}}/packaged-prod.yaml
     - {{cookiecutter.monorepo_project_subfolder}}/pipeline/*
+    - {{cookiecutter.monorepo_project_subfolder}}/samconfig.toml

@@ -6,6 +6,12 @@
             "isRequired": true
         },
         {
+            "question": "What is the name of the 'monorepo trigger' CloudFormation stack?",
+            "key": "monorepo_trigger_stack_name",
+            "isRequired": true,
+            "default": "sam-monorepo-trigger"
+        },
+        {
             "question": "What is the template file path?",
             "key": "sam_template",
             "default": "template.yaml"

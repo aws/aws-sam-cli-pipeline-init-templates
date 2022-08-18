@@ -22,7 +22,7 @@ Parameters:
     Default: "{{cookiecutter.monorepo_project_subfolder}}"
   MonorepoRootStack:
     Type: String
-    Default: "aws-sam-cli-managed-monorepo-codepipeline-root"
+    Default: "{{cookiecutter.monorepo_trigger_stack_name}}"
   # Stage 1 Parameters
   TestConfigEnvName:
     Type: String
@@ -166,6 +166,10 @@ Resources:
                 Version: "1"
               Configuration:
                 ProjectName: !Ref CodeBuildProjectIntegrationTest
+                EnvironmentVariables: !Sub |
+                  [
+                    {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"}
+                  ]
               InputArtifacts:
                 - Name: SourceCodeAsZip
               RunOrder: 2
@@ -469,8 +473,12 @@ Resources:
             Value: !Ref ProjectSubfolder
           - Name: TESTING_PIPELINE_EXECUTION_ROLE
             Value: !Ref TestingPipelineExecutionRole
+          - Name: TESTING_ENV_CONFIG_NAME
+            Value: !Ref TestConfigEnvName
           - Name: PROD_PIPELINE_EXECUTION_ROLE
             Value: !Ref ProdPipelineExecutionRole
+          - Name: PROD_ENV_CONFIG_NAME
+            Value: !Ref ProdConfigEnvName
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn
       Source:
         Type: CODEPIPELINE

@@ -1,6 +1,7 @@
 {
     "outputDir": "aws-sam-pipeline",
     "monorepo_project_subfolder": "",
+    "monorepo_trigger_stack_name": "sam-monorepo-trigger",
     "sam_template": "",
     "test_region": "",
     "test_stack_name": "",
