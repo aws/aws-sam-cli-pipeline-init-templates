@@ -6,14 +6,28 @@
             "isRequired": true
         },
         {
-            "question": "What is the name of the 'monorepo trigger' CloudFormation stack?",
-            "key": "monorepo_trigger_stack_name",
-            "isRequired": true,
-            "default": "sam-monorepo-trigger"
+            "question": "What is the SSM Prefix used to store metadata about this Monorepo?",
+            "key": "monorepo_ssm_prefix",
+            "default": "Monorepo"
         },
         {
-            "question": "What is the template file path?",
+            "key": "codecommit_repository_name",
+            "question": "What is the CodeCommit repository name?",
+            "isRequired": true
+        },
+        {
+            "key": "main_git_branch",
+            "question": "What is the Git branch used for production deployments?",
+            "default": "main"
+        },
+        {
+            "key": "pipeline_stack_name",
+            "question": "What is the CloudFormation stack name for this Pipeline?",
+            "isRequired": true
+        },
+        {
             "key": "sam_template",
+            "question": "What is the template file path?",
             "default": "template.yaml"
         },
         {
@@ -213,7 +227,7 @@
         },
         {
             "key": "instructions",
-            "question": "To deploy this template and connect to the main git branch, run this against the leading account:\n`sam deploy -t codepipeline.yaml --stack-name <stack-name> --capabilities=CAPABILITY_IAM`.",
+            "question": "To deploy this template and connect to the main git branch, run this against the leading account:\n`sam deploy --config-file pipeline/samconfig-pipeline.toml --config-env pipeline`.",
             "kind": "info"
         }
     ]

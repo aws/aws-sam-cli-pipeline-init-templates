@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 Description: >
   This template deploys a CodePipeline with its required resources.
 
@@ -14,15 +15,28 @@ Description: >
   **WARNING** You will be billed for the AWS resources used if you create a stack from this template.
 
 # To deploy this template and connect to the main git branch, run this against the leading account:
-# `sam deploy --config-file pipeline/samconfig.toml  --config-env pipeline`.
+# `sam deploy --config-file pipeline/samconfig-pipeline.toml --config-env pipeline`.
+
+Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - I3011
+        - I3013
 
 Parameters:
   ProjectSubfolder:
     Type: String
     Default: "{{cookiecutter.monorepo_project_subfolder}}"
-  MonorepoRootStack:
+  CodeCommitRepositoryName:
     Type: String
-    Default: "{{cookiecutter.monorepo_trigger_stack_name}}"
+    Default: "{{cookiecutter.codecommit_repository_name}}"
+  MainGitBranch:
+    Type: String
+    Default: "{{cookiecutter.main_git_branch}}"
+  MonorepoSsmPrefix:
+    Type: String
+    Default: "{{cookiecutter.monorepo_ssm_prefix}}"
   # Stage 1 Parameters
   TestConfigEnvName:
     Type: String
@@ -69,10 +83,8 @@ Resources:
                 Owner: AWS
                 Provider: CodeCommit
               Configuration:
-                BranchName:
-                  Fn::ImportValue: !Sub "${MonorepoRootStack}-MainGitBranch"
-                RepositoryName:
-                  Fn::ImportValue: !Sub "${MonorepoRootStack}-CodeCommitRepositoryName"
+                BranchName: !Ref MainGitBranch
+                RepositoryName: !Ref CodeCommitRepositoryName
                 PollForSourceChanges: false
               OutputArtifacts:
                 - Name: SourceCodeAsZip
@@ -202,19 +214,6 @@ Resources:
               InputArtifacts:
                 - Name: BuildArtifactAsZip
 
-  MonorepoSsmPipelineParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: !Sub
-        - "/${Prefix}/${RepoName}/${ProjectSubfolder}/PipelineName"
-        - Prefix:
-            Fn::ImportValue: !Sub "${MonorepoRootStack}-MonorepoSsmPrefix"
-          RepoName:
-            Fn::ImportValue: !Sub "${MonorepoRootStack}-CodeCommitRepositoryName"
-      Value: !Ref Pipeline
-      Type: String
-      Tier: Standard
-
   PipelineArtifactsBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
@@ -316,11 +315,7 @@ Resources:
                   - codecommit:GetCommit
                   - codecommit:GetUploadArchiveStatus
                   - codecommit:UploadArchive
-                Resource:
-                  - !Sub
-                    - "arn:${AWS::Partition}:codecommit:${AWS::Region}:${AWS::AccountId}:${RepoName}"
-                    - RepoName:
-                        Fn::ImportValue: !Sub "${MonorepoRootStack}-CodeCommitRepositoryName"
+                Resource: !Sub "arn:${AWS::Partition}:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"
         - PolicyName: CodePipelineCodeAndS3Bucket
           PolicyDocument:
             Version: "2012-10-17"
@@ -517,6 +512,121 @@ Resources:
       Source:
         Type: CODEPIPELINE
         BuildSpec: !Sub "${ProjectSubfolder}/pipeline/buildspec_deploy.yml"
+
+  #    _____                      __________                      
+  #   /     \   ____   ____   ____\______   \ ____ ______   ____  
+  #  /  \ /  \ /  _ \ /    \ /  _ \|       _// __ \\____ \ /  _ \ 
+  # /    Y    (  <_> )   |  (  <_> )    |   \  ___/|  |_> >  <_> )
+  # \____|__  /\____/|___|  /\____/|____|_  /\___  >   __/ \____/ 
+  #         \/            \/              \/     \/|__|           
+  MonorepoTriggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      InlineCode: |
+        import os, boto3
+        from aws_lambda_powertools.logging import Logger
+        from aws_lambda_powertools.utilities import parameters
+        logger = Logger()
+        cc = boto3.client('codecommit')
+        cp = boto3.client('codepipeline')
+        ssm_prefix = os.environ.get('SSM_PREFIX', '')
+        app_dir = os.environ.get('APP_DIR_IN_MONOREPO')
+        pipeline_name = os.environ.get('PIPELINE_NAME')
+        @logger.inject_lambda_context
+        def lambda_handler(event, _):
+            commit_id = event['detail']['commitId']
+            branch_name = event['detail']['referenceName']
+            repository = event['detail']['repositoryName']
+            paths = get_modified_files_since_last_run(repository, commit_id, branch_name)
+            toplevel_dirs = get_unique_toplevel_dirs(paths)
+            logger.info({'paths': paths, 'toplevel_dirs': toplevel_dirs, 'pipeline_name': pipeline_name})
+            if app_dir in toplevel_dirs:
+              start_codepipeline(pipeline_name)
+            else:
+              logger.info('Not triggering Pipeline %s. No changes under App dir %s', pipeline_name, app_dir)
+            update_last_commit(repository, commit_id, branch_name)
+        def get_unique_toplevel_dirs(modified_files):
+            toplevel_dirs = set(filter(lambda a: len(a) > 1, [file.split('/')[0] for file in modified_files]))
+            logger.info('toplevel dirs: %s', toplevel_dirs)
+            return list(toplevel_dirs)
+        def start_codepipeline(codepipeline_name):
+            try:
+                cp.start_pipeline_execution(name=codepipeline_name)
+                logger.info(f'Started CodePipeline {codepipeline_name}.')
+            except cp.exceptions.PipelineNotFoundException:
+                logger.info(f'Could not find CodePipeline {codepipeline_name}.')
+                return False
+            return True
+        def param_name_last_commit(repository, branch_name):
+            return os.path.join('/', ssm_prefix, repository, branch_name, app_dir, 'LastCommit')
+        def get_last_commit(repository, commit_id, branch_name):
+            param_name = param_name_last_commit(repository, branch_name)
+            try:
+                return parameters.get_parameter(param_name, force_fetch=True)
+            except parameters.GetParameterError:
+                logger.info('not found ssm parameter %s', param_name)
+                commit = cc.get_commit(repositoryName=repository, commitId=commit_id)['commit']
+                parent = commit['parents'][0] if commit['parents'] else None
+                return parent
+        def update_last_commit(repository, commit_id, branch_name):
+            ssm.put_parameter(Name=param_name_last_commit(repository, branch_name),
+                                Description='Keep track of the last commit already triggered',
+                                Value=commit_id, Type='String', Overwrite=True)
+        def get_modified_files_since_last_run(repo_name, after_commit, branch_name):
+            last_commit = get_last_commit(repo_name, after_commit, branch_name)
+            diff = cc.get_differences(repositoryName=repo_name,
+                                        beforeCommitSpecifier=last_commit,
+                                        afterCommitSpecifier=after_commit
+                                    ).get('differences', None)
+            logger.info(f"last_commit: '{last_commit}' - commit_id: '{after_commit}'")
+            logger.info(f"diff: {diff}")
+            before_blob_paths = {d.get('beforeBlob', {}).get('path') for d in diff}
+            after_blob_paths = {d.get('afterBlob', {}).get('path') for d in diff}
+            all_modifications = before_blob_paths.union(after_blob_paths)
+            return list(filter(lambda f: f is not None, all_modifications))
+      Handler: index.lambda_handler
+      Runtime: python3.9
+      Timeout: 30
+      Layers:
+        - !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPython:22
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          SSM_PREFIX: !Ref MonorepoSsmPrefix
+          PIPELINE_NAME: !Ref Pipeline
+          APP_DIR_IN_MONOREPO: !Ref ProjectSubfolder
+      Policies:
+        - CodeCommitReadPolicy: 
+            RepositoryName: !Ref CodeCommitRepositoryName
+        - SSMParameterReadPolicy:
+            ParameterName: !Sub "${MonorepoSsmPrefix}/*"
+        - Statement:
+            - Effect: Allow
+              Action: ssm:PutParameter
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${MonorepoSsmPrefix}/*"
+        - Statement:
+            - Effect: Allow
+              Action: codepipeline:StartPipelineExecution
+              Resource: !Sub "arn:${AWS::Partition}:codepipeline:${AWS::Region}:${AWS::AccountId}:*"
+      Events:
+        EBRule:
+          Type: EventBridgeRule
+          Properties:
+            DeadLetterConfig:
+              Type: SQS
+            Pattern:
+              source: [aws.codecommit]
+              detail-type: ['CodeCommit Repository State Change']
+              resources: [!Sub "arn:${AWS::Partition}:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepositoryName}"]
+              detail:
+                event:
+                  - referenceCreated
+                  - referenceUpdated
+                referenceType:
+                  - branch
+                referenceName:
+                  - !Ref MainGitBranch
 
 Outputs:
   CodePipelineUrl:

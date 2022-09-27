@@ -6,24 +6,17 @@ version = 0.1
 stack_name = "{{cookiecutter.testing_stack_name}}"
 s3_prefix = "{{cookiecutter.testing_stack_name}}"
 s3_bucket = "{{cookiecutter.testing_artifacts_bucket}}"
-image_repository = "{{cookiecutter.testing_image_repository}}"
 region = "{{cookiecutter.testing_region}}"
-
-[{{cookiecutter.testing_stage_name}}.build]
-[{{cookiecutter.testing_stage_name}}.build.parameters]
-use_container = true
-template = "{{cookiecutter.sam_template}}"
-
-[{{cookiecutter.testing_stage_name}}.package]
-[{{cookiecutter.testing_stage_name}}.package.parameters]
-template = "packaged-testing.yaml"
+{%- if cookiecutter.testing_image_repository %}
+image_repository = "{{cookiecutter.testing_image_repository}}"
+{%- endif %}
 
 [{{cookiecutter.testing_stage_name}}.deploy]
 [{{cookiecutter.testing_stage_name}}.deploy.parameters]
 template = "packaged-testing.yaml"
 fail_on_empty_changeset = false
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = ""
+# parameter_overrides = ""
 
 # ############################################## #
 
@@ -33,32 +26,25 @@ parameter_overrides = ""
 stack_name = "{{cookiecutter.prod_stack_name}}"
 s3_prefix = "{{cookiecutter.prod_stack_name}}"
 s3_bucket = "{{cookiecutter.prod_artifacts_bucket}}"
-image_repository = "{{cookiecutter.prod_image_repository}}"
 region = "{{cookiecutter.prod_region}}"
-
-[{{cookiecutter.prod_stage_name}}.build]
-[{{cookiecutter.prod_stage_name}}.build.parameters]
-use_container = true
-template = "{{cookiecutter.sam_template}}"
-
-[{{cookiecutter.prod_stage_name}}.package]
-[{{cookiecutter.prod_stage_name}}.package.parameters]
-template = "packaged-prod.yaml"
+{%- if cookiecutter.prod_image_repository %}
+image_repository = "{{cookiecutter.prod_image_repository}}"
+{%- endif %}
 
 [{{cookiecutter.prod_stage_name}}.deploy]
 [{{cookiecutter.prod_stage_name}}.deploy.parameters]
 template = "packaged-prod.yaml"
 fail_on_empty_changeset = false
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = ""
+# parameter_overrides = ""
 
 # ############################################## #
 
 [pipeline]
 [pipeline.deploy]
 [pipeline.deploy.parameters]
-stack_name = "{{cookiecutter.monorepo_project_subfolder}}-pipeline"
-s3_prefix = "{{cookiecutter.monorepo_project_subfolder}}-pipeline/"
+stack_name = "{{cookiecutter.pipeline_stack_name}}"
+s3_prefix = "{{cookiecutter.pipeline_stack_name}}"
 resolve_s3 = true
 fail_on_empty_changeset = false
 template = "codepipeline.yaml"
