@@ -20,11 +20,11 @@
     "defaultNextQuestion": "pipeline_user_aws_access_key_id_variable_name"
   },{
     "key": "pipeline_user_aws_access_key_id_variable_name",
-    "question": "What is the GitHub secret name for pipeline user account access key ID?",
+    "question": "What is the GitHub secret name for pipeline user account access key ID (leave blank if you selected OIDC)?",
     "default": "AWS_ACCESS_KEY_ID"
   }, {
     "key": "pipeline_user_aws_secret_access_key_variable_name",
-    "question": "What is the GitHub Secret name for pipeline user account access key secret?",
+    "question": "What is the GitHub Secret name for pipeline user account access key secret (leave blank if you selected OIDC)?",
     "default": "AWS_SECRET_ACCESS_KEY"
   }, {
     "key": "main_git_branch",
