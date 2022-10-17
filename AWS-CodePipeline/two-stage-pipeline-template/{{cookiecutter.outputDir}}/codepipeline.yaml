@@ -55,31 +55,31 @@ Parameters:
   SamTemplate:
     Type: String
     Default: "{{cookiecutter.sam_template}}"
-  TestingRegion:
-    Type: String
-    Default: "{{cookiecutter.testing_region}}"
-  TestingStackName:
-    Type: String
-    Default: "{{cookiecutter.testing_stack_name}}"
-  TestingPipelineExecutionRole:
-    Type: String
-    Default: "{{cookiecutter.testing_pipeline_execution_role}}"
-  TestingCloudFormationExecutionRole:
-    Type: String
-    Default: "{{cookiecutter.testing_cloudformation_execution_role}}"
-  TestingArtifactBucket:
-    Type: String
-    Default: "{{cookiecutter.testing_artifacts_bucket}}"
-  TestingImageRepository:
-    Type: String
-    {%- if cookiecutter.testing_image_repository %}
-    Default: "{{cookiecutter.testing_image_repository}}"
-    {%- else %}
-    # If there are functions with "Image" PackageType in your template,
-    # Update the line below with image repository URL and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
-    # prod "sam package" and "sam deploy" commands in buildspec files (in pipeline/).
-    Default: ""
-    {%- endif %}
+  #TestingRegion:
+  #  Type: String
+  #  Default: "{{cookiecutter.testing_region}}"
+  #TestingStackName:
+  #  Type: String
+  #  Default: "{{cookiecutter.testing_stack_name}}"
+  #TestingPipelineExecutionRole:
+  #  Type: String
+  #  Default: "{{cookiecutter.testing_pipeline_execution_role}}"
+  #TestingCloudFormationExecutionRole:
+  #  Type: String
+  #  Default: "{{cookiecutter.testing_cloudformation_execution_role}}"
+  #TestingArtifactBucket:
+  #  Type: String
+  #  Default: "{{cookiecutter.testing_artifacts_bucket}}"
+  #TestingImageRepository:
+  #  Type: String
+  #  {%- if cookiecutter.testing_image_repository %}
+  #  Default: "{{cookiecutter.testing_image_repository}}"
+  #  {%- else %}
+  #  # If there are functions with "Image" PackageType in your template,
+  #  # Update the line below with image repository URL and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
+  #  # prod "sam package" and "sam deploy" commands in buildspec files (in pipeline/).
+  #  Default: ""
+  #  {%- endif %}
   ProdRegion:
     Type: String
     Default: "{{cookiecutter.prod_region}}"
@@ -274,21 +274,21 @@ Resources:
         #       InputArtifacts:
         #         - Name: SourceCodeAsZip
 
-        - !If
-          - IsFeatureBranchPipeline
-          - Name: BuildAndDeployFeatureStack
-            Actions:
-              - Name: CodeBuild
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectBuildAndDeployFeature
-                InputArtifacts:
-                  - Name: SourceCodeAsZip
-          - !Ref AWS::NoValue
+        #- !If
+        #  - IsFeatureBranchPipeline
+        #  - Name: BuildAndDeployFeatureStack
+        #    Actions:
+        #      - Name: CodeBuild
+        #        ActionTypeId:
+        #          Category: Build
+        #          Owner: AWS
+        #          Provider: CodeBuild
+        #          Version: "1"
+        #        Configuration:
+        #          ProjectName: !Ref CodeBuildProjectBuildAndDeployFeature
+        #        InputArtifacts:
+        #          - Name: SourceCodeAsZip
+        #  - !Ref AWS::NoValue
 
         - !If
           - IsMainBranchPipeline
@@ -528,10 +528,10 @@ Resources:
                 Resource:
                   # Uncomment the line below to enable the unit-tests
                   # - !GetAtt CodeBuildProjectUnitTest.Arn
-                  - !If
-                    - IsFeatureBranchPipeline
-                    - !GetAtt CodeBuildProjectBuildAndDeployFeature.Arn
-                    - !Ref AWS::NoValue
+                  #- !If
+                  #  - IsFeatureBranchPipeline
+                  #  - !GetAtt CodeBuildProjectBuildAndDeployFeature.Arn
+                  #  - !Ref AWS::NoValue
                   - !If
                     - IsMainBranchPipeline
                     - !GetAtt CodeBuildProjectBuildAndPackage.Arn
@@ -651,36 +651,36 @@ Resources:
   #       Type: CODEPIPELINE
   #       BuildSpec: pipeline/buildspec_unit_test.yml
 
-  CodeBuildProjectBuildAndDeployFeature:
-    Condition: IsFeatureBranchPipeline
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Artifacts:
-        Type: CODEPIPELINE
-      Environment:
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
-        PrivilegedMode: true
-        EnvironmentVariables:
-          - Name: SAM_TEMPLATE
-            Value: !Ref SamTemplate
-          - Name: TESTING_REGION
-            Value: !Ref TestingRegion
-          - Name: TESTING_PIPELINE_EXECUTION_ROLE
-            Value: !Ref TestingPipelineExecutionRole
-          - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
-            Value: !Ref TestingCloudFormationExecutionRole
-          - Name: TESTING_ARTIFACT_BUCKET
-            Value: !Ref TestingArtifactBucket
-          - Name: TESTING_IMAGE_REPOSITORY
-            Value: !Ref TestingImageRepository
-          - Name: FEATURE_BRANCH_NAME
-            Value: !Ref FeatureGitBranch
-      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
-      Source:
-        Type: CODEPIPELINE
-        BuildSpec: pipeline/buildspec_feature.yml
+  #CodeBuildProjectBuildAndDeployFeature:
+  #  Condition: IsFeatureBranchPipeline
+  #  Type: AWS::CodeBuild::Project
+  #  Properties:
+  #    Artifacts:
+  #      Type: CODEPIPELINE
+  #    Environment:
+  #      Type: LINUX_CONTAINER
+  #      ComputeType: BUILD_GENERAL1_SMALL
+  #      Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+  #      PrivilegedMode: true
+  #      EnvironmentVariables:
+  #        - Name: SAM_TEMPLATE
+  #          Value: !Ref SamTemplate
+  #        - Name: TESTING_REGION
+  #          Value: !Ref TestingRegion
+  #        - Name: TESTING_PIPELINE_EXECUTION_ROLE
+  #          Value: !Ref TestingPipelineExecutionRole
+  #        - Name: TESTING_CLOUDFORMATION_EXECUTION_ROLE
+  #          Value: !Ref TestingCloudFormationExecutionRole
+  #        - Name: TESTING_ARTIFACT_BUCKET
+  #          Value: !Ref TestingArtifactBucket
+  #        - Name: TESTING_IMAGE_REPOSITORY
+  #          Value: !Ref TestingImageRepository
+  #        - Name: FEATURE_BRANCH_NAME
+  #          Value: !Ref FeatureGitBranch
+  #    ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+  #    Source:
+  #      Type: CODEPIPELINE
+  #      BuildSpec: pipeline/buildspec_feature.yml
 
   CodeBuildProjectBuildAndPackage:
     Condition: IsMainBranchPipeline
@@ -696,20 +696,20 @@ Resources:
         EnvironmentVariables:
           - Name: SAM_TEMPLATE
             Value: !Ref SamTemplate
-          - Name: TESTING_REGION
-            Value: !Ref TestingRegion
+          #- Name: TESTING_REGION
+          #  Value: !Ref TestingRegion
           - Name: PROD_REGION
             Value: !Ref ProdRegion
-          - Name: TESTING_PIPELINE_EXECUTION_ROLE
-            Value: !Ref TestingPipelineExecutionRole
+          #- Name: TESTING_PIPELINE_EXECUTION_ROLE
+          #  Value: !Ref TestingPipelineExecutionRole
           - Name: PROD_PIPELINE_EXECUTION_ROLE
             Value: !Ref ProdPipelineExecutionRole
-          - Name: TESTING_ARTIFACT_BUCKET
-            Value: !Ref TestingArtifactBucket
+          #- Name: TESTING_ARTIFACT_BUCKET
+          #  Value: !Ref TestingArtifactBucket
           - Name: PROD_ARTIFACT_BUCKET
             Value: !Ref ProdArtifactBucket
-          - Name: TESTING_IMAGE_REPOSITORY
-            Value: !Ref TestingImageRepository
+          #- Name: TESTING_IMAGE_REPOSITORY
+          #  Value: !Ref TestingImageRepository
           - Name: PROD_IMAGE_REPOSITORY
             Value: !Ref ProdImageRepository
       ServiceRole: !GetAtt CodeBuildServiceRole.Arn

@@ -12,23 +12,23 @@ phases:
   build:
     commands:
       - sam build --use-container --template ${SAM_TEMPLATE}
-      - . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
-      - sam package --s3-bucket ${TESTING_ARTIFACT_BUCKET}
-                    {%- if cookiecutter.testing_image_repository %}
-                    --image-repository ${TESTING_IMAGE_REPOSITORY}
-                    {%- endif %}
-                    --region ${TESTING_REGION}
-                    --output-template-file packaged-test.yaml
+      #- . ./assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
+      #- sam package --s3-bucket ${TESTING_ARTIFACT_BUCKET}
+      #              {%- if cookiecutter.testing_image_repository %}
+      #              --image-repository ${TESTING_IMAGE_REPOSITORY}
+      #              {%- endif %}
+      #              --region ${TESTING_REGION}
+      #              --output-template-file packaged-test.yaml
       - . ./assume-role.sh ${PROD_PIPELINE_EXECUTION_ROLE} prod-package
       - sam package --s3-bucket ${PROD_ARTIFACT_BUCKET}
-                    {%- if cookiecutter.testing_image_repository %}
+                    {%- if cookiecutter.prod_image_repository %}
                     --image-repository ${PROD_IMAGE_REPOSITORY}
                     {%- endif %}
                     --region ${PROD_REGION}
                     --output-template-file packaged-prod.yaml
 artifacts:
   files:
-    - packaged-test.yaml
+    #- packaged-test.yaml
     - packaged-prod.yaml
     - assume-role.sh
     - pipeline/*
