@@ -308,44 +308,44 @@ Resources:
                   - Name: BuildArtifactAsZip
           - !Ref AWS::NoValue
 
-        - !If
-          - IsMainBranchPipeline
-          - Name: DeployTest
-            Actions:
-              - Name: DeployTest
-                ActionTypeId:
-                  Category: Build
-                  Owner: AWS
-                  Provider: CodeBuild
-                  Version: "1"
-                Configuration:
-                  ProjectName: !Ref CodeBuildProjectDeploy
-                  EnvironmentVariables: !Sub |
-                    [
-                      {"name": "ENV_TEMPLATE", "value": "packaged-test.yaml"},
-                      {"name": "ENV_REGION", "value": "${TestingRegion}"},
-                      {"name": "ENV_STACK_NAME", "value": "${TestingStackName}"},
-                      {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
-                      {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
-                      {"name": "ENV_BUCKET", "value": "${TestingArtifactBucket}"},
-                      {"name": "ENV_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
-                    ]
-                InputArtifacts:
-                  - Name: BuildArtifactAsZip
-                RunOrder: 1
-              # Uncomment the following step for running the integration tests
-              # - Name: IntegrationTest
-              #   ActionTypeId:
-              #     Category: Build
-              #     Owner: AWS
-              #     Provider: CodeBuild
-              #     Version: "1"
-              #   Configuration:
-              #     ProjectName: !Ref CodeBuildProjectIntegrationTest
-              #   InputArtifacts:
-              #     - Name: SourceCodeAsZip
-              #   RunOrder: 2
-          - !Ref AWS::NoValue
+        #- !If
+        #  - IsMainBranchPipeline
+        #  - Name: DeployTest
+        #    Actions:
+        #      - Name: DeployTest
+        #        ActionTypeId:
+        #          Category: Build
+        #          Owner: AWS
+        #          Provider: CodeBuild
+        #          Version: "1"
+        #        Configuration:
+        #          ProjectName: !Ref CodeBuildProjectDeploy
+        #          EnvironmentVariables: !Sub |
+        #            [
+        #              {"name": "ENV_TEMPLATE", "value": "packaged-test.yaml"},
+        #              {"name": "ENV_REGION", "value": "${TestingRegion}"},
+        #              {"name": "ENV_STACK_NAME", "value": "${TestingStackName}"},
+        #              {"name": "ENV_PIPELINE_EXECUTION_ROLE", "value": "${TestingPipelineExecutionRole}"},
+        #              {"name": "ENV_CLOUDFORMATION_EXECUTION_ROLE", "value": "${TestingCloudFormationExecutionRole}"},
+        #              {"name": "ENV_BUCKET", "value": "${TestingArtifactBucket}"},
+        #              {"name": "ENV_IMAGE_REPOSITORY", "value": "${TestingImageRepository}"}
+        #            ]
+        #        InputArtifacts:
+        #          - Name: BuildArtifactAsZip
+        #        RunOrder: 1
+        #      # Uncomment the following step for running the integration tests
+        #      # - Name: IntegrationTest
+        #      #   ActionTypeId:
+        #      #     Category: Build
+        #      #     Owner: AWS
+        #      #     Provider: CodeBuild
+        #      #     Version: "1"
+        #      #   Configuration:
+        #      #     ProjectName: !Ref CodeBuildProjectIntegrationTest
+        #      #   InputArtifacts:
+        #      #     - Name: SourceCodeAsZip
+        #      #   RunOrder: 2
+        #  - !Ref AWS::NoValue
 
         - !If
           - IsMainBranchPipeline
