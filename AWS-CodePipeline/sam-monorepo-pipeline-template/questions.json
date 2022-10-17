@@ -1,13 +1,13 @@
 {
     "questions": [
         {
-            "question": "What is subfolder path of your project from the root of the repository?",
             "key": "monorepo_project_subfolder",
+            "question": "What is subfolder path of your project from the root of the repository?",
             "isRequired": true
         },
         {
-            "question": "What is the SSM Prefix used to store metadata about this Monorepo?",
             "key": "monorepo_ssm_prefix",
+            "question": "What is the SSM Prefix used to store metadata about this Monorepo?",
             "default": "Monorepo"
         },
         {
@@ -21,18 +21,13 @@
             "default": "main"
         },
         {
-            "key": "pipeline_stack_name",
-            "question": "What is the CloudFormation stack name for this Pipeline?",
-            "isRequired": true
-        },
-        {
             "key": "sam_template",
-            "question": "What is the template file path?",
+            "question": "What is the template file path, from the project subfolder?",
             "default": "template.yaml"
         },
         {
-            "question": "We use the stage configuration name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`.\n",
             "key": "message_test_stage_name",
+            "question": "We use the stage configuration name to automatically retrieve the bootstrapped resources created when you ran `sam pipeline bootstrap`.\n",
             "kind": "info"
         },
         {
@@ -54,7 +49,7 @@
             "key": "testing_stack_name",
             "question": "What is the sam application stack name for stage 1?",
             "isRequired": true,
-            "default": "sam-app-test"
+            "default": "sam-app"
         },
         {
             "key": "testing_pipeline_execution_role",
@@ -224,6 +219,11 @@
             "key": "message_prod_stage_configured",
             "question": "Stage 2 configured successfully.\n",
             "kind": "info"
+        },
+        {
+            "key": "pipeline_stack_name",
+            "question": "What is the CloudFormation stack name for this Pipeline?",
+            "isRequired": true
         },
         {
             "key": "instructions",
