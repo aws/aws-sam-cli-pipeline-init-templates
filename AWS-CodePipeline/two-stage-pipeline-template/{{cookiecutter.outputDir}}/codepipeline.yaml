@@ -681,6 +681,9 @@ Resources:
   #    Source:
   #      Type: CODEPIPELINE
   #      BuildSpec: pipeline/buildspec_feature.yml
+  #
+
+  # Comment Test
 
   CodeBuildProjectBuildAndPackage:
     Condition: IsMainBranchPipeline
