@@ -1,0 +1,51 @@
+version = 0.1
+
+[{{cookiecutter.testing_stage_name}}]
+[{{cookiecutter.testing_stage_name}}.global]
+[{{cookiecutter.testing_stage_name}}.global.parameters]
+stack_name = "{{cookiecutter.testing_stack_name}}"
+s3_prefix = "{{cookiecutter.testing_stack_name}}"
+s3_bucket = "{{cookiecutter.testing_artifacts_bucket}}"
+region = "{{cookiecutter.testing_region}}"
+{%- if cookiecutter.testing_image_repository %}
+image_repository = "{{cookiecutter.testing_image_repository}}"
+{%- endif %}
+
+[{{cookiecutter.testing_stage_name}}.deploy]
+[{{cookiecutter.testing_stage_name}}.deploy.parameters]
+template = "packaged-testing.yaml"
+fail_on_empty_changeset = false
+capabilities = "CAPABILITY_IAM"
+# parameter_overrides = ""
+
+# ############################################## #
+
+[{{cookiecutter.prod_stage_name}}]
+[{{cookiecutter.prod_stage_name}}.global]
+[{{cookiecutter.prod_stage_name}}.global.parameters]
+stack_name = "{{cookiecutter.prod_stack_name}}"
+s3_prefix = "{{cookiecutter.prod_stack_name}}"
+s3_bucket = "{{cookiecutter.prod_artifacts_bucket}}"
+region = "{{cookiecutter.prod_region}}"
+{%- if cookiecutter.prod_image_repository %}
+image_repository = "{{cookiecutter.prod_image_repository}}"
+{%- endif %}
+
+[{{cookiecutter.prod_stage_name}}.deploy]
+[{{cookiecutter.prod_stage_name}}.deploy.parameters]
+template = "packaged-prod.yaml"
+fail_on_empty_changeset = false
+capabilities = "CAPABILITY_IAM"
+# parameter_overrides = ""
+
+# ############################################## #
+
+[pipeline]
+[pipeline.deploy]
+[pipeline.deploy.parameters]
+stack_name = "{{cookiecutter.pipeline_stack_name}}"
+s3_prefix = "{{cookiecutter.pipeline_stack_name}}"
+resolve_s3 = true
+fail_on_empty_changeset = false
+template = "codepipeline.yaml"
+capabilities = "CAPABILITY_IAM"

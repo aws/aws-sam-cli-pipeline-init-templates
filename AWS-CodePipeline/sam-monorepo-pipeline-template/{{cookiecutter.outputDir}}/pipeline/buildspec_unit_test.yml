@@ -1,0 +1,7 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - cd "${PROJECT_SUBFOLDER}"
+      # trigger the unit tests here
+      - echo 'Running unit tests'

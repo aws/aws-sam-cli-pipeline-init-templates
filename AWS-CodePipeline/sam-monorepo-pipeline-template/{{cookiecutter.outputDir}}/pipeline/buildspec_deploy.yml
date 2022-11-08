@@ -1,0 +1,15 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - pip install --upgrade pip
+      - pip install --upgrade awscli aws-sam-cli
+  build:
+    commands:
+      - cd "${PROJECT_SUBFOLDER}"
+      - . pipeline/assume-role.sh "${ENV_PIPELINE_EXECUTION_ROLE}" deploy
+      - sam deploy  --config-file pipeline/samconfig-pipeline.toml 
+                    --config-env "${ENV_CONFIG_NAME}"
+                    --role-arn "${ENV_CLOUDFORMATION_EXECUTION_ROLE}"

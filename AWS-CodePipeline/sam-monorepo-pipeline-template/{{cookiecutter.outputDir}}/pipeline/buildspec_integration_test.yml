@@ -1,0 +1,8 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - cd "${PROJECT_SUBFOLDER}"
+      - . pipeline/assume-role.sh "${ENV_PIPELINE_EXECUTION_ROLE}" test-package
+      # trigger the integration tests here
+      - echo 'Running integration tests'

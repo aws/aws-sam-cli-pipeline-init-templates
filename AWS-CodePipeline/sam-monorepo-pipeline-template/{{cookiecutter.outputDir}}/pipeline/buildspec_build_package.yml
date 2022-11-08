@@ -1,0 +1,29 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - pip install --upgrade pip
+      - pip install --upgrade awscli aws-sam-cli
+      # Enable docker https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  build:
+    commands:
+      - cd "${PROJECT_SUBFOLDER}"
+      - sam build   --use-container --template "{{cookiecutter.sam_template}}"
+      - . pipeline/assume-role.sh "${TESTING_PIPELINE_EXECUTION_ROLE}" test-package
+      - sam package --config-file pipeline/samconfig-pipeline.toml 
+                    --config-env "${TESTING_ENV_CONFIG_NAME}"
+                    --output-template-file "packaged-testing.yaml"
+      - . pipeline/assume-role.sh "${PROD_PIPELINE_EXECUTION_ROLE}" prod-package
+      - sam package --config-file pipeline/samconfig-pipeline.toml 
+                    --config-env "${PROD_ENV_CONFIG_NAME}"
+                    --output-template-file "packaged-prod.yaml"
+
+artifacts:
+  files:
+    - {{cookiecutter.monorepo_project_subfolder}}/packaged-testing.yaml
+    - {{cookiecutter.monorepo_project_subfolder}}/packaged-prod.yaml
+    - {{cookiecutter.monorepo_project_subfolder}}/pipeline/*
