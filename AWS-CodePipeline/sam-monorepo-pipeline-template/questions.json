@@ -227,7 +227,7 @@
         },
         {
             "key": "instructions",
-            "question": "To deploy this template and connect to the main git branch, run this against the leading account:\n`sam deploy --config-file pipeline/samconfig-pipeline.toml --config-env pipeline`.",
+            "question": "To deploy this template and connect to the main Git branch, run this against the leading account:\nsam deploy --config-file pipeline/samconfig-pipeline.toml --config-env pipeline",
             "kind": "info"
         }
     ]
