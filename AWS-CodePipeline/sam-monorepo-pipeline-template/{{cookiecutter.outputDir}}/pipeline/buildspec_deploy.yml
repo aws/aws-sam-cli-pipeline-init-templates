@@ -9,7 +9,7 @@ phases:
   build:
     commands:
       - cd "${PROJECT_SUBFOLDER}"
-      - . pipeline/assume-role.sh ${ENV_PIPELINE_EXECUTION_ROLE} deploy
+      - . pipeline/assume-role.sh "${ENV_PIPELINE_EXECUTION_ROLE}" deploy
       - sam deploy  --config-file pipeline/samconfig-pipeline.toml 
-                    --config-env ${ENV_CONFIG_NAME}
-                    --role-arn ${ENV_CLOUDFORMATION_EXECUTION_ROLE}
+                    --config-env "${ENV_CONFIG_NAME}"
+                    --role-arn "${ENV_CLOUDFORMATION_EXECUTION_ROLE}"
