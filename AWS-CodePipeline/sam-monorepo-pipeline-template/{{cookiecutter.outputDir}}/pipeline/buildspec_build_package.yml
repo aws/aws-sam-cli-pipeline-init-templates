@@ -11,7 +11,7 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
-      - cd ${PROJECT_SUBFOLDER}
+      - cd "${PROJECT_SUBFOLDER}"
       - sam build   --use-container --template "{{cookiecutter.sam_template}}"
       - . pipeline/assume-role.sh ${TESTING_PIPELINE_EXECUTION_ROLE} test-package
       - sam package --config-file pipeline/samconfig-pipeline.toml 

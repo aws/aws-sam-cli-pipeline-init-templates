@@ -22,7 +22,7 @@
         },
         {
             "key": "sam_template",
-            "question": "What is the template file path, from the project subfolder?",
+            "question": "What is the template file path from the project subfolder?",
             "default": "template.yaml"
         },
         {
