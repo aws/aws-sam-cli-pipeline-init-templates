@@ -222,7 +222,7 @@
         },
         {
             "key": "pipeline_stack_name",
-            "question": "What is the CloudFormation stack name for this Pipeline?",
+            "question": "What is the CloudFormation stack name for this pipeline?",
             "isRequired": true
         },
         {
