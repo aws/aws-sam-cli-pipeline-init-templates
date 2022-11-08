@@ -37,6 +37,9 @@ Parameters:
   MonorepoSsmPrefix:
     Type: String
     Default: "{{cookiecutter.monorepo_ssm_prefix}}"
+  CodeBuildImage:
+    Type: String
+    Default: aws/codebuild/amazonlinux2-x86_64-standard:3.0
   # Stage 1 Parameters
   TestConfigEnvName:
     Type: String
@@ -333,7 +336,6 @@ Resources:
                   - s3:PutObject
                 Resource:
                   Fn::Sub: ${PipelineArtifactsBucket.Arn}/*
-
         - PolicyName: CodePipelineCodeBuildAndCloudformationAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -444,7 +446,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: !Ref CodeBuildImage
         EnvironmentVariables:
           - Name: PROJECT_SUBFOLDER
             Value: !Ref ProjectSubfolder
@@ -461,7 +463,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: !Ref CodeBuildImage
         PrivilegedMode: true
         EnvironmentVariables:
           - Name: PROJECT_SUBFOLDER
@@ -487,7 +489,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: !Ref CodeBuildImage
         EnvironmentVariables:
           - Name: PROJECT_SUBFOLDER
             Value: !Ref ProjectSubfolder
@@ -504,7 +506,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: !Ref CodeBuildImage
         EnvironmentVariables:
           - Name: PROJECT_SUBFOLDER
             Value: !Ref ProjectSubfolder
