@@ -1,3 +1,6 @@
+# If you only use a single runtime, replace with a proper image from 
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-image-repositories.html
+# And remove --use-container option in sam build command below
 image: public.ecr.aws/sam/build-provided
 
 pipelines:
@@ -17,6 +20,7 @@ pipelines:
             - export TESTING_STACK_NAME="test-stack"
             - export TESTING_REGION="us-east-2"
             - export TESTING_IMAGE_REPOSITORY="test-ecr"
+            # Remove --use-container for following command if you use a specific image
             - sam build --template $SAM_TEMPLATE --use-container
             - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" $BITBUCKET_STEP_OIDC_TOKEN
             - >
@@ -57,6 +61,7 @@ pipelines:
             - export PRODUCTION_ARTIFACTS_BUCKET="prod-bucket"
             - export PRODUCTION_REGION="us-west-2"
             - export PRODUCTION_IMAGE_REPOSITORY="prod-ecr"
+            # Remove --use-container for following command if you use a specific image
             - sam build --template $SAM_TEMPLATE --use-container
             - source assume-role.sh $TESTING_PIPELINE_EXECUTION_ROLE testing-stage-packaging testing-stage "$PERMISSIONS_PROVIDER" "$BITBUCKET_STEP_OIDC_TOKEN"
             - >
