@@ -1,3 +1,6 @@
+# If you only use a single runtime, replace with a proper image from 
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-image-repositories.html
+# And remove --use-container option in sam build command below
 image: public.ecr.aws/sam/build-provided
 
 pipelines:
@@ -26,6 +29,7 @@ pipelines:
             # testing "sam package" and "sam deploy" commands.'
             #- export TESTING_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
+            # Remove --use-container for following command if you use a specific image
             - sam build --template $SAM_TEMPLATE --use-container
             {% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
             - export AWS_REGION=$TESTING_REGION
@@ -92,6 +96,7 @@ pipelines:
             # testing "sam package" and "sam deploy" commands.'
             #- export PRODUCTION_IMAGE_REPOSITORY='0123456789.dkr.ecr.region.amazonaws.com/repository-name'
             {% endif -%}
+            # Remove --use-container for following command if you use a specific image
             - sam build --template $SAM_TEMPLATE --use-container
             {% if cookiecutter.permissions_provider == "OpenID Connect (OIDC)" -%}
             - export AWS_REGION=$TESTING_REGION
