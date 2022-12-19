@@ -531,6 +531,7 @@ Resources:
         logger = Logger()
         cc = boto3.client('codecommit')
         cp = boto3.client('codepipeline')
+        ssm = boto3.client('ssm')
         ssm_prefix = os.environ.get('SSM_PREFIX', '')
         app_dir = os.environ.get('APP_DIR_IN_MONOREPO')
         pipeline_name = os.environ.get('PIPELINE_NAME')
