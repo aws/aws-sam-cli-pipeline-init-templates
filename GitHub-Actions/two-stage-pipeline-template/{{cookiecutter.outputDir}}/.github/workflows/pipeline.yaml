@@ -136,6 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      # https://github.com/actions/setup-python
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -215,6 +216,7 @@ jobs:
           name: packaged-testing.yaml
 
       - name: Assume the testing pipeline user role
+        # https://github.com/aws-actions/configure-aws-credentials#notice-node12-deprecation-warning
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           {% if cookiecutter.permissions_provider == "AWS IAM" -%}
