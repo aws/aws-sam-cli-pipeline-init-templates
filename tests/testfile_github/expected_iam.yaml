@@ -68,6 +68,8 @@ jobs:
   build-and-deploy-feature:
     # this stage is triggered only for feature branches (feature*),
     # which will build the stack and deploy to a stack named with branch name.
+    # https://github.com/actions/setup-python
+    # https://github.com/aws-actions/configure-aws-credentials#notice-node12-deprecation-warning
     if: startsWith(github.ref, 'refs/heads/feature')
     needs: [test]
     runs-on: ubuntu-latest
