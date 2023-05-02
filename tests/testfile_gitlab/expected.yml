@@ -32,7 +32,8 @@ services:
     - docker:19.03.15-dind
 
 before_script:
-  - apk add --update python3 py-pip python3-dev build-base
+  - apk add --update python3 py-pip python3-dev build-base libffi-dev
+  - pip install --upgrade pip
   - pip install awscli aws-sam-cli
 
 stages:
