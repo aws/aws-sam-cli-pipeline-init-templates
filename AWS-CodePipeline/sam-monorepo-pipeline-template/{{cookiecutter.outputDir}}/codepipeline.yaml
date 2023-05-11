@@ -263,6 +263,9 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       AccessControl: "LogDeliveryWrite"
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership:  ObjectWriter
       VersioningConfiguration:
         Status: Enabled
       BucketEncryption:
