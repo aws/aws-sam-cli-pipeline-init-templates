@@ -39,7 +39,7 @@ Parameters:
     Default: "{{cookiecutter.monorepo_ssm_prefix}}"
   CodeBuildImage:
     Type: String
-    Default: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+    Default: aws/codebuild/amazonlinux2-x86_64-standard:5.0
   # Stage 1 Parameters
   TestConfigEnvName:
     Type: String
